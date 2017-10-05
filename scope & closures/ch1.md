@@ -63,29 +63,30 @@ For you to *fully understand* how JavaScript works, you need to begin to *think*
 
 When you see the program `var a = 2;`, you most likely think of that as one statement. But that's not how our new friend *Engine* sees it. In fact, *Engine* sees two distinct statements, one which *Compiler* will handle during compilation, and one which *Engine* will handle during execution.
 
-So, let's break down how *Engine* and friends will approach the program `var a = 2;`.
 
-The first thing *Compiler* will do with this program is perform lexing to break it down into tokens, which it will then parse into a tree. But when *Compiler* gets to code-generation, it will treat this program somewhat differently than perhaps assumed.
+Vậy hãy thử cùng tìm hiểu từng bước cách mà *Engine* và đồng bọn sẽ làm khi gặp đoạn code `var a = 2;`.
 
-A reasonable assumption would be that *Compiler* will produce code that could be summed up by this pseudo-code: "Allocate memory for a variable, label it `a`, then stick the value `2` into that variable." Unfortunately, that's not quite accurate.
+Điều đầu tiên mà đồng chí *Compiler* sẽ làm với đoạn mã trên là thực hiện nhiệm vụ mang tên "lexing" để chia nhỏ mã thành các "token", sau đó "parse" vào 1 "tree". Nhưng khi *Compiler* đến bước code-generation, nó sẽ xử lý khác so với những gì chúng ta đoán. 
 
-*Compiler* will instead proceed as:
+Chúng ta đoán như thế nào? Rằng *Compiler* sẽ "Allocate memory cho variable, dán nhãn nó là `a`, rồi gắn giá trị `2` vào variable `a` kia. Tuy nhiên, cách hiểu này lại không thực sự chính xác. 
 
-1. Encountering `var a`, *Compiler* asks *Scope* to see if a variable `a` already exists for that particular scope collection. If so, *Compiler* ignores this declaration and moves on. Otherwise, *Compiler* asks *Scope* to declare a new variable called `a` for that scope collection.
+Sự thực thì *Compiler* sẽ làm như sau: 
 
-2. *Compiler* then produces code for *Engine* to later execute, to handle the `a = 2` assignment. The code *Engine* runs will first ask *Scope* if there is a variable called `a` accessible in the current scope collection. If so, *Engine* uses that variable. If not, *Engine* looks *elsewhere* (see nested *Scope* section below).
+1. Thấy `var a`, *Compiler* hỏi xem cậu bạn *Scope* của mình đã từng thấy variable `a` tồn tại ở đâu hay chưa. Nếu câu trả lời là "CÓ", thì *Compiler* bỏ qua dòng `var a` kia và chạy dòng tiếp theo. Còn nếu là "KHÔNG", thì *Compiler* yêu cầu bạn *Scope* khai báo 1 variable mới với nhãn `a` trong bộ sưu tập của bạn *Scope* đó.
 
-If *Engine* eventually finds a variable, it assigns the value `2` to it. If not, *Engine* will raise its hand and yell out an error!
+2. Bạn *Compiler* tiếp theo sẽ viết ra một đoạn mã máy tính (machine code) để *Engine* thực hiện một lúc sau đó, nhằm xử lý việc gán `a = 2`. Mã máy mà *Engine* chạy sẽ hỏi *Scope* xem nếu bạn ý có thể tiếp cận variable nhãn `a` trong bộ sưu tập của bạn *Scope* hay không. Nếu có thể tiếp cận, *Engine* sẽ sử dụng variable này. Còn không, *Engine* sẽ đi tìm *chỗ khác* (xem mục "nested *Scope*" bên dưới).
 
-To summarize: two distinct actions are taken for a variable assignment: First, *Compiler* declares a variable (if not previously declared in the current scope), and second, when executing, *Engine* looks up the variable in *Scope* and assigns to it, if found.
+Nếu *Engine* cuối cùng tìm thấy 1 variable mang nhãn `a` mà nó đang đi tìm (trong *Scope* hoặc *chỗ khác* như nói ở trên, thì Enginer sẽ gán giá trị `2` cho nó. Còn không tìm thấy, thì *Engine* sẽ "giơ tay" báo lỗi. 
 
-### Compiler Speak
+**Túm lại**: để gán giá trị cho biến (variable assignment) thì phải thực hiện 2 hành động riêng rẽ: Đầu tiên, *Compiler* khai báo variable đấy (nếu nó chưa tồn tại ở không gian hiện tại), và thứ hai, đó là việc *Engine* tìm variable nhãn `a` và gán giá trị mới cho nó (nếu variable nhãn `a` được tìm thấy). 
 
-We need a little bit more compiler terminology to proceed further with understanding.
+### Compiler lên tiếng
 
-When *Engine* executes the code that *Compiler* produced for step (2), it has to look-up the variable `a` to see if it has been declared, and this look-up is consulting *Scope*. But the type of look-up *Engine* performs affects the outcome of the look-up.
+Để hiểu đoạn này, ta cần đề cập đến 1 vài thuật ngữ liên quan đến complier. 
 
-In our case, it is said that *Engine* would be performing an "LHS" look-up for the variable `a`. The other type of look-up is called "RHS".
+Khi *Engine* thực thi đoạn máy tính mà *Compiler* tạo ra ở bước (2), nó (tức *Engine*) phải "hỏi" *Scope* để kiểm tra variable mang nhãn `a` đã có hay chưa bằng cách. Động tác "hỏi" này của *Engine* cũng chia ra làm hai loại, tạm gọi là "hỏi bên trái" và "hỏi bên phải", mỗi loại có công dụng và hiệu năng khác nhau [*Người dịch: trong cuộc sống khi cần hỏi người khác điều gì, thì cách hỏi rất quan trọng. Hỏi khéo thì nhận được câu trả lời, hỏi không khéo thì có thể vẫn nhận được câu trả lời nhưng kèm theo 1 câu chửi, và trong thế giới 0101 của máy tính cũng tương tự như vậy*].
+
+Với trường hợp cụ thể trên, *Engine* sẽ thực hiện "hỏi bên trái" (viết tắt tiếng Anh là "LHS") với *Scope* để kiểm tra sự tồn tại của variable nhãn `a`. Sẽ có trường hợp mà *Engine* cần phải "hỏi bên phải" (viết tắt tiếng Anh là "RHS").
 
 I bet you can guess what the "L" and "R" mean. These terms stand for "Left-hand Side" and "Right-hand Side".
 
