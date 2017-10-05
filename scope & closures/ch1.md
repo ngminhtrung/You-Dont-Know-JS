@@ -88,37 +88,31 @@ Khi *Engine* thực thi đoạn máy tính mà *Compiler* tạo ra ở bước (
 
 Với trường hợp cụ thể trên, *Engine* sẽ thực hiện "hỏi bên trái" (viết tắt tiếng Anh là "LHS") với *Scope* để kiểm tra sự tồn tại của variable nhãn `a`. Sẽ có trường hợp mà *Engine* cần phải "hỏi bên phải" (viết tắt tiếng Anh là "RHS").
 
-I bet you can guess what the "L" and "R" mean. These terms stand for "Left-hand Side" and "Right-hand Side".
+Câu hỏi đặt ra là "bên phải/ bên trái" so với cái gì? Trả lời: **so với phép gán "="**
 
-Side... of what? **Of an assignment operation.**
-
-In other words, an LHS look-up is done when a variable appears on the left-hand side of an assignment operation, and an RHS look-up is done when a variable appears on the right-hand side of an assignment operation.
+Điều này có nghĩa là thủ tục "hỏi bên trái" được coi là hoàn thành khi mà variable được đặt phía bên trái của phép gán "=", và thủ tục "hỏi bên phải" hoàn thành khi variable ở bên phải của "=". 
 
 Actually, let's be a little more precise. An RHS look-up is indistinguishable, for our purposes, from simply a look-up of the value of some variable, whereas the LHS look-up is trying to find the variable container itself, so that it can assign. In this way, RHS doesn't *really* mean "right-hand side of an assignment" per se, it just, more accurately, means "not left-hand side".
 
-Being slightly glib for a moment, you could also think "RHS" instead means "retrieve his/her source (value)", implying that RHS means "go get the value of...".
+Để cho dễ hiểu, bạn tưởng tưởng tượng RHS nghĩa là "nhận lấy giá trị của nguồn". 
 
-Let's dig into that deeper.
-
-When I say:
+Hãy đối chiếu những lý thuyết trên vào đoạn code bên dưới:
 
 ```js
 console.log( a );
 ```
 
-The reference to `a` is an RHS reference, because nothing is being assigned to `a` here. Instead, we're looking-up to retrieve the value of `a`, so that the value can be passed to `console.log(..)`.
+Tham chiếu đến `a` là 1 tham chiếu dạng "nhìn phải" bởi không có gì được gán vào giá trị của `a` ở đây. Chúng ta đang cần "nhận lấy giá trị của `a`", rồi truyền giá trị đó cho `console.log(...)`.
 
-By contrast:
-
+Ví dụ sau thì là ngược lại: 
 ```js
 a = 2;
 ```
+Tham chiếu đến `a` ở trên lại là 1 tham chiếu dạng "nhìn trái", bởi chúng ta không quan tâm đến giá trị hiện tại của `a` bằng bao nhiêu, ta đơn giản chỉ muốn tìm variable `a` rồi gán cho nó giá trị bằng 2 (ứng với `=2`).
 
-The reference to `a` here is an LHS reference, because we don't actually care what the current value is, we simply want to find the variable as a target for the `= 2` assignment operation.
+**Lưu ý:** LHS và RHS không hoàn toàn mang nghĩa đen vật lý là "ở bên trái/ bên phải phép "_". Còn vài cách khác nữa để thực hiện phép gán. Do đó, tốt nhất là hãy nghĩ một cách hình tượng hơn là: LHS (nhìn bên trái) là nhìn xem đích đến của phép gán là gì (đích đến của phép gán `a=2` là `a`). RHS (nhìn bên phải) là nhìn xem đâu là nguồn (dữ liệu).
 
-**Note:** LHS and RHS meaning "left/right-hand side of an assignment" doesn't necessarily literally mean "left/right side of the `=` assignment operator". There are several other ways that assignments happen, and so it's better to conceptually think about it as: "who's the target of the assignment (LHS)" and "who's the source of the assignment (RHS)".
-
-Consider this program, which has both LHS and RHS references:
+Đoạn code dưới đây có cả RHS và LHS:
 
 ```js
 function foo(a) {
@@ -127,10 +121,9 @@ function foo(a) {
 
 foo( 2 );
 ```
+Dòng cuối cùng đã gọi `foo(..)` ở dạng 1 tham chiếu RHS đến `foo` ("hey, hãy tìm xem giá trị của `foo` bằng bao nhiêu rồi đưa cho tớ!"). Hơn nữa, `(..)` có nghĩa là giá trị của `foo` cần được thực thi, do vậy nó là một hàm số!
 
-The last line that invokes `foo(..)` as a function call requires an RHS reference to `foo`, meaning, "go look-up the value of `foo`, and give it to me." Moreover, `(..)` means the value of `foo` should be executed, so it'd better actually be a function!
-
-There's a subtle but important assignment here. **Did you spot it?**
+Có một phép gán dù rất thoảng qua nhưng lại vô cùng quan trọng ở đây. *Bạn có nhận ra nó?*
 
 You may have missed the implied `a = 2` in this code snippet. It happens when the value `2` is passed as an argument to the `foo(..)` function, in which case the `2` value is **assigned** to the parameter `a`. To (implicitly) assign to parameter `a`, an LHS look-up is performed.
 
