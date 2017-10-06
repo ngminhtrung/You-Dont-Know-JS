@@ -1,19 +1,19 @@
 # You Don't Know JS: *this* & Object Prototypes
 # Chapter 1: `this` Or That?
 
-One of the most confused mechanisms in JavaScript is the `this` keyword. It's a special identifier keyword that's automatically defined in the scope of every function, but what exactly it refers to bedevils even seasoned JavaScript developers.
+Một trong những điểm gây bối rối nhất khi lập trình JavaScript là việc dùng từ khoá `this`. Đây là một từ khoá nhận dạng (identifier) đặc biệt được định nghĩa một cách tự động bên trong "scope" của mọi hàm, nhưng nó (`this`) thực sự là gì thì ngay cả những lập trình viên JavaScript có kinh nghiệm cũng đau đầu. 
 
-> Any sufficiently *advanced* technology is indistinguishable from magic. -- Arthur C. Clarke
+> Bất kỳ **kỹ thuật tiên tiến** nào, lúc mới nhìn cũng không khác chi ma thuật. -- định luật thứ 3 của Arthur C. Clarke, một nhà khoa học và nhà văn người Anh
 
-JavaScript's `this` mechanism isn't actually *that* advanced, but developers often paraphrase that quote in their own mind by inserting "complex" or "confusing", and there's no question that without lack of clear understanding, `this` can seem downright magical in *your* confusion.
+Thực ra thì cơ chế hoạt động của `this` trong JavaScript không tiên tiến đến mức *đó*, nhưng các lập trình viên thường trích lại định luật Clarke nói trên trong tâm trí, thêm vào những từ tiêu cực như "phức tạp", hay "rối rắm", và đương nhiên nếu không tìm hiểu thì dần dần `this` sẽ thực sự trở thành ma thuật trong tâm trí của *bạn*. 
 
-**Note:** The word "this" is a terribly common pronoun in general discourse. So, it can be very difficult, especially verbally, to determine whether we are using "this" as a pronoun or using it to refer to the actual keyword identifier. For clarity, I will always use `this` to refer to the special keyword, and "this" or *this* or this otherwise.
+**Lưu ý:** this" là một đại từ vô cùng thông dụng trong rất nhiều bài luận, hoặc thuyết trình. Và chương này (Chương 1: `this` Or That?) cũng không tránh khỏi việc dùng từ `this`! Vậy làm thế nào để người đọc hiểu là tác giả đang nói về từ khoá `this` trong Javascript, hay là đang dùng đại từ "this" như cách sử dụng thông thường ngoài đời? Để tránh nhầm lẫn, tác giả thông nhất viết `this` là chỉ đến từ khoá của JavaScript, còn để this trong dấu ngoặc "this" hoặc in nghiêng *this*. 
 
-## Why `this`?
+## Tại sao cần `this`?
 
-If the `this` mechanism is so confusing, even to seasoned JavaScript developers, one may wonder why it's even useful? Is it more trouble than it's worth? Before we jump into the *how*, we should examine the *why*.
+Nếu cơ chế của`this` rắc rối đến thế (kể cả đối với lập trình viên JavaScript có kinh nghiệm), thì tại sao cần nó làm gì? `this` có ích hay không? Hay là nó chỉ tạo thêm nhiều vấn đề hơn là lợi ích mang lại? Trước khi đi vào câu hỏi *như thế nào*, hãy bắt đầu với câu hỏi *tại sao*. 
 
-Let's try to illustrate the motivation and utility of `this`:
+Dưới đây là một minh hoạt về lý do việc dùng `this`:
 
 ```js
 function identify() {
@@ -40,11 +40,11 @@ speak.call( me ); // Hello, I'm KYLE
 speak.call( you ); // Hello, I'm READER
 ```
 
-If the *how* of this snippet confuses you, don't worry! We'll get to that shortly. Just set those questions aside briefly so we can look into the *why* more clearly.
+Đừng lo lắng nếu vẫn chưa hiểu đoạn code mẫu phía trên! Chúng ta sẽ giải thích nó ngay sau đây. Bây giờ, tạm thời đặt ra vài câu hỏi phụ để có thể góp phần trả lời cho câu hỏi *tại sao*.
 
-This code snippet allows the `identify()` and `speak()` functions to be re-used against multiple *context* (`me` and `you`) objects, rather than needing a separate version of the function for each object.
+Đoạn code trên cho phép các hàm `identify()` và `speak()` được tái sử dụng từ "context" của các object `me` và `you`, chứ không cần phải tạo hàm riêng cho từng đối tượng. 
 
-Instead of relying on `this`, you could have explicitly passed in a context object to both `identify()` and `speak()`.
+Còn bây giờ, thử không dùng `this` mà hãy truyền một "context object" trực tiếp cho hai hàm `identify()` và `speak()`.
 
 ```js
 function identify(context) {
@@ -59,26 +59,25 @@ function speak(context) {
 identify( you ); // READER
 speak( me ); // Hello, I'm KYLE
 ```
+Dẫu cách trên cũng cho cùng kết quả, thì việc dùng `this` khiến cho đoạn code trở nên gần gũi về mặt ngữ nghĩa bề mặt, thể hiện ta đang truyền đi 1 object reference, khiến cho thiết kế API trở nên sạch sẽ và dễ dàng tái sử dụng. 
 
-However, the `this` mechanism provides a more elegant way of implicitly "passing along" an object reference, leading to cleaner API design and easier re-use.
+Khi bạn càng sử dụng các pattern phức tạp, bạn sẽ càng thấy rằng truyền context như cách phía sau (với 1 tham số trực tiếp) sẽ gây lộn xộn hơn là truyền thông qua `this`. When we explore objects and prototypes, you will see the helpfulness of a collection of functions being able to automatically reference the proper context object.
 
-The more complex your usage pattern is, the more clearly you'll see that passing context around as an explicit parameter is often messier than passing around a `this` context. When we explore objects and prototypes, you will see the helpfulness of a collection of functions being able to automatically reference the proper context object.
+## `this` thật dễ nhầm lẫn
 
-## Confusions
+Trước tiên, hãy đập tan những hiểu nhầm về cách mà `this` không làm việc.
 
-We'll soon begin to explain how `this` *actually* works, but first we must  dispel some misconceptions about how it *doesn't* actually work.
+Từ `this` tạo ra sự mơ hồ vì lập trình viên chỉ hiểu nó theo đúng nghĩa đen (định nghĩa trong từ điển tiếng Anh). Có hai cách hiểu liệt kê bên dưới, mà cả hai đều ... sai. 
 
-The name "this" creates confusion when developers try to think about it too literally. There are two meanings often assumed, but both are incorrect.
+### `this` = "chính nó"
 
-### Itself
+Cách hiểu thông dụng nhất là cho rằng `this` trở đến bản thân chính hàm gọi nó. Đây là cách hiểu theo kiểu ngữ pháp.
 
-The first common temptation is to assume `this` refers to the function itself. That's a reasonable grammatical inference, at least.
+Tại sao bạn lại muốn gọi 1 hàm từ bên trong chính nó? Một trong những lý do phổ biết là vì để tạo hàm đệ quy (gọi một hàm bên trong chính hàm đó), hoặc một event handler có thể unbind itself when it's first called.
 
-Why would you want to refer to a function from inside itself? The most common reasons would be things like recursion (calling a function from inside itself) or having an event handler that can unbind itself when it's first called.
+Những lập trình viên mới sử dụng JavaScript đều nghĩ rằng việc trỏ để function thông qua object của function (chú ý là mọi hàm của JavaScript đều là object) sẽ giúp họ lưu lại *trạng thái* (các giá trị (values) của thuộc tính (properties)) giữa các lần gọi hàm. Dẫu đây là một phương án và có thể sử dụng trong một vài trường hợp, phần còn lại của quyển sách này sẽ chỉ ra rất nhiều cách khác *tốt hơn* để lưu các trạng thái của hàm giữa các lần gọi. 
 
-Developers new to JS's mechanisms often think that referencing the function as an object (all functions in JavaScript are objects!) lets you store *state* (values in properties) between function calls. While this is certainly possible and has some limited uses, the rest of the book will expound on many other patterns for *better* places to store state besides the function object.
-
-But for just a moment, we'll explore that pattern, to illustrate how `this` doesn't let a function get a reference to itself like we might have assumed.
+Với mục này, chúng ta sẽ xem vì sao mà `this` không cho phép hàm trỏ đến chính nó như ta giả định. 
 
 Consider the following code, where we attempt to track how many times a function (`foo`) was called:
 
