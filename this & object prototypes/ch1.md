@@ -79,13 +79,13 @@ Những lập trình viên mới sử dụng JavaScript đều nghĩ rằng vi�
 
 Với mục này, chúng ta sẽ xem vì sao mà `this` không cho phép hàm trỏ đến chính nó như ta giả định. 
 
-Consider the following code, where we attempt to track how many times a function (`foo`) was called:
+Quan sát đoạn code dưới đây xem 1 hàm (hàm `foo`) được gọi:
 
 ```js
 function foo(num) {
 	console.log( "foo: " + num );
 
-	// keep track of how many times `foo` is called
+	// dòng bên dưới để tính số lần `foo` được gọi
 	this.count++;
 }
 
@@ -103,23 +103,23 @@ for (i=0; i<10; i++) {
 // foo: 8
 // foo: 9
 
-// how many times was `foo` called?
-console.log( foo.count ); // 0 -- WTF?
+// vậy `foo` đã được gọi bao nhiêu lần?
+console.log( foo.count ); // 0 lần -- Tại saoooooo!?!?!?!
 ```
 
-`foo.count` is *still* `0`, even though the four `console.log` statements clearly indicate `foo(..)` was in fact called four times. The frustration stems from a *too literal* interpretation of what `this` (in `this.count++`) means.
+`foo.count` *vẫn* bằng `0`, dù `console.log` đã được gọi 4 lần và in ra các giá trị khác nhau từ 6 đến 9. Sự bối rối này bắt nguồn từ việc hiểu từ `this` trong `this.count++` theo nghĩa đen.
 
-When the code executes `foo.count = 0`, indeed it's adding a property `count` to the function object `foo`. But for the `this.count` reference inside of the function, `this` is not in fact pointing *at all* to that function object, and so even though the property names are the same, the root objects are different, and confusion ensues.
+Khi dòng mã `foo.count = 0` được thực thi, thực chất thì một thuộc tính (property) gọi là `count` đã được gắn cho function object `foo`. Nhưng với `this.count` thì `this` lại *hoàn toàn không* trỏ đến function object của `foo`, vì vậy mà cứ tưởng là `foo.count` và `this.count` giống nhau, nhưng thực phần gốc của chúng khác nhau, kết quả là ta bị nhầm lẫn. 
 
 **Note:** A responsible developer *should* ask at this point, "If I was incrementing a `count` property but it wasn't the one I expected, which `count` *was* I incrementing?" In fact, were she to dig deeper, she would find that she had accidentally created a global variable `count` (see Chapter 2 for *how* that happened!), and it currently has the value `NaN`. Of course, once she identifies this peculiar outcome, she then has a whole other set of questions: "How was it global, and why did it end up `NaN` instead of some proper count value?" (see Chapter 2).
 
-Instead of stopping at this point and digging into why the `this` reference doesn't seem to be behaving as *expected*, and answering those tough but important questions, many developers simply avoid the issue altogether, and hack toward some other solution, such as creating another object to hold the `count` property:
+Thay vì dừng ở đây và đào sâu vào lý do `this` không đưa ta đến giá trị *mong muốn* (cũng như trả lời các câu hỏi khác ở trên), rất nhiều lập trình viên đơn giản là quay mặt đi với mọi thứ, sử dụng mẹo để xử lý vấn đề này, ví dụ như tạo 1 object khác để lưu `count`:
 
 ```js
 function foo(num) {
 	console.log( "foo: " + num );
 
-	// keep track of how many times `foo` is called
+	// dòng bên dưới để tính số lần `foo` được gọi
 	data.count++;
 }
 
@@ -139,13 +139,12 @@ for (i=0; i<10; i++) {
 // foo: 8
 // foo: 9
 
-// how many times was `foo` called?
+// vậy `foo` đã được gọi bao nhiêu lần?
 console.log( data.count ); // 4
 ```
+Mặc dù cách làm trên đã cho đúng giá trị của số lần hàm `foo` được gọi, nhưng rất tiếc nó đã bỏ qua vấn đề thực sự - không giải đáp được `this` có nghĩa gì và cơ chế bê trong nó, và rồi rơi lại vào vùng an toàn của một cơ chế quen thuộc hơn tên là "lexical scope". 
 
-While it is true that this approach "solves" the problem, unfortunately it simply ignores the real problem -- lack of understanding what `this` means and how it works -- and instead falls back to the comfort zone of a more familiar mechanism: lexical scope.
-
-**Note:** Lexical scope is a perfectly fine and useful mechanism; I am not belittling the use of it, by any means (see *"Scope & Closures"* title of this book series). But constantly *guessing* at how to use `this`, and usually being *wrong*, is not a good reason to retreat back to lexical scope and never learn *why* `this` eludes you.
+**Lưu ý:** Lexical scope là một cơ chế vô cùng hoàn hảo và hữu dụng; tác giả hề không có ý coi thường việc dùng nó (hãy xem quyển *"Scope & Closures"* trong series sách "You don't know JS"). Nhưng nếu phải luôn *đoán và đoán* cách dùng `this` thì lại không nên, càng không nên quay sang "lexical scope" và không chịu học lý do `this` luôn lảng tránh bạn.
 
 To reference a function object from inside itself, `this` by itself will typically be insufficient. You generally need a reference to the function object via a lexical identifier (variable) that points at it.
 
