@@ -146,9 +146,9 @@ Mặc dù cách làm trên đã cho đúng giá trị của số lần hàm `foo
 
 **Lưu ý:** Lexical scope là một cơ chế vô cùng hoàn hảo và hữu dụng; tác giả hề không có ý coi thường việc dùng nó (hãy xem quyển *"Scope & Closures"* trong series sách "You don't know JS"). Nhưng nếu phải luôn *đoán và đoán* cách dùng `this` thì lại không nên, càng không nên quay sang "lexical scope" và không chịu học lý do `this` luôn lảng tránh bạn.
 
-To reference a function object from inside itself, `this` by itself will typically be insufficient. You generally need a reference to the function object via a lexical identifier (variable) that points at it.
+Nếu bạn muốn trở đến function object từ bên trong chính object này, thì viết `this` như trên là không đủ. Bạn sẽ cần một "lexical identifier" (một variable) để trỏ đến object function.
 
-Consider these two functions:
+Hãy xem 2 hàm bên dưới đây:
 
 ```js
 function foo() {
