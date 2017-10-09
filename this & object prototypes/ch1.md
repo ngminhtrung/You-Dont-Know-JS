@@ -65,17 +65,17 @@ Khi bạn càng sử dụng các pattern phức tạp, bạn sẽ càng thấy r
 
 ## `this` thật dễ nhầm lẫn
 
-Trước tiên, hãy đập tan những hiểu nhầm về cách mà `this` không làm việc.
+Trước tiên, hãy đập tan những hiểu nhầm về cách mà `this` **không** làm việc.
 
-Từ `this` tạo ra sự mơ hồ vì lập trình viên chỉ hiểu nó theo đúng nghĩa đen (định nghĩa trong từ điển tiếng Anh). Có hai cách hiểu liệt kê bên dưới, mà cả hai đều ... sai. 
+Từ `this` tạo ra sự mơ hồ vì lập trình viên chỉ hiểu nó theo đúng nghĩa đen (định nghĩa trong từ điển tiếng Anh). Có hai cách hiểu liệt kê bên dưới, mà cả hai đều ... **sai**. 
 
 ### `this` = "chính nó"
 
 Cách hiểu thông dụng nhất là cho rằng `this` trở đến bản thân chính hàm gọi nó. Đây là cách hiểu theo kiểu ngữ pháp.
 
-Tại sao bạn lại muốn gọi 1 hàm từ bên trong chính nó? Một trong những lý do phổ biết là vì để tạo hàm đệ quy (gọi một hàm bên trong chính hàm đó), hoặc một event handler có thể unbind itself when it's first called.
+Tại sao bạn lại muốn gọi 1 hàm từ bên trong chính nó? Một trong những lý do phổ biến là vì để tạo hàm "đệ quy" (một loại hàm có thể gọi lại chính nó từ bên trong), hoặc một event handler có thể unbind itself when it's first called.
 
-Những lập trình viên mới sử dụng JavaScript đều nghĩ rằng việc trỏ để function thông qua object của function (chú ý là mọi hàm của JavaScript đều là object) sẽ giúp họ lưu lại *trạng thái* (các giá trị (values) của thuộc tính (properties)) giữa các lần gọi hàm. Dẫu đây là một phương án và có thể sử dụng trong một vài trường hợp, phần còn lại của quyển sách này sẽ chỉ ra rất nhiều cách khác *tốt hơn* để lưu các trạng thái của hàm giữa các lần gọi. 
+Những lập trình viên mới sử dụng JavaScript đều nghĩ rằng việc trỏ đến function thông qua object của function (chú ý là mọi hàm của JavaScript đều là object) sẽ giúp họ lưu lại *trạng thái* (các giá trị (values) của thuộc tính (properties) giữa các lần gọi hàm. Dẫu đây là một phương án và có thể sử dụng trong một vài trường hợp, phần còn lại của quyển sách này sẽ chỉ ra rất nhiều cách khác *tốt hơn* để lưu các trạng thái của hàm giữa các lần gọi. 
 
 Với mục này, chúng ta sẽ xem vì sao mà `this` không cho phép hàm trỏ đến chính nó như ta giả định. 
 
@@ -111,7 +111,7 @@ console.log( foo.count ); // 0 lần -- Tại saoooooo!?!?!?!
 
 Khi dòng mã `foo.count = 0` được thực thi, thực chất thì một thuộc tính (property) gọi là `count` đã được gắn cho function object `foo`. Nhưng với `this.count` thì `this` lại *hoàn toàn không* trỏ đến function object của `foo`, vì vậy mà cứ tưởng là `foo.count` và `this.count` giống nhau, nhưng thực phần gốc của chúng khác nhau, kết quả là ta bị nhầm lẫn. 
 
-**Note:** A responsible developer *should* ask at this point, "If I was incrementing a `count` property but it wasn't the one I expected, which `count` *was* I incrementing?" In fact, were she to dig deeper, she would find that she had accidentally created a global variable `count` (see Chapter 2 for *how* that happened!), and it currently has the value `NaN`. Of course, once she identifies this peculiar outcome, she then has a whole other set of questions: "How was it global, and why did it end up `NaN` instead of some proper count value?" (see Chapter 2).
+**Lưu ý:** Một câu hỏi quan trọng thường bị bỏ qua khi đọc lướt đoạn trên, đó là: "Đoạn code viết trên nhằm mục đích tăng biến `count` lên 1 đơn vị mỗi lần chạy `foo`, nhưng kết quả lại không ra như trông đợi, vậy có biến `count` ở chỗ khác đang bị thay đổi hay không?" Thực tế là việc viết code như trên đã vô tình tạo ra 1 `count` thuộc dạng global variable  (xem Chương 2 để hiểu *tại sao* nó diễn ra!), tạm thời lúc này nó đang có giá trị là `NaN`. Sau câu hỏi này, ta sẽ có thêm cả tỷ câu hỏi nữa, ví dụ như là: "Tại sao variable này lại là global, tại sao nó lại là `NaN` thay vì 1 giá trị nào đó?" (xem Chương 2).
 
 Thay vì dừng ở đây và đào sâu vào lý do `this` không đưa ta đến giá trị *mong muốn* (cũng như trả lời các câu hỏi khác ở trên), rất nhiều lập trình viên đơn giản là quay mặt đi với mọi thứ, sử dụng mẹo để xử lý vấn đề này, ví dụ như tạo 1 object khác để lưu `count`:
 
@@ -144,36 +144,35 @@ console.log( data.count ); // 4
 ```
 Mặc dù cách làm trên đã cho đúng giá trị của số lần hàm `foo` được gọi, nhưng rất tiếc nó đã bỏ qua vấn đề thực sự - không giải đáp được `this` có nghĩa gì và cơ chế bê trong nó, và rồi rơi lại vào vùng an toàn của một cơ chế quen thuộc hơn tên là "lexical scope". 
 
-**Lưu ý:** Lexical scope là một cơ chế vô cùng hoàn hảo và hữu dụng; tác giả hề không có ý coi thường việc dùng nó (hãy xem quyển *"Scope & Closures"* trong series sách "You don't know JS"). Nhưng nếu phải luôn *đoán và đoán* cách dùng `this` thì lại không nên, càng không nên quay sang "lexical scope" và không chịu học lý do `this` luôn lảng tránh bạn.
+**Lưu ý:** Lexical scope là một cơ chế vô cùng hoàn hảo và hữu dụng; tác giả không có ý coi thường việc dùng nó (hãy xem quyển *"Scope & Closures"* trong series sách "You don't know JS"). Nhưng nếu phải luôn *đoán và đoán* cách dùng `this` thì lại không nên, càng không nên quay sang "lexical scope" và không chịu học lý do mà `this` luôn quay mặt đi với bạn.
 
-Nếu bạn muốn trở đến function object từ bên trong chính object này, thì viết `this` như trên là không đủ. Bạn sẽ cần một "lexical identifier" (một variable) để trỏ đến object function.
+Nếu bạn muốn trỏ đến function object từ bên trong chính object này, thì viết `this` như trên là không đủ. Bạn sẽ cần một "lexical identifier" (một variable) để trỏ đến object function.
 
 Hãy xem 2 hàm bên dưới đây:
 
 ```js
 function foo() {
-	foo.count = 4; // `foo` refers to itself
+	foo.count = 4; // `foo` trỏ đến chính nó
 }
 
 setTimeout( function(){
-	// anonymous function (no name), cannot
-	// refer to itself
+	// function dạng "anonymous" (không có tên), không thể trỏ đến chính nó
 }, 10 );
 ```
 
-In the first function, called a "named function", `foo` is a reference that can be used to refer to the function from inside itself.
+Trong hàm đầu tiên, tạm gọi là "hàm có tên", `foo` là một tham chiếu dùng để trỏ đến hàm này từ bên trong chính nó. 
 
-But in the second example, the function callback passed to `setTimeout(..)` has no name identifier (so called an "anonymous function"), so there's no proper way to refer to the function object itself.
+Còn trong hàm thứ hai, hàm callback (đặt bên trong `setTimeout(...)` không hề có tên (không có "identifier", còn được gọi là hàm "anonymous"), vì vậy mà chẳng có cách nào để tham chiếu đến chính nó. 
 
-**Note:** The old-school but now deprecated and frowned-upon `arguments.callee` reference inside a function *also* points to the function object of the currently executing function. This reference is typically the only way to access an anonymous function's object from inside itself. The best approach, however, is to avoid the use of anonymous functions altogether, at least for those which require a self-reference, and instead use a named function (expression). `arguments.callee` is deprecated and should not be used.
+**Note:** Còn một cách khác (dù cũ và đã tuyệt chủng) đó là dùng `arguments.callee` bên trong hàm để trỏ đến function object của function đang được thực thi. Đây là cách duy nhập để gọi 1 hàm không tên từ bên trong chính nó. Dẫu vạy, tốt nhất là tránh dùng hàm không tên ít nhất đối với các trường hợp cần tham chiếu chính nó, thay hàm không tên thành hàm có tên (dạng expression). `arguments.callee` đã tuyệt chủng, đừng nghĩ đến nó nữa!
 
-So another solution to our running example would have been to use the `foo` identifier as a function object reference in each place, and not use `this` at all, which *works*:
+Một giải pháp khác để tham chiếu đến `foo` mà không cần dùng `this` là:
 
 ```js
 function foo(num) {
 	console.log( "foo: " + num );
 
-	// keep track of how many times `foo` is called
+	// dòng bên dưới để tính số lần `foo` được gọi
 	foo.count++;
 }
 
@@ -191,21 +190,21 @@ for (i=0; i<10; i++) {
 // foo: 8
 // foo: 9
 
-// how many times was `foo` called?
+// số lần `foo` được gọi?
 console.log( foo.count ); // 4
 ```
 
-However, that approach similarly side-steps *actual* understanding of `this` and relies entirely on the lexical scoping of variable `foo`.
+Tuy nhiên, cách trên *thực chất* vẫn đang lảng tránh việc hiểu bản chất của `this`, hoàn toàn dựa vào lexical scope của variable `foo`.
 
-Yet another way of approaching the issue is to force `this` to actually point at the `foo` function object:
+Một cách khác nữa đó là ép `this` tro đến function object `foo`:
 
 ```js
 function foo(num) {
 	console.log( "foo: " + num );
 
-	// keep track of how many times `foo` is called
-	// Note: `this` IS actually `foo` now, based on
-	// how `foo` is called (see below)
+	// code dưới dùng để lưu số lần `foo` được gọi
+	// Lưu ý: `this` ở đây đúng là trỏ đến `foo`,
+	// do cách `foo` được gọi đến ở dưới đây
 	this.count++;
 }
 
@@ -215,8 +214,8 @@ var i;
 
 for (i=0; i<10; i++) {
 	if (i > 5) {
-		// using `call(..)`, we ensure the `this`
-		// points at the function object (`foo`) itself
+		// dùng `call(..)`, ta đảm bảo rằng `this`
+		// trỏ đến (`foo`)
 		foo.call( foo, i );
 	}
 }
@@ -225,19 +224,19 @@ for (i=0; i<10; i++) {
 // foo: 8
 // foo: 9
 
-// how many times was `foo` called?
+// số lần `foo` được gọi?
 console.log( foo.count ); // 4
 ```
 
-**Instead of avoiding `this`, we embrace it.** We'll explain in a little bit *how* such techniques work much more completely, so don't worry if you're still a bit confused!
+**Hãy yêu thương `this` thay vì lảng tránh nó.**  We'll explain in a little bit *how* such techniques work much more completely, so don't worry if you're still a bit confused!
 
 ### Its Scope
 
-The next most common misconception about the meaning of `this` is that it somehow refers to the function's scope. It's a tricky question, because in one sense there is some truth, but in the other sense, it's quite misguided.
+Một hiểu nhầm phổ biến nữa đó là hiểu `this` tham chiếu đến scope của function. Cách hiểu này vừa đúng vừa sai, cái khó là hiểu nó đúng ở trường hợp nào, sai ở trường hợp nào. 
 
-To be clear, `this` does not, in any way, refer to a function's **lexical scope**. It is true that internally, scope is kind of like an object with properties for each of the available identifiers. But the scope "object" is not accessible to JavaScript code. It's an inner part of the *Engine*'s implementation.
+Đầu tiên, hãy nhớ rằng trong bất kỳ trường hợp này, `this` không bao giờ dính dáng đến **lexical scope** của hàm. Scope đúng là 1 thể loại object có thuộc tính (properties) với ứng với mỗi identifiers. Nhưng ta không thể dùng Javascript để truy cập vào "object". Đây là một phần của những gì *Engine* thực thi.
 
-Consider code which attempts (and fails!) to cross over the boundary and use `this` to implicitly refer to a function's lexical scope:
+Hãy xem đoạn code sau đã thử và thất bại khi định xâm nhậm và dùng `this` để trỏ đến lexical scope của hàm:
 
 ```js
 function foo() {
@@ -252,28 +251,33 @@ function bar() {
 foo(); //undefined
 ```
 
-There's more than one mistake in this snippet. While it may seem contrived, the code you see is a distillation of actual real-world code that has been exchanged in public community help forums. It's a wonderful (if not sad) illustration of just how misguided `this` assumptions can be.
+Có quá nhiều vấn đề với đoạn code mẫu trên. Trông thì có vẻ tinh tế, nhưng nó là một ví dụ điển hình về những đoạn code đang được trao đổi trong những diễn đàn trên Internet, là minh hoạ rõ ràng việc `this` đang được dùng sai cách thế nào. 
 
-Firstly, an attempt is made to reference the `bar()` function via `this.bar()`. It is almost certainly an *accident* that it works, but we'll explain the *how* of that shortly. The most natural way to have invoked `bar()` would have been to omit the leading `this.` and just make a lexical reference to the identifier.
+- Thứ nhất là việc cố gắng trỏ đến hàm `bar()` thông qua `this.bar()`. Chỉ vì *ngẫu nhiên* mà đoạn code kia chạy, nhưng chúng ta sẽ xem giải thích *tại sao* lại có sự "ngẫu nhiên" này sau. Cách tự nhiên nhất để gọi hàm `bar()` chính là bỏ `this.` đi, chỉ cần để `bar()` là đủ (nó chính là lexical reference đến identifier).
 
-However, the developer who writes such code is attempting to use `this` to create a bridge between the lexical scopes of `foo()` and `bar()`, so that `bar()` has access to the variable `a` in the inner scope of `foo()`. **No such bridge is possible.** You cannot use a `this` reference to look something up in a lexical scope. It is not possible.
+- Thứ hai là việc cố gắng dùng `this` để bắc cầu giữa lexical scopes của `foo()` và `bar()`, để `bar()` truy cập variable `a` bên trong `foo()`. **Hãy nhớ là phép bắc cầu đó là không đem lại kết quả!** Không thể dùng `this` để tìm kiếm thứ gì trong lexical scope. Điều này là không thể.
 
-Every time you feel yourself trying to mix lexical scope look-ups with `this`, remind yourself: *there is no bridge*.
+Bất cứ lúc nào bạn định tìm kiếm trong lexical scope với `this`, hãy tự nhủ là: **không có phép bắc cầu ở đây!**.
 
-## What's `this`?
+## Vậy `this` là gì?
 
-Having set aside various incorrect assumptions, let us now turn our attention to how the `this` mechanism really works.
+Sau khi đi qua các ví dụ cho thấy cách hiểu sai về `this`, giờ ta quay lại với cơ chế hoạt động của `this`. 
 
-We said earlier that `this` is not an author-time binding but a runtime binding. It is contextual based on the conditions of the function's invocation. `this` binding has nothing to do with where a function is declared, but has instead everything to do with the manner in which the function is called.
+Như đã nói phía trên, `this` không phải một "**author-time binding** mà là "**runtime binding**". It is contextual based on the conditions of the function's invocation. `this` binding không liên quan đến *nơi* hàm được khai báo (delcared), mà đến *cách* hàm được gọi. 
 
-When a function is invoked, an activation record, otherwise known as an execution context, is created. This record contains information about where the function was called from (the call-stack), *how* the function was invoked, what parameters were passed, etc. One of the properties of this record is the `this` reference which will be used for the duration of that function's execution.
+Mỗi khi hàm được gọi (invoked), một quyển sổ ghi chép (với tên kỹ thuật là "execution context") được tạo mới. Quyển sổ này chứa thông tin:
+- *nơi gọi* hàm này (tức là "call-stack")
+- *cách* hàm được gọi 
+- các tham số được truyền
+- v.v.
+Một trong những thông tin trong quyển sổ này là về `this`, lưu trữ trong suốt quá trình thực thi hàm.  
 
-In the next chapter, we will learn to find a function's **call-site** to determine how its execution will bind `this`.
+Trong chương tiếp theo, ta sẽ tìm hiểu về **call-site** của hàm dùng để xác định cách mà `this` gắn với hàm.
 
-## Review (TL;DR)
+## Review (TL;DR - Dài quá, ứ đọc)
 
-`this` binding is a constant source of confusion for the JavaScript developer who does not take the time to learn how the mechanism actually works. Guesses, trial-and-error, and blind copy-n-paste from Stack Overflow answers is not an effective or proper way to leverage *this* important `this` mechanism.
+`this` trỏ về đâu? đây là nguồn gốc của bao rắc rối mà các lập trình viên JavaScript thường gặp, nhưng không chịu bỏ thời gian để học cơ chế phía sau này. Họ đơn thuần chỉ "*đoán*", "*thử - sai - thử lại*", hoặc đơn thuần "copy-n-paste" từ StackOverflow (trong khi chẳng hiểu gì), cách này không giúp chúng ta hiểu đúng tầm quan trọng của việc hiểu cơ chế với `this`. 
 
-To learn `this`, you first have to learn what `this` is *not*, despite any assumptions or misconceptions that may lead you down those paths. `this` is neither a reference to the function itself, nor is it a reference to the function's *lexical* scope.
+Để hiểu về `this`, đầu tiên hãy xem `this` *không* phải là những gì, gạt ra khỏi đầu những hiểu nhầm khiến cho bạn bị lạc hướng. `this` không hề là một tham chiếu đến hàm, cũng không hề tham chiếu đến *lexical* scope.
 
-`this` is actually a binding that is made when a function is invoked, and *what* it references is determined entirely by the call-site where the function is called.
+`this` được tạo khi function được gọi, và *thứ* mà nó trỏ đến hoàn toàn được xác định bởi cái gọi là **call-site** (nơi gọi function).
