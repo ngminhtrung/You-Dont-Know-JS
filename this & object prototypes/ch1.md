@@ -261,7 +261,7 @@ Bất cứ lúc nào bạn định tìm kiếm trong lexical scope với `this`,
 
 ## Vậy `this` là gì?
 
-Sau khi đi qua các ví dụ cho thấy cách hiểu sai về `this`, giờ ta quay lại với cơ chế hoạt động của `this`. 
+Sau khi đi qua các ví dụ cho thấy cách hiểu sai về `this`, giờ ta quay lại với cơ chế hoạt động của `this`. 
 
 Như đã nói phía trên, `this` không phải một "**author-time binding** mà là "**runtime binding**". It is contextual based on the conditions of the function's invocation. `this` binding không liên quan đến *nơi* hàm được khai báo (delcared), mà đến *cách* hàm được gọi. 
 
@@ -270,14 +270,14 @@ Mỗi khi hàm được gọi (invoked), một quyển sổ ghi chép (với tê
 - *cách* hàm được gọi 
 - các tham số được truyền
 - v.v.
-Một trong những thông tin trong quyển sổ này là về `this`, lưu trữ trong suốt quá trình thực thi hàm.  
+Một trong những thông tin trong quyển sổ này là về `this`, lưu trữ trong suốt quá trình thực thi hàm.  
 
 Trong chương tiếp theo, ta sẽ tìm hiểu về **call-site** của hàm dùng để xác định cách mà `this` gắn với hàm.
 
 ## Review (TL;DR - Dài quá, ứ đọc)
 
-`this` trỏ về đâu? đây là nguồn gốc của bao rắc rối mà các lập trình viên JavaScript thường gặp, nhưng không chịu bỏ thời gian để học cơ chế phía sau này. Họ đơn thuần chỉ "*đoán*", "*thử - sai - thử lại*", hoặc đơn thuần "copy-n-paste" từ StackOverflow (trong khi chẳng hiểu gì), cách này không giúp chúng ta hiểu đúng tầm quan trọng của việc hiểu cơ chế với `this`. 
+`this` trỏ về đâu? đây là nguồn gốc của bao rắc rối mà các lập trình viên JavaScript thường gặp, nhưng không chịu bỏ thời gian để học cơ chế phía sau này. Họ đơn thuần chỉ "*đoán*", "*thử - sai - thử lại*", hoặc đơn thuần "copy-n-paste" từ StackOverflow (trong khi chẳng hiểu gì), cách này không giúp chúng ta hiểu đúng tầm quan trọng của việc hiểu cơ chế với `this`. 
 
-Để hiểu về `this`, đầu tiên hãy xem `this` *không* phải là những gì, gạt ra khỏi đầu những hiểu nhầm khiến cho bạn bị lạc hướng. `this` không hề là một tham chiếu đến hàm, cũng không hề tham chiếu đến *lexical* scope.
+Để hiểu về `this`, đầu tiên hãy xem `this` *không* phải là những gì, gạt ra khỏi đầu những hiểu nhầm khiến cho bạn bị lạc hướng. `this` không hề là một tham chiếu đến hàm, cũng không hề tham chiếu đến *lexical* scope.
 
-`this` được tạo khi function được gọi, và *thứ* mà nó trỏ đến hoàn toàn được xác định bởi cái gọi là **call-site** (nơi gọi function).
+`this` được tạo khi function được gọi, và *thứ* mà nó trỏ đến hoàn toàn được xác định bởi cái gọi là **call-site** (nơi gọi function).
