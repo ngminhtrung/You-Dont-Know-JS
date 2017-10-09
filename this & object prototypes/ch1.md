@@ -234,7 +234,7 @@ console.log( foo.count ); // 4
 
 Một hiểu nhầm phổ biến nữa đó là hiểu `this` tham chiếu đến scope của function. Cách hiểu này vừa đúng vừa sai, cái khó là hiểu nó đúng ở trường hợp nào, sai ở trường hợp nào. 
 
-Đầu tiên, hãy nhớ rằng trong bất kỳ trường hợp này, `this` không bao giờ dính dáng đến **lexical scope** của hàm. Scope đúng là 1 thể loại object có thuộc tính (properties) với ứng với mỗi identifiers. Nhưng ta không thể dùng Javascript để truy cập vào "object". Đây là một phần của những gì *Engine* thực thi.
+Đầu tiên, hãy nhớ rằng trong bất kỳ trường hợp này, `this` không bao giờ dính dáng đến **lexical scope** của hàm. Scope đúng là 1 thể loại object có thuộc tính (properties) với ứng với mỗi identifiers. Nhưng ta không thể dùng Javascript để truy cập vào "object". Đây là một phần của những gì *Engine* thực thi.
 
 Hãy xem đoạn code sau đã thử và thất bại khi định xâm nhậm và dùng `this` để trỏ đến lexical scope của hàm:
 
