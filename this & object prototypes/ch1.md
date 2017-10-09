@@ -194,7 +194,7 @@ for (i=0; i<10; i++) {
 console.log( foo.count ); // 4
 ```
 
-Tuy nhiên, cách trên *thực chất* vẫn đang lảng tránh việc hiểu bản chất của `this`, hoàn toàn dựa vào lexical scope của variable `foo`.
+Tuy nhiên, cách trên *thực chất* vẫn đang lảng tránh việc hiểu bản chất của `this`, hoàn toàn dựa vào lexical scope của variable `foo`.
 
 Một cách khác nữa đó là ép `this` tro đến function object `foo`:
 
@@ -251,11 +251,11 @@ function bar() {
 foo(); //undefined
 ```
 
-Có quá nhiều vấn đề với đoạn code mẫu trên. Trông thì có vẻ tinh tế, nhưng nó là một ví dụ điển hình về những đoạn code đang được trao đổi trong những diễn đàn trên Internet, là minh hoạ rõ ràng việc `this` đang được dùng sai cách thế nào. 
+Có quá nhiều vấn đề với đoạn code mẫu trên. Trông thì có vẻ tinh tế, nhưng nó là một ví dụ điển hình về những đoạn code đang được trao đổi trong những diễn đàn trên Internet, là minh hoạ rõ ràng việc `this` đang được dùng sai cách thế nào. 
 
-- Thứ nhất là việc cố gắng trỏ đến hàm `bar()` thông qua `this.bar()`. Chỉ vì *ngẫu nhiên* mà đoạn code kia chạy, nhưng chúng ta sẽ xem giải thích *tại sao* lại có sự "ngẫu nhiên" này sau. Cách tự nhiên nhất để gọi hàm `bar()` chính là bỏ `this.` đi, chỉ cần để `bar()` là đủ (nó chính là lexical reference đến identifier).
+- Thứ nhất là việc cố gắng trỏ đến hàm `bar()` thông qua `this.bar()`. Chỉ vì *ngẫu nhiên* mà đoạn code kia chạy, nhưng chúng ta sẽ xem giải thích *tại sao* lại có sự "ngẫu nhiên" này sau. Cách tự nhiên nhất để gọi hàm `bar()` chính là bỏ `this.` đi, chỉ cần để `bar()` là đủ (nó chính là lexical reference đến identifier).
 
-- Thứ hai là việc cố gắng dùng `this` để bắc cầu giữa lexical scopes của `foo()` và `bar()`, để `bar()` truy cập variable `a` bên trong `foo()`. **Hãy nhớ là phép bắc cầu đó là không đem lại kết quả!** Không thể dùng `this` để tìm kiếm thứ gì trong lexical scope. Điều này là không thể.
+- Thứ hai là việc cố gắng dùng `this` để bắc cầu giữa lexical scopes của `foo()` và `bar()`, để `bar()` truy cập variable `a` bên trong `foo()`. **Hãy nhớ là phép bắc cầu đó là không đem lại kết quả!** Không thể dùng `this` để tìm kiếm thứ gì trong lexical scope. Điều này là không thể.
 
 Bất cứ lúc nào bạn định tìm kiếm trong lexical scope với `this`, hãy tự nhủ là: **không có phép bắc cầu ở đây!**.
 
@@ -276,8 +276,8 @@ Trong chương tiếp theo, ta sẽ tìm hiểu về **call-site** của hàm d�
 
 ## Review (TL;DR - Dài quá, ứ đọc)
 
-`this` trỏ về đâu? đây là nguồn gốc của bao rắc rối mà các lập trình viên JavaScript thường gặp, nhưng không chịu bỏ thời gian để học cơ chế phía sau này. Họ đơn thuần chỉ "*đoán*", "*thử - sai - thử lại*", hoặc đơn thuần "copy-n-paste" từ StackOverflow (trong khi chẳng hiểu gì), cách này không giúp chúng ta hiểu đúng tầm quan trọng của việc hiểu cơ chế với `this`. 
+`this` trỏ về đâu? đây là nguồn gốc của bao rắc rối mà các lập trình viên JavaScript thường gặp, nhưng không chịu bỏ thời gian để học cơ chế phía sau này. Họ đơn thuần chỉ "*đoán*", "*thử - sai - thử lại*", hoặc đơn thuần "copy-n-paste" từ StackOverflow (trong khi chẳng hiểu gì), cách này không giúp chúng ta hiểu đúng tầm quan trọng của việc hiểu cơ chế với `this`. 
 
-Để hiểu về `this`, đầu tiên hãy xem `this` *không* phải là những gì, gạt ra khỏi đầu những hiểu nhầm khiến cho bạn bị lạc hướng. `this` không hề là một tham chiếu đến hàm, cũng không hề tham chiếu đến *lexical* scope.
+Để hiểu về `this`, đầu tiên hãy xem `this` *không* phải là những gì, gạt ra khỏi đầu những hiểu nhầm khiến cho bạn bị lạc hướng. `this` không hề là một tham chiếu đến hàm, cũng không hề tham chiếu đến *lexical* scope.
 
 `this` được tạo khi function được gọi, và *thứ* mà nó trỏ đến hoàn toàn được xác định bởi cái gọi là **call-site** (nơi gọi function).
