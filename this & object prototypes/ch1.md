@@ -166,7 +166,7 @@ Còn trong hàm thứ hai, hàm callback (đặt bên trong `setTimeout(...)` kh
 
 **Note:** Còn một cách khác (dù cũ và đã tuyệt chủng) đó là dùng `arguments.callee` bên trong hàm để trỏ đến function object của function đang được thực thi. Đây là cách duy nhập để gọi 1 hàm không tên từ bên trong chính nó. Dẫu vạy, tốt nhất là tránh dùng hàm không tên ít nhất đối với các trường hợp cần tham chiếu chính nó, thay hàm không tên thành hàm có tên (dạng expression). `arguments.callee` đã tuyệt chủng, đừng nghĩ đến nó nữa!
 
-Một giải pháp khác để tham chiếu đến `foo` mà không cần dùng `this` là:
+Một giải pháp khác để tham chiếu đến `foo` mà không cần dùng `this` là:
 
 ```js
 function foo(num) {
