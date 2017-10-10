@@ -21,11 +21,11 @@ Khi nhìn vào quá trình của các ngôn ngữ biên dịch truyền thống,
 
 1. **Tokenizing/Lexing (Quá trình phân tích thành các phần tử token):** là quá trình chia 1 đoạn code ra thành những phần có nghĩa, mỗi phần được gọi là 1 "token". Ví dụ đoạn code sau: `var a = 2;`. Đoạn mã này khả năng sẽ được chia thành các token: `var`, `a`, `=`, `2`, và `;`. Khoảng trắng có thể (hoặc không) được coi là 1 token, phụ thuộc vào việc nó có mang ý nghĩa gì hay không.
 
-**Note:** Không dễ để chỉ ra sự khác biệt giữa "tokenizing" và "lexing", hơn nữa lại vô cùng hàn lâm, nhưng nói chung là việc xác định là hay không phải là tokens sẽ thông qua 1 trong 2 cách: *stateless* hoặc *stateful*. Put simply, if the tokenizer were to invoke stateful parsing rules to figure out whether `a` should be considered a distinct token or just part of another token, *that* would be **lexing**.
+	**Note:** Không dễ để chỉ ra sự khác biệt giữa "tokenizing" và "lexing", hơn nữa lại vô cùng hàn lâm, nhưng nói chung là việc xác định là hay không phải là tokens sẽ thông qua 1 trong 2 cách: *stateless* hoặc *stateful*. Put simply, if the tokenizer were to invoke stateful parsing rules to figure out whether `a` should be considered a distinct token or just part of another token, *that* would be **lexing**.
 
 2. **Parsing (Quá trình phân tích cú pháp):** sử dụng 1 luồng (stream)/ chuỗi (array) các tokens, biết chúng thành 1 cây với các phần tử lồng vào nhau (tree of nested elements), cùng nhau biểu diễn cấu trúc ngữ pháp của chương trình (collectively represent the grammatical structure of the program). Cây này được gọi là "AST" (<b>A</b>bstract <b>S</b>yntax <b>T</b>ree) (Dịch thô: "Cây Cú pháp Trừu tượng") .
 
-Cây của đoạn code `var a = 2;` có thể được bắt đầu với điểm nút cấp cao nhất (top-level node) tên là `VariableDeclaration`, nút con (child node) tên là  `Identifier` (giá trị của nó bằng `a`), và 1 nút con khác tên là `AssignmentExpression` (bản thân nó có 1 nút con tên là `NumericLiteral` (giá trị của nút con `NumericLiteral` này là `2`)).
+	Cây của đoạn code `var a = 2;` có thể được bắt đầu với điểm nút cấp cao nhất (top-level node) tên là `VariableDeclaration`, nút con (child node) tên là  `Identifier` (giá trị của nó bằng `a`), và 1 nút con khác tên là `AssignmentExpression` (bản thân nó có 1 nút con tên là `NumericLiteral` (giá trị của nút con `NumericLiteral` này là `2`)).
 
 3. **Code-Generation:** the process of taking an AST and turning it into executable code. This part varies greatly depending on the language, the platform it's targeting, etc.
 
