@@ -29,38 +29,38 @@ Khi nhìn vào quá trình của các ngôn ngữ biên dịch truyền thống,
 
 3. **Code-Generation (Quá trình tạo code):** đây là quá trình sử dụng 1 AST và biến thành 1 đoạn code thực thi được (executable code). Phần này sẽ có khác biệt lớn giữa các ngôn ngữ lập trình, cũng như nền tảng thực hiện.
 
-	Thế đó, thay vì bị tắc trong mớ lý thuyết chi tiết, chúng ta sẽ chỉ phẩy tay và nói rằng có một quá trình để phân tích đoạn code `var a=2` thành cây cú pháp trừu tượng AST; sau đó biến nó thành 1 tập hợp các đoạn mã máy tính - *tạo* một variable tên là `a` (bao gồm cả reversing memory, v.v.), rồi lưu giá trị (value) nào đó vào `a`.
+	Thế đó, thay vì bị tắc trong mớ lý thuyết chi tiết, chúng ta sẽ chỉ phẩy tay và nói rằng có một quá trình để phân tích đoạn code `var a=2` thành cây cú pháp trừu tượng AST; sau đó biến nó thành 1 tập hợp các đoạn mã máy tính - *tạo* một variable tên là `a` (bao gồm cả reversing memory, v.v.), rồi lưu giá trị (value) nào đó vào `a`.
 
 
-    **Lưu ý:** Cách engine sử lý tài nguyên hệ thống (system resources) phức tạp hơn rất nhiều những gì chúng ta nói ở trên, vì thế ta cứ coi chuyện engine có khả năng tạo và lưu variables khi cần là điều hiển nhiên.
+    **Lưu ý:** Cách engine sử lý tài nguyên hệ thống (system resources) phức tạp hơn rất nhiều những gì chúng ta nói ở trên, vì thế ta cứ coi chuyện engine có khả năng tạo và lưu variables khi cần là điều hiển nhiên.
 
 Engine của JavaScript cũng như các ngôn ngữ biên dịch khác phức tạp hơn nhiều so với ba bước kể trên. Ví dụ, đối với bước "parsing" và "code-generation", chắc chắn sẽ có bước để tối ưu hoá hiệu suất thực thi (to optimize the performance of the execution), trong bước tối ưu hoá này lại có việc xoá bỏ các phần tử dư thừa (collapsing redundant elements, v.v.
 
-Cho nên, ở đây tôi chỉ vẽ lên nguyên lý của compiler bằng những nét đậm phác thảo. Nhưng tôi nghĩ bạn sẽ sớm hiểu tại sao những thông tin mà chúng ta đã lướt quá, kể cả ở mức độ khó, vẫn hữu dụng. 
+Cho nên, ở đây tôi chỉ vẽ lên nguyên lý của compiler bằng những nét đậm phác thảo. Nhưng tôi nghĩ bạn sẽ sớm hiểu tại sao những thông tin mà chúng ta đã lướt quá, kể cả ở mức độ khó, vẫn hữu dụng. 
 
-Hãy nhớ rằng, engine Javascript không có nhiều thời gian (bằng các ngôn ngữ biên dịch khác) để tối ưu hoá, bởi sự biên dịch ngôn ngữ JavaScript (JavaScript compilation) không diễn ra trước cả 1 khoảng thời gian như những ngôn ngữ khác. 
+Hãy nhớ rằng, engine Javascript không có nhiều thời gian (bằng các ngôn ngữ biên dịch khác) để tối ưu hoá, bởi sự biên dịch ngôn ngữ JavaScript (JavaScript compilation) không diễn ra trước cả 1 khoảng thời gian như những ngôn ngữ khác. 
 
-Với Javascript thì quá trình biên dịch trong nhiều trường hợp xảy ra trước khi đoạn code được thực thi chỉ khoảng vài phần triệu của giây. Để đảm bảo hiệu suất nhanh nhất, các engines JavaScript sử dụng tất cả các loại mánh lới (tricks) như JITS (lazy compile, hot re-compile, v.v.) nhưng chúng lại nằm quá khuôn khổ của cuốn sách này. Túm lại là bất kỳ đoạn code JavaScript nào đều phải được biên dịch *ngay* (chú ý là *ngay*) trước khi nó được thực thi. 
+Với Javascript thì quá trình biên dịch trong nhiều trường hợp xảy ra trước khi đoạn code được thực thi chỉ khoảng vài phần triệu của giây. Để đảm bảo hiệu suất nhanh nhất, các engines JavaScript sử dụng tất cả các loại mánh lới (tricks) như JITS (lazy compile, hot re-compile, v.v.) nhưng chúng lại nằm quá khuôn khổ của cuốn sách này. Túm lại là bất kỳ đoạn code JavaScript nào đều phải được biên dịch *ngay* (chú ý là *ngay*) trước khi nó được thực thi. 
 
 ## Hiểu về Scope
 
-Chúng ta sẽ cùng tìm hiểu về "scope" dưới dạng một cuộc đối thoại giữa vài "nhân vật" sau đây. 
+Chúng ta sẽ cùng tìm hiểu về "scope" dưới dạng một cuộc đối thoại giữa vài "nhân vật" sau đây. 
 
 ### Dàn diễn viên của chúng ta
 
 Xin mời gặp dàn diễn viên sẽ nhập vai và thể hiện quá trình xử lý đoạn code `var a = 2;`. 
 
-1. Diễn viên vào vai *Engine*: chịu trách nhiệm từ đầu-đến-cuối của việc biên dịch và thực thi các chương trình JavaScript.
+1. Diễn viên vào vai *Engine*: chịu trách nhiệm từ đầu-đến-cuối của việc biên dịch và thực thi các chương trình JavaScript.
 
-2. Diễn viên vào vai *Compiler*: là một người bạn của *Engine*; xử lý mọi công việc chẳng lấy làm dễ chịu gì liên quan đến "parsing" và "code-generation" (xem lại mục trước).
+2. Diễn viên vào vai *Compiler*: là một người bạn của *Engine*; xử lý mọi công việc chẳng lấy làm dễ chịu gì liên quan đến "parsing" và "code-generation" (xem lại mục trước).
 
 3. Diễn viên vào vai *Scope*: một người bạn khác *Engine*; tập hợp và bảo quản một danh sách tra cứu tất cả các identifiers đã được khai báo( tức là variables), đảm bảo các quy định được thực hiện nghiêm ngặt, cũng như cho phép các đoạn code đang thực thi truy cập vào variables. 
 
-Để có thể *nắm được hoàn toàn* cách JavaScript làm việc, bạn cần bắt đầu *nghĩ* như *Engine* (và 2 người bạn) nghĩ, hỏi tương tự thứ họ hỏi, trả lời theo cách họ trả lời. 
+Để có thể *nắm được hoàn toàn* cách JavaScript làm việc, bạn cần bắt đầu *nghĩ* như *Engine* (và 2 người bạn) nghĩ, hỏi tương tự thứ họ hỏi, trả lời theo cách họ trả lời. 
 
 ### Back & Forth
 
-Khi nhìn đoạn code `var a = 2;` thường là bạn sẽ nghĩ rằng đây là là 1 câu lệnh (statement). Nhưng đó không giống cách mà bạn *Engine* nhìn thấy. Thực tế là *Engine* sẽ thấy 2 câu lệnh khác nhau (two distinct statements), một dành cho *Compiler* - người sẽ xử lý trong quá trình biên dịch, và một dành cho *Engine* xử lý trong quá trình thực thi.
+Khi nhìn đoạn code `var a = 2;` thường là bạn sẽ nghĩ rằng đây là là 1 câu lệnh (statement). Nhưng đó không giống cách mà bạn *Engine* nhìn thấy. Thực tế là *Engine* sẽ thấy 2 câu lệnh khác nhau (two distinct statements), một dành cho *Compiler* - người sẽ xử lý trong quá trình biên dịch, và một dành cho *Engine* xử lý trong quá trình thực thi.
 
 Vậy hãy thử cùng tìm hiểu từng bước cách mà *Engine* và đồng bọn sẽ làm khi gặp đoạn code `var a = 2;`.
 
