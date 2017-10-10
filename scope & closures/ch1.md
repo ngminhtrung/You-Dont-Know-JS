@@ -1,35 +1,35 @@
 # You Don't Know JS: Scope & Closures
-# Chapter 1: What is Scope?
+# Chapter 1: Scope là gì?
 
-One of the most fundamental paradigms of nearly all programming languages is the ability to store values in variables, and later retrieve or modify those values. In fact, the ability to store values and pull values out of variables is what gives a program *state*.
+Một trong những nền tảng quan trọng nhất của mọi ngôn ngữ lập trình là khả năng lưu values (giá trị) vào trong các variables (biến), và sau đó sao chép lại hoặc thay đổi những giá trị đó. Thực tế thì khả năng đấy đã trang bị cho mỗi chương trình (program) một thứ gọi là "trạng thái" (*state*).
 
-Without such a concept, a program could perform some tasks, but they would be extremely limited and not terribly interesting.
+Không có những khái niệm trên, dẫu cho chương trình có thể thực thi một vài "tasks" (nhiệm vụ), nó vẫn bị giới hạn vô cùng, chẳng thể làm được gì thú vị. 
 
-But the inclusion of variables into our program begets the most interesting questions we will now address: where do those variables *live*? In other words, where are they stored? And, most importantly, how does our program find them when it needs them?
+Tuy thế, khi đã thêm variables vào việc viết chương trình, một loạt vấn đề mới lại nảy sinh. Tưởng tượng thêm variables giống như tạo những sinh vật mới, vậy ta sẽ lưu những sinh vật này ở đâu? khi cần thì tìm chúng như thế nào? 
 
-These questions speak to the need for a well-defined set of rules for storing variables in some location, and for finding those variables at a later time. We'll call that set of rules: *Scope*.
+Những câu hỏi này liên quan đến nhu cầu tạo ra 1 tập hợp các quy định được định nghĩa rõ ràng về cách lưu các variables ở một nơi nào đó, và cách để tìm các variables này ở một thời điểm sau đó. Tập hợp các quy định này là gì? Đó là **Scope**. 
 
-But, where and how do these *Scope* rules get set?
+Vậy, từ đâu và làm thế nào để có thể thiết lập các quy luật cho **Scope**? 
 
-## Compiler Theory
+## Lý thuyết về Compiler
 
-It may be self-evident, or it may be surprising, depending on your level of interaction with various languages, but despite the fact that JavaScript falls under the general category of "dynamic" or "interpreted" languages, it is in fact a compiled language. It is *not* compiled well in advance, as are many traditionally-compiled languages, nor are the results of compilation portable among various distributed systems.
+Tuỳ thuộc vào kinh nghiệm làm việc với ít/ nhiều ngôn ngữ lập trình mà bạn sẽ thấy khẳng định sau là đương nhiên/ hoặc ngạc nhiên (:D): "Cho dù JavaScript được sắp vào nhóm ngôn ngữ lập trình loại *động*, hoặc *thông dịch*, thì thực tế nó vẫn là 1 ngôn ngữ *biên dịch*". Không giống như các ngôn ngữ lập trình biên dịch truyền thống khác, các đoạn code JavaScript *không* được biên dịch trước, và cũng chẳng là kết quả của compilation portable among nhiều hệ thống phân tán.
 
-But, nevertheless, the JavaScript engine performs many of the same steps, albeit in more sophisticated ways than we may commonly be aware, of any traditional language-compiler.
+Dẫu vậy, engine của JavaScirpt thực hiện rất nhiều bước tương tự như các ngôn ngữ biên dịch truyền thống, theo cách phức tạp hơn những gì chúng ta nghĩ. 
 
-In traditional compiled-language process, a chunk of source code, your program, will undergo typically three steps *before* it is executed, roughly called "compilation":
+Khi nhìn vào quá trình của các ngôn ngữ biên dịch truyền thống, mỗi đoạn mã chương trình sẽ đi qua ba bước điển hình sau *trước* khi nó được thực thi, ta gọi nôm na quá trình này là "sự compilation (biên dịch)":
 
-1. **Tokenizing/Lexing:** breaking up a string of characters into meaningful (to the language) chunks, called tokens. For instance, consider the program: `var a = 2;`. This program would likely be broken up into the following tokens: `var`, `a`, `=`, `2`, and `;`. Whitespace may or may not be persisted as a token, depending on whether it's meaningful or not.
+1. **Tokenizing/Lexing (Quá trình phân tích thành các phần tử token):** là quá trình chia 1 đoạn code ra thành những phần có nghĩa, mỗi phần được gọi là 1 "token". Ví dụ đoạn code sau: `var a = 2;`. Đoạn mã này khả năng sẽ được chia thành các token: `var`, `a`, `=`, `2`, và `;`. Khoảng trắng có thể (hoặc không) được coi là 1 token, phụ thuộc vào việc nó có mang ý nghĩa gì hay không.
 
-    **Note:** The difference between tokenizing and lexing is subtle and academic, but it centers on whether or not these tokens are identified in a *stateless* or *stateful* way. Put simply, if the tokenizer were to invoke stateful parsing rules to figure out whether `a` should be considered a distinct token or just part of another token, *that* would be **lexing**.
+**Note:** Không dễ để chỉ ra sự khác biệt giữa "tokenizing" và "lexing", hơn nữa lại vô cùng hàn lâm, nhưng nói chung là việc xác định là hay không phải là tokens sẽ thông qua 1 trong 2 cách: *stateless* hoặc *stateful*. Put simply, if the tokenizer were to invoke stateful parsing rules to figure out whether `a` should be considered a distinct token or just part of another token, *that* would be **lexing**.
 
-2. **Parsing:** taking a stream (array) of tokens and turning it into a tree of nested elements, which collectively represent the grammatical structure of the program. This tree is called an "AST" (<b>A</b>bstract <b>S</b>yntax <b>T</b>ree).
+2. **Parsing (Quá trình phân tích cú pháp):** sử dụng 1 luồng (stream)/ chuỗi (array) các tokens, biết chúng thành 1 cây với các phần tử lồng vào nhau (tree of nested elements), cùng nhau biểu diễn cấu trúc ngữ pháp của chương trình (collectively represent the grammatical structure of the program). Cây này được gọi là "AST" (<b>A</b>bstract <b>S</b>yntax <b>T</b>ree) (Dịch thô: "Cây Cú pháp Trừu tượng") .
 
-    The tree for `var a = 2;` might start with a top-level node called `VariableDeclaration`, with a child node called `Identifier` (whose value is `a`), and another child called `AssignmentExpression` which itself has a child called `NumericLiteral` (whose value is `2`).
+Cây của đoạn code `var a = 2;` có thể được bắt đầu với điểm nút cấp cao nhất (top-level node) tên là `VariableDeclaration`, nút con (child node) tên là  `Identifier` (giá trị của nó bằng `a`), và 1 nút con khác tên là `AssignmentExpression` (bản thân nó có 1 nút con tên là `NumericLiteral` (giá trị của nút con `NumericLiteral` này là `2`)).
 
 3. **Code-Generation:** the process of taking an AST and turning it into executable code. This part varies greatly depending on the language, the platform it's targeting, etc.
 
-    So, rather than get mired in details, we'll just handwave and say that there's a way to take our above described AST for `var a = 2;` and turn it into a set of machine instructions to actually *create* a variable called `a` (including reserving memory, etc.), and then store a value into `a`.
+So, rather than get mired in details, we'll just handwave and say that there's a way to take our above described AST for `var a = 2;` and turn it into a set of machine instructions to actually *create* a variable called `a` (including reserving memory, etc.), and then store a value into `a`.
 
     **Note:** The details of how the engine manages system resources are deeper than we will dig, so we'll just take it for granted that the engine is able to create and store variables as needed.
 
