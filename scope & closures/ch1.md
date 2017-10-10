@@ -29,17 +29,18 @@ Khi nhìn vào quá trình của các ngôn ngữ biên dịch truyền thống,
 
 3. **Code-Generation (Quá trình tạo code):** đây là quá trình sử dụng 1 AST và biến thành 1 đoạn code thực thi được (executable code). Phần này sẽ có khác biệt lớn giữa các ngôn ngữ lập trình, cũng như nền tảng thực hiện.
 
-So, rather than get mired in details, we'll just handwave and say that there's a way to take our above described AST for `var a = 2;` and turn it into a set of machine instructions to actually *create* a variable called `a` (including reserving memory, etc.), and then store a value into `a`.
+	Thế đó, thay vì bị tắc trong mớ lý thuyết chi tiết, chúng ta sẽ chỉ phẩy tay và nói rằng có một quá trình để phân tích đoạn code `var a=2` thành cây cú pháp trừu tượng AST; sau đó biến nó thành 1 tập hợp các đoạn mã máy tính - *tạo* một variable tên là `a` (bao gồm cả reversing memory, v.v.), rồi lưu giá trị (value) nào đó vào `a`.
 
-    **Note:** The details of how the engine manages system resources are deeper than we will dig, so we'll just take it for granted that the engine is able to create and store variables as needed.
 
-The JavaScript engine is vastly more complex than *just* those three steps, as are most other language compilers. For instance, in the process of parsing and code-generation, there are certainly steps to optimize the performance of the execution, including collapsing redundant elements, etc.
+    **Lưu ý:** Cách engine sử lý tài nguyên hệ thống (system resources) phức tạp hơn rất nhiều những gì chúng ta nói ở trên, vì thế ta cứ coi chuyện engine có khả năng tạo và lưu variables khi cần là điều hiển nhiên.
 
-So, I'm painting only with broad strokes here. But I think you'll see shortly why *these* details we *do* cover, even at a high level, are relevant.
+Engine của JavaScript cũng như các ngôn ngữ biên dịch khác phức tạp hơn nhiều so với ba bước kể trên. Ví dụ, đối với bước "parsing" và "code-generation", chắc chắn sẽ có bước để tối ưu hoá hiệu suất thực thi (to optimize the performance of the execution), trong bước tối ưu hoá này lại có việc xoá bỏ các phần tử dư thừa (collapsing redundant elements, v.v.
 
-For one thing, JavaScript engines don't get the luxury (like other language compilers) of having plenty of time to optimize, because JavaScript compilation doesn't happen in a build step ahead of time, as with other languages.
+Cho nên, ở đây tôi chỉ vẽ lên nguyên lý của compiler bằng những nét đậm phác thảo. Nhưng tôi nghĩ bạn sẽ sớm hiểu tại sao những thông tin mà chúng ta đã lướt quá, kể cả ở mức độ khó, vẫn hữu dụng. 
 
-For JavaScript, the compilation that occurs happens, in many cases, mere microseconds (or less!) before the code is executed. To ensure the fastest performance, JS engines use all kinds of tricks (like JITs, which lazy compile and even hot re-compile, etc.) which are well beyond the "scope" of our discussion here.
+Hãy nhớ rằng, engine Javascript không có nhiều thời gian (bằng các ngôn ngữ biên dịch khác) để tối ưu hoá, bởi sự biên dịch ngôn ngữ JavaScript (JavaScript compilation) không diễn ra trước cả 1 khoảng thời gian như những ngôn ngữ khác. 
+
+Với Javascript thì quá trình biên dịch trong nhiều trường hợp xảy ra trước khi đoạn code được thực thi chỉ khoảng vài phần triệu của giây. Để đảm bảo hiệu suất nhanh nhất, các engines JavaScript sử dụng tất cả các loại mánh lới (tricks) như JITS (lazy compile, hot re-compile, v.v.) nhưng chúng lại nằm quá khuôn khổ của cuốn sách này. 
 
 Let's just say, for simplicity's sake, that any snippet of JavaScript has to be compiled before (usually *right* before!) it's executed. So, the JS compiler will take the program `var a = 2;` and compile it *first*, and then be ready to execute it, usually right away.
 
