@@ -40,36 +40,33 @@ Cho nên, ở đây tôi chỉ vẽ lên nguyên lý của compiler bằng nhữ
 
 Hãy nhớ rằng, engine Javascript không có nhiều thời gian (bằng các ngôn ngữ biên dịch khác) để tối ưu hoá, bởi sự biên dịch ngôn ngữ JavaScript (JavaScript compilation) không diễn ra trước cả 1 khoảng thời gian như những ngôn ngữ khác. 
 
-Với Javascript thì quá trình biên dịch trong nhiều trường hợp xảy ra trước khi đoạn code được thực thi chỉ khoảng vài phần triệu của giây. Để đảm bảo hiệu suất nhanh nhất, các engines JavaScript sử dụng tất cả các loại mánh lới (tricks) như JITS (lazy compile, hot re-compile, v.v.) nhưng chúng lại nằm quá khuôn khổ của cuốn sách này. 
+Với Javascript thì quá trình biên dịch trong nhiều trường hợp xảy ra trước khi đoạn code được thực thi chỉ khoảng vài phần triệu của giây. Để đảm bảo hiệu suất nhanh nhất, các engines JavaScript sử dụng tất cả các loại mánh lới (tricks) như JITS (lazy compile, hot re-compile, v.v.) nhưng chúng lại nằm quá khuôn khổ của cuốn sách này. Túm lại là bất kỳ đoạn code JavaScript nào đều phải được biên dịch *ngay* (chú ý là *ngay*) trước khi nó được thực thi. 
 
-Let's just say, for simplicity's sake, that any snippet of JavaScript has to be compiled before (usually *right* before!) it's executed. So, the JS compiler will take the program `var a = 2;` and compile it *first*, and then be ready to execute it, usually right away.
+## Hiểu về Scope
 
-## Understanding Scope
+Chúng ta sẽ cùng tìm hiểu về "scope" dưới dạng một cuộc đối thoại giữa vài "nhân vật" sau đây. 
 
-The way we will approach learning about scope is to think of the process in terms of a conversation. But, *who* is having the conversation?
+### Dàn diễn viên của chúng ta
 
-### The Cast
+Xin mời gặp dàn diễn viên sẽ nhập vai và thể hiện quá trình xử lý đoạn code `var a = 2;`. 
 
-Let's meet the cast of characters that interact to process the program `var a = 2;`, so we understand their conversations that we'll listen in on shortly:
+1. Diễn viên vào vai *Engine*: chịu trách nhiệm từ đầu-đến-cuối của việc biên dịch và thực thi các chương trình JavaScript.
 
-1. *Engine*: responsible for start-to-finish compilation and execution of our JavaScript program.
+2. Diễn viên vào vai *Compiler*: là một người bạn của *Engine*; xử lý mọi công việc chẳng lấy làm dễ chịu gì liên quan đến "parsing" và "code-generation" (xem lại mục trước).
 
-2. *Compiler*: one of *Engine*'s friends; handles all the dirty work of parsing and code-generation (see previous section).
+3. Diễn viên vào vai *Scope*: một người bạn khác *Engine*; tập hợp và bảo quản một danh sách tra cứu tất cả các identifiers đã được khai báo( tức là variables), đảm bảo các quy định được thực hiện nghiêm ngặt, cũng như cho phép các đoạn code đang thực thi truy cập vào variables. 
 
-3. *Scope*: another friend of *Engine*; collects and maintains a look-up list of all the declared identifiers (variables), and enforces a strict set of rules as to how these are accessible to currently executing code.
-
-For you to *fully understand* how JavaScript works, you need to begin to *think* like *Engine* (and friends) think, ask the questions they ask, and answer those questions the same.
+Để có thể *nắm được hoàn toàn* cách JavaScript làm việc, bạn cần bắt đầu *nghĩ* như *Engine* (và 2 người bạn) nghĩ, hỏi tương tự thứ họ hỏi, trả lời theo cách họ trả lời. 
 
 ### Back & Forth
 
-When you see the program `var a = 2;`, you most likely think of that as one statement. But that's not how our new friend *Engine* sees it. In fact, *Engine* sees two distinct statements, one which *Compiler* will handle during compilation, and one which *Engine* will handle during execution.
-
+Khi nhìn đoạn code `var a = 2;` thường là bạn sẽ nghĩ rằng đây là là 1 câu lệnh (statement). Nhưng đó không giống cách mà bạn *Engine* nhìn thấy. Thực tế là *Engine* sẽ thấy 2 câu lệnh khác nhau (two distinct statements), một dành cho *Compiler* - người sẽ xử lý trong quá trình biên dịch, và một dành cho *Engine* xử lý trong quá trình thực thi.
 
 Vậy hãy thử cùng tìm hiểu từng bước cách mà *Engine* và đồng bọn sẽ làm khi gặp đoạn code `var a = 2;`.
 
-Điều đầu tiên mà đồng chí *Compiler* sẽ làm với đoạn mã trên là thực hiện nhiệm vụ mang tên "lexing" để chia nhỏ mã thành các "token", sau đó "parse" vào 1 "tree". Nhưng khi *Compiler* đến bước code-generation, nó sẽ xử lý khác so với những gì chúng ta đoán. 
+Điều đầu tiên mà đồng chí *Compiler* sẽ làm với đoạn mã trên là thực hiện nhiệm vụ mang tên "lexing" để chia nhỏ mã thành các "token", sau đó "parse" vào cây Cú pháp Trừu tượng AST. Nhưng khi *Compiler* đến bước code-generation, nó sẽ xử lý khác so với những gì chúng ta đoán. 
 
-Chúng ta đoán như thế nào? Rằng *Compiler* sẽ "Allocate memory cho variable, dán nhãn nó là `a`, rồi gắn giá trị `2` vào variable `a` kia. Tuy nhiên, cách hiểu này lại không thực sự chính xác. 
+Chúng ta đoán như thế nào? Rằng *Compiler* sẽ chỉ định bộ nhớ cho variable, dán nhãn nó là `a`, rồi gắn giá trị `2` vào variable `a` kia. Tuy nhiên, cách hiểu này lại không thực sự chính xác. 
 
 Sự thực thì *Compiler* sẽ làm như sau: 
 
