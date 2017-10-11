@@ -247,23 +247,29 @@ Ngược lại, nếu *Engine* "tìm bên trái - LHS" (thay vì "tìm phải" 
 
 Quay sang 1 trường hợp khác, là phép "tìm bên phải" đã tìm thấy variable mà bạn cần, nhưng sau đó bạn lại định dùng giá trị của variable tìm được để làm vài thứ bất khả thi, ví dụ: variable được gán với 1 con số nhưng lại lôi variable đấy ra thực thi như thực thi 1 hàm; hoặc tìm thuộc tính của `null`/ `undefined`. Lúc này thì *Engine* sẽ trả về 1 thông báo lỗi khác, đó là `TypeError`.
 
-`ReferenceError` is *Scope* resolution-failure related, whereas `TypeError` implies that *Scope* resolution was successful, but that there was an illegal/impossible action attempted against the result.
+Vậy có thể thấy là lỗi `ReferenceError` liên quan đến thất bại trong việc định vị *Scope* (của variable), trong khi với `TypeError` thì việc định vị *Scope* (của variable) đã thành công, nhưng hành động tiếp theo đối dựa vào value của variable tìm được thì lại không được Engine cho phép (hoặc bất khả thi).
 
-## Review (TL;DR)
+## Tổng kết (TL;DR - Dài quá, Ứ đọc)
 
-Scope is the set of rules that determines where and how a variable (identifier) can be looked-up. This look-up may be for the purposes of assigning to the variable, which is an LHS (left-hand-side) reference, or it may be for the purposes of retrieving its value, which is an RHS (right-hand-side) reference.
+Scope là một tập hợp các quy định về việc tìm và cách thức đi tìm (hay là tra cứu) một variable. 
+- Nếu mục đích là để tìm vị trí chứa variable sau đó gán giá trị cho variable, thì người ta gọi phép tìm kiếm đó là "tìm bên trái - LHS". 
+- Còn nếu mục đích là để tìm vị trí chứa variable, rồi lấy 1 bản sao chép giá trị của variable, thì gọi là "tìm bên phải - RHS". 
 
-LHS references result from assignment operations. *Scope*-related assignments can occur either with the `=` operator or by passing arguments to (assign to) function parameters.
+Kết quả của phép "tìm bên trái - LHS" có được nhờ phép gán. Phép gán này có thể:
+- hoặc sử dụng toán từ `=` (như trong `a=2`)
+- hoặc truyền tham số cho hàm (như trong `foo(2)`.
 
-The JavaScript *Engine* first compiles code before it executes, and in so doing, it splits up statements like `var a = 2;` into two separate steps:
+*Engine* của JavaScript sẽ luôn cần biên dịch đoạn code trước khi thực thi nó, và để làm vậy, nó cần phân tích một câu lệnh như `var a = 2;` trong 2 bước riêng biệt: 
 
-1. First, `var a` to declare it in that *Scope*. This is performed at the beginning, before code execution.
+1. Thứ nhất, phân tích `var a` để khai báo variable `a` trong trong *Scope*. Việc này cần làm ngay từ đầu trước khi đoạn code được chạy.
 
-2. Later, `a = 2` to look up the variable (LHS reference) and assign to it if found.
+2. Sau đó, phân tích `a = 2` để tìm kiếm vị trí chứa variable `a` (phép "tìm bên trái - LHS"), sau đó gán vào giá trị `2` nếu tìm thấy `a`.
 
-Both LHS and RHS reference look-ups start at the currently executing *Scope*, and if need be (that is, they don't find what they're looking for there), they work their way up the nested *Scope*, one scope (floor) at a time, looking for the identifier, until they get to the global (top floor) and stop, and either find it, or don't.
+Cả 2 phép tìm trái (LHS) và tìm phải (RHS) đều xuất phát từ Scope hiện tại, và nếu cần (khi *Engine* không thấy cái nó cần) thì các Scope ở phạm vi rộng hơn sẽ được xem xét tới (các Scope lồng nhau) cho đến Scope ngoài cùng (global) thì sẽ dừng lại.
 
-Unfulfilled RHS references result in `ReferenceError`s being thrown. Unfulfilled LHS references result in an automatic, implicitly-created global of that name (if not in "Strict Mode" [^note-strictmode]), or a `ReferenceError` (if in "Strict Mode" [^note-strictmode]).
+Nếu phép "tìm bên phải" không dẫn đến kết quả thì *Engine* sẽ trả về lỗi `ReferenceError`. Nếu phép "tìm bên trái" cũng không dẫn đến kết quả nào thì tuỳ thuộc vào "mode" hiện tại:
+- trường hợp "None-Strict Mode", *Engine* sẽ nhận được 1 variable mới (trùng tên với variable mà nó đang tìm kiếm) ở scope global.
+- trường hợp "Strict Mode", *Engine* trả về lỗi `ReferenceError`.
 
 ### Quiz Answers
 
