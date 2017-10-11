@@ -93,7 +93,7 @@ Câu hỏi đặt ra là "bên phải/ bên trái" so với cái gì? Trả lờ
 Để cho dễ hiểu, và để chính xác hơn, hãy nghĩ như sau:
 - Phép "tìm bên phải" (RHS) sẽ đi tìm giá trị của 1 variable nào đó.
 - Phép "tìm bên trái" (LHS) sẽ đi tìm nơi chứa variable để sau đó Engine sẽ lưu giá trị vào đấy. 
-- Cái tên "tìm bên phải" (RHS) thực ra là không đúng về mặt nghĩa đen, đơn giản nó là phép "tìm bên không phải bên trái". "Tìm bên phải" RHS thực chất là đi tìm và lấy "giá trị của variable". 
+- Cái tên "tìm bên phải" (RHS) thực ra là không đúng về mặt nghĩa đen, đơn giản nó là phép "tìm bên không phải bên trái". "Tìm bên phải" RHS thực chất là đi tìm và lấy "giá trị của variable". 
 
 Hãy đối chiếu những lý thuyết trên vào đoạn code bên dưới:
 
@@ -120,7 +120,7 @@ foo(2);
 ```
 Dòng cuối cùng đã gọi `foo(..)` ở dạng 1 tham chiếu RHS đến `foo` ("hey, hãy tìm xem giá trị của `foo` bằng bao nhiêu rồi đưa cho tớ!"). Hơn nữa, `(..)` có nghĩa là giá trị của `foo` cần được thực thi, do vậy nó là một hàm số!
 
-Bạn có nhận ra một phép gán dù rất thoảng qua nhưng lại vô cùng quan trọng ở đây? Đó là phép gán `a = 2` khi `2` được truyền dưới dạng tham số đến đến hàm `foo(..)`, sau đó `2` được gán vào `a`. Phép gán này chính là 1 dạng của việc "tìm bên trái (LHS)" (đi tìm nơi chứa variable để lưu giá trị vào đấy).
+Bạn có nhận ra một phép gán dù rất thoảng qua nhưng lại vô cùng quan trọng ở đây? Đó là phép gán `a = 2` khi `2` được truyền dưới dạng tham số đến đến hàm `foo(..)`, sau đó `2` được gán vào `a`. Phép gán này chính là 1 dạng của việc "tìm bên trái (LHS)" (đi tìm nơi chứa variable để lưu giá trị vào đấy).
 
 There's also an RHS reference for the value of `a`, and that resulting value is passed to `console.log(..)`. `console.log(..)` needs a reference to execute. It's an RHS look-up for the `console` object, then a property-resolution occurs to see if it has a method called `log`.
 
