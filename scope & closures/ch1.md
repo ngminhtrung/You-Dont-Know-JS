@@ -54,7 +54,7 @@ Xin mời gặp dàn diễn viên sẽ nhập vai và thể hiện quá trình x
 
 2. Diễn viên vào vai *Compiler*: là một người bạn của *Engine*; xử lý mọi công việc chẳng lấy làm dễ chịu gì liên quan đến "parsing" và "code-generation" (xem lại mục trước).
 
-3. Diễn viên vào vai *Scope*: một người bạn khác *Engine*; tập hợp và bảo quản một danh sách tra cứu tất cả các identifiers đã được khai báo (tức là variables), đảm bảo các quy định được thực hiện nghiêm ngặt, cũng như cho phép các đoạn code đang thực thi truy cập vào variables. 
+3. Diễn viên vào vai *Scope*: một người bạn khác *Engine*; tập hợp và bảo quản một danh sách tra cứu tất cả các identifiers đã được khai báo (tức là variables), đảm bảo các quy định được thực hiện nghiêm ngặt, cũng như cho phép các đoạn code đang thực thi truy cập vào variables. 
 
 Để có thể *nắm được hoàn toàn* cách JavaScript làm việc, bạn cần bắt đầu *nghĩ* như *Engine* (và 2 người bạn) nghĩ, hỏi tương tự thứ họ hỏi, trả lời theo cách họ trả lời. 
 
