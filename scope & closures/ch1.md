@@ -217,19 +217,17 @@ Có 1 nguyên tắc đơn giản về việc "du lịch" qua những vùng *Scop
 
 ### Phép ẩn dụ về các Scope lồng nhau
 
-Tưởng tượng các Scope lồng nhau như 1 toà cao ống minh hoạ ở hình dưới đây: 
+Tưởng tượng các Scope lồng nhau như 1 toà cao ốc minh hoạ ở hình dưới đây: 
 
 <img src="fig1.png" width="250">
 
-Tầng 1 chính là *Scope* hiện tại, tầng trên cùng là *Scope* global. Để thực hiện các nhiệm vụ "tìm trái, tìm phải" (LHS/ RHS) bạn luôn bắt đầu từ tầng 1, nếu không thấy thì đi thang máy lên đến tầng tiếp theo, tiếp theo nữa, cho đến khi chạm tầng trên cùng. Nếu không tìm thấy thứ bạn cần thì bắt buộc phải dừng lại (vì còn chỗ nào mà tìm nữa đâu)
+Tầng 1 chính là *Scope* hiện tại, tầng trên cùng là *Scope* global. Để thực hiện các nhiệm vụ "tìm trái, tìm phải" (LHS/ RHS) bạn luôn bắt đầu từ tầng 1, nếu không thấy thì đi thang máy lên đến tầng tiếp theo, tiếp theo nữa, cho đến khi chạm tầng trên cùng. Nếu không tìm thấy thứ bạn cần thì bắt buộc phải dừng lại (vì còn chỗ nào mà tìm nữa đâu).
 
-## Errors
+## Errors - Các lỗi thường gặp
 
-Why does it matter whether we call it LHS or RHS?
+Đến đoạn này chắc bạn thắc mắc tại sao chúng ta cần biết và phân biệt giữa phép "tìm bên trái" với "tìm bên phải"? Bởi vì hai phép tìm kiếm này diễn ra khác nhau trong trường hợp variable chưa được khai báo ở bất kỳ chỗ nào (tức là trong bất kỳ tầng nào của "cao ốc" *Scope*).
 
-Because these two types of look-ups behave differently in the circumstance where the variable has not yet been declared (is not found in any consulted *Scope*).
-
-Consider:
+Xem đoạn code sau:
 
 ```js
 function foo(a) {
@@ -239,18 +237,15 @@ function foo(a) {
 
 foo( 2 );
 ```
+Khi lần đầu tiên *Engine* thực hiện phép "tìm bên phải - RHS"  để tra cứu giá trị của `b`, nó sẽ chẳng tìm thấy gì cả vì variable này chưa được khai báo, không tồn tại trong scope hiện tại. 
 
-When the RHS look-up occurs for `b` the first time, it will not be found. This is said to be an "undeclared" variable, because it is not found in the scope.
+Nếu phép tìm bên phải RHS không tìm thấy varible trong bất kỳ tầng nào của cao ốc Scope (tức là trong hệ các Scope lồng nhau) thì *Engine* sẽ trả về lỗi `ReferenceError`.
 
-If an RHS look-up fails to ever find a variable, anywhere in the nested *Scope*s, this results in a `ReferenceError` being thrown by the *Engine*. It's important to note that the error is of the type `ReferenceError`.
+Ngược lại, nếu *Engine* "tìm bên trái - LHS" (thay vì "tìm phải" như trên) và tìm đến tận tầng trên cùng (tức là *Scope* global) mà vẫn không thấy, thì trong thiết lập "Non-Strict Mode", *Scope* global sẽ tạo 1 variable mới với cái tên trùng với tên mà *Engine* đang đi tìm, variable mới này sẽ được đặt trong **Scope global**, giá trị mới cũng được đưa cho *Engine*. Bạn *Scope* global đáng yêu này còn không quên nhắn nhủ *Engine* là: "*"Variable mà cậu tìm không có ở đây đâu, nhưng tớ vốn là đứa tốt bụng, tớ tạo luôn 1 tên cho cậu."*
 
-By contrast, if the *Engine* is performing an LHS look-up and arrives at the top floor (global *Scope*) without finding it, and if the program is not running in "Strict Mode" [^note-strictmode], then the global *Scope* will create a new variable of that name **in the global scope**, and hand it back to *Engine*.
+"Strict Mode" [^note-strictmode] - là 1 "mode" mới được thêm vào từ ES5. So với những mode cũ (ví dụ: normal, relaxed, lazy) thì nó có một vài điểm khác biệt. Một trong những điểm khác biệt đó chính là một khi đã thiết lập "mode" này, nó sẽ không cho phép tự động tạo các variable ở scope global. Trong trường hợp đó, bạn *Scope* global đáng yêu ở trên sẽ không có cơ hội để làm điều tốt (tạo variable trong phép tìm bên trái) nữa, kết quả là *Engine* sẽ trả về thông báo lỗi `ReferenceError` tương tự như phép "tìm bên phải - RHS".
 
-*"No, there wasn't one before, but I was helpful and created one for you."*
-
-"Strict Mode" [^note-strictmode], which was added in ES5, has a number of different behaviors from normal/relaxed/lazy mode. One such behavior is that it disallows the automatic/implicit global variable creation. In that case, there would be no global *Scope*'d variable to hand back from an LHS look-up, and *Engine* would throw a `ReferenceError` similarly to the RHS case.
-
-Now, if a variable is found for an RHS look-up, but you try to do something with its value that is impossible, such as trying to execute-as-function a non-function value, or reference a property on a `null` or `undefined` value, then *Engine* throws a different kind of error, called a `TypeError`.
+Quay sang 1 trường hợp khác, là phép "tìm bên phải" đã tìm thấy variable mà bạn cần, nhưng sau đó bạn lại định dùng giá trị của variable tìm được để làm vài thứ bất khả thi, ví dụ: variable được gán với 1 con số nhưng lại lôi variable đấy ra thực thi như thực thi 1 hàm; hoặc tìm thuộc tính của `null`/ `undefined`. Lúc này thì *Engine* sẽ trả về 1 thông báo lỗi khác, đó là `TypeError`.
 
 `ReferenceError` is *Scope* resolution-failure related, whereas `TypeError` implies that *Scope* resolution was successful, but that there was an illegal/impossible action attempted against the result.
 
