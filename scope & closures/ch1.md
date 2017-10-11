@@ -93,7 +93,7 @@ Câu hỏi đặt ra là "bên phải/ bên trái" so với cái gì? Trả lờ
 Để cho dễ hiểu, và để chính xác hơn, hãy nghĩ như sau:
 - Phép "tìm bên phải" (RHS) sẽ đi tìm giá trị của 1 variable nào đó.
 - Phép "tìm bên trái" (LHS) sẽ đi tìm nơi chứa variable để sau đó Engine sẽ lưu giá trị vào đấy. 
-- Cái tên "tìm bên phải" (RHS) thực ra là không đúng về mặt nghĩa đen, đơn giản nó là phép "tìm bên không phải bên trái". "Tìm bên phải" RHS thực chất là đi tìm và lấy "giá trị của variable". 
+- Cái tên "tìm bên phải" (RHS) thực ra là không đúng về mặt nghĩa đen, đơn giản nó là phép "tìm bên không phải bên trái". "Tìm bên phải" RHS thực chất là đi tìm và lấy "giá trị của variable". 
 
 Hãy đối chiếu những lý thuyết trên vào đoạn code bên dưới:
 
@@ -170,7 +170,7 @@ Nếu Engine và Scope là 2 con người thực ngoài đời, thì dưới đ�
 
 ### Đố vui
 
-Hãy kiểm tra xem bạn hiểu đến đâu thông qua các câu hỏi dưới đây! Nhớ tưởng tượng bạn đang là *Engine* nói chuyện với bạn *Scope*:
+Hãy kiểm tra xem bạn hiểu đến đâu thông qua các câu hỏi dưới đây! Nhớ tưởng tượng bạn đang là *Engine* nói chuyện với bạn *Scope*:
 
 ```js
 function foo(a) {
@@ -189,7 +189,7 @@ var c = foo( 2 );
 
 ## Nested Scope
 
-Chúng ta đã nói rằng *Scope* là một tập hợp các quy định về việc tìm kiếm variables thông qua tên định danh (identifier name). Tuy thế, thông thường là ta sẽ luôn cần xem xét nhiều hơn 1  *Scope*. Chỉ cần 1 khối mã (block), hoặc 1 hàm được đặt bên trong 1 khối mã hoặc 1 hàm khác thì đã làm nảy sinh Scope bên trong những Scope khác. Nếu *Engine* không thể tìm thấy variable nào đó trong Scope hiện tại, nó sẽ kiểm tra để tiếp tục tìm trong Scope ở vòng ngoài, vòng ngoài nữa, cho đến khi Scope ngoài cùng (tức là global) được rờ đến. 
+Chúng ta đã nói rằng *Scope* là một tập hợp các quy định về việc tìm kiếm variables thông qua tên định danh (identifier name). Tuy thế, thông thường là ta sẽ luôn cần xem xét nhiều hơn 1  *Scope*. Chỉ cần 1 khối mã (block), hoặc 1 hàm được đặt bên trong 1 khối mã hoặc 1 hàm khác thì đã làm nảy sinh Scope bên trong những Scope khác. Nếu *Engine* không thể tìm thấy variable nào đó trong Scope hiện tại, nó sẽ kiểm tra để tiếp tục tìm trong Scope ở vòng ngoài, vòng ngoài nữa, cho đến khi Scope ngoài cùng (tức là global) được rờ đến. 
 
 Xem đoạn sau:
 
@@ -203,25 +203,25 @@ var b = 2;
 foo( 2 ); // 4
 ```
 
-Ở bên trong hàm `foo`, việc "tìm bên phải" của `b` (tức là tìm giá trị của `b`) không đem lại kết quả, và Engine cần mở rộng phạm vi tìm kiếm ra thêm 1 cấp *Scope* nữa (trong trường hợp này chính là global). Phía sau "hậu trường", 2 diễn viên *Engine* và *Scope* sẽ nói với nhau là:
+Ở bên trong hàm `foo`, việc "tìm bên phải" của `b` (tức là tìm giá trị của `b`) không đem lại kết quả, và Engine cần mở rộng phạm vi tìm kiếm ra thêm 1 cấp *Scope* nữa (trong trường hợp này chính là global). Phía sau "hậu trường", 2 diễn viên *Engine* và *Scope* sẽ nói với nhau là:
 
 > ***Engine***: "Xin chào, *Scope* của `foo`, cậu nghe về `b` bao giờ chưa? Tớ cần tìm giá trị của `b`, đang có 1 tham chiếu "tìm bên phải" cho nó."
 
 > ***Scope***: "Chưa nghe thấy bao giờ. Cậu tìm tiếp đi!"
 
-> ***Engine***: "Êu, *Scope* ngoài `foo`, cậu là *Scope* "global" hả? ok tốt. Tớ đang tìm giá trị cho 1 thông số ký hiệu là `b`? Tớ đang có 1 tham chiếu "tìm bên phải" cho nó."
+> ***Engine***: "Êu, *Scope* ngoài `foo`, cậu là *Scope* "global" hả? ok tốt. Tớ đang tìm giá trị cho 1 thông số ký hiệu là `b`? Tớ đang có 1 tham chiếu "tìm bên phải" cho nó."
 
-> ***Scope***: "Có, tớ có thể giúp. Giá trị của `b` cậu đang tìm đây."
+> ***Scope***: "Có, tớ có thể giúp. Giá trị của `b` cậu đang tìm đây."
 
-Có 1 nguyên tắc đơn giản về việc "du lịch" qua những vùng *Scope* được lồng vào nhau: *Engine* luôn bắt đầu từ *Scope* hiện tại (đang được thực thi), tìm kiếm variables ở đây trước khi mở rộng phạm vi thêm 1 cấp, 1 cấp tiếp theo cho đến khi dừng ở cấp global.
+Có 1 nguyên tắc đơn giản về việc "du lịch" qua những vùng *Scope* được lồng vào nhau: *Engine* luôn bắt đầu từ *Scope* hiện tại (đang được thực thi), tìm kiếm variables ở đây trước khi mở rộng phạm vi thêm 1 cấp, 1 cấp tiếp theo cho đến khi dừng ở cấp global.
 
 ### Phép ẩn dụ về các Scope lồng nhau
 
-Tưởng tượng các Scope lồng nhau như 1 toà cao ốc minh hoạ ở hình dưới đây: 
+Tưởng tượng các Scope lồng nhau như 1 toà cao ốc minh hoạ ở hình dưới đây: 
 
 <img src="fig1.png" width="250">
 
-Tầng 1 chính là *Scope* hiện tại, tầng trên cùng là *Scope* global. Để thực hiện các nhiệm vụ "tìm trái, tìm phải" (LHS/ RHS) bạn luôn bắt đầu từ tầng 1, nếu không thấy thì đi thang máy lên đến tầng tiếp theo, tiếp theo nữa, cho đến khi chạm tầng trên cùng. Nếu không tìm thấy thứ bạn cần thì bắt buộc phải dừng lại (vì còn chỗ nào mà tìm nữa đâu).
+Tầng 1 chính là *Scope* hiện tại, tầng trên cùng là *Scope* global. Để thực hiện các nhiệm vụ "tìm trái, tìm phải" (LHS/ RHS) bạn luôn bắt đầu từ tầng 1, nếu không thấy thì đi thang máy lên đến tầng tiếp theo, tiếp theo nữa, cho đến khi chạm tầng trên cùng. Nếu không tìm thấy thứ bạn cần thì bắt buộc phải dừng lại (vì còn chỗ nào mà tìm nữa đâu).
 
 ## Errors - Các lỗi thường gặp
 
@@ -241,17 +241,17 @@ Khi lần đầu tiên *Engine* thực hiện phép "tìm bên phải - RHS"  đ
 
 Nếu phép tìm bên phải RHS không tìm thấy varible trong bất kỳ tầng nào của cao ốc Scope (tức là trong hệ các Scope lồng nhau) thì *Engine* sẽ trả về lỗi `ReferenceError`.
 
-Ngược lại, nếu *Engine* "tìm bên trái - LHS" (thay vì "tìm phải" như trên) và tìm đến tận tầng trên cùng (tức là *Scope* global) mà vẫn không thấy, thì trong thiết lập "Non-Strict Mode", *Scope* global sẽ tạo 1 variable mới với cái tên trùng với tên mà *Engine* đang đi tìm, variable mới này sẽ được đặt trong **Scope global**, giá trị mới cũng được đưa cho *Engine*. Bạn *Scope* global đáng yêu này còn không quên nhắn nhủ *Engine* là: "*"Variable mà cậu tìm không có ở đây đâu, nhưng tớ vốn là đứa tốt bụng, tớ tạo luôn 1 tên cho cậu."*
+Ngược lại, nếu *Engine* "tìm bên trái - LHS" (thay vì "tìm phải" như trên) và tìm đến tận tầng trên cùng (tức là *Scope* global) mà vẫn không thấy, thì trong thiết lập "Non-Strict Mode", *Scope* global sẽ tạo 1 variable mới với cái tên trùng với tên mà *Engine* đang đi tìm, variable mới này sẽ được đặt trong **Scope global**, giá trị mới cũng được đưa cho *Engine*. Bạn *Scope* global đáng yêu này còn không quên nhắn nhủ *Engine* là: "*"Variable mà cậu tìm không có ở đây đâu, nhưng tớ vốn là đứa tốt bụng, tớ tạo luôn 1 tên cho cậu."*
 
-"Strict Mode" [^note-strictmode] - là 1 "mode" mới được thêm vào từ ES5. So với những mode cũ (ví dụ: normal, relaxed, lazy) thì nó có một vài điểm khác biệt. Một trong những điểm khác biệt đó chính là một khi đã thiết lập "mode" này, nó sẽ không cho phép tự động tạo các variable ở scope global. Trong trường hợp đó, bạn *Scope* global đáng yêu ở trên sẽ không có cơ hội để làm điều tốt (tạo variable trong phép tìm bên trái) nữa, kết quả là *Engine* sẽ trả về thông báo lỗi `ReferenceError` tương tự như phép "tìm bên phải - RHS".
+"Strict Mode" [^note-strictmode] - là 1 "mode" mới được thêm vào từ ES5. So với những mode cũ (ví dụ: normal, relaxed, lazy) thì nó có một vài điểm khác biệt. Một trong những điểm khác biệt đó chính là một khi đã thiết lập "mode" này, nó sẽ không cho phép tự động tạo các variable ở scope global. Trong trường hợp đó, bạn *Scope* global đáng yêu ở trên sẽ không có cơ hội để làm điều tốt (tạo variable trong phép tìm bên trái) nữa, kết quả là *Engine* sẽ trả về thông báo lỗi `ReferenceError` tương tự như phép "tìm bên phải - RHS".
 
-Quay sang 1 trường hợp khác, là phép "tìm bên phải" đã tìm thấy variable mà bạn cần, nhưng sau đó bạn lại định dùng giá trị của variable tìm được để làm vài thứ bất khả thi, ví dụ: variable được gán với 1 con số nhưng lại lôi variable đấy ra thực thi như thực thi 1 hàm; hoặc tìm thuộc tính của `null`/ `undefined`. Lúc này thì *Engine* sẽ trả về 1 thông báo lỗi khác, đó là `TypeError`.
+Quay sang 1 trường hợp khác, là phép "tìm bên phải" đã tìm thấy variable mà bạn cần, nhưng sau đó bạn lại định dùng giá trị của variable tìm được để làm vài thứ bất khả thi, ví dụ: variable được gán với 1 con số nhưng lại lôi variable đấy ra thực thi như thực thi 1 hàm; hoặc tìm thuộc tính của `null`/ `undefined`. Lúc này thì *Engine* sẽ trả về 1 thông báo lỗi khác, đó là `TypeError`.
 
 Vậy có thể thấy là lỗi `ReferenceError` liên quan đến thất bại trong việc định vị *Scope* (của variable), trong khi với `TypeError` thì việc định vị *Scope* (của variable) đã thành công, nhưng hành động tiếp theo đối dựa vào value của variable tìm được thì lại không được Engine cho phép (hoặc bất khả thi).
 
 ## Tổng kết (TL;DR - Dài quá, Ứ đọc)
 
-Scope là một tập hợp các quy định về việc tìm và cách thức đi tìm (hay là tra cứu) một variable. 
+Scope là một tập hợp các quy định về việc tìm và cách thức đi tìm (hay là tra cứu) một variable. 
 - Nếu mục đích là để tìm vị trí chứa variable sau đó gán giá trị cho variable, thì người ta gọi phép tìm kiếm đó là "tìm bên trái - LHS". 
 - Còn nếu mục đích là để tìm vị trí chứa variable, rồi lấy 1 bản sao chép giá trị của variable, thì gọi là "tìm bên phải - RHS". 
 
@@ -259,13 +259,13 @@ Kết quả của phép "tìm bên trái - LHS" có được nhờ phép gán. P
 - hoặc sử dụng toán từ `=` (như trong `a=2`)
 - hoặc truyền tham số cho hàm (như trong `foo(2)`.
 
-*Engine* của JavaScript sẽ luôn cần biên dịch đoạn code trước khi thực thi nó, và để làm vậy, nó cần phân tích một câu lệnh như `var a = 2;` trong 2 bước riêng biệt: 
+*Engine* của JavaScript sẽ luôn cần biên dịch đoạn code trước khi thực thi nó, và để làm vậy, nó cần phân tích một câu lệnh như `var a = 2;` trong 2 bước riêng biệt: 
 
 1. Thứ nhất, phân tích `var a` để khai báo variable `a` trong trong *Scope*. Việc này cần làm ngay từ đầu trước khi đoạn code được chạy.
 
 2. Sau đó, phân tích `a = 2` để tìm kiếm vị trí chứa variable `a` (phép "tìm bên trái - LHS"), sau đó gán vào giá trị `2` nếu tìm thấy `a`.
 
-Cả 2 phép tìm trái (LHS) và tìm phải (RHS) đều xuất phát từ Scope hiện tại, và nếu cần (khi *Engine* không thấy cái nó cần) thì các Scope ở phạm vi rộng hơn sẽ được xem xét tới (các Scope lồng nhau) cho đến Scope ngoài cùng (global) thì sẽ dừng lại.
+Cả 2 phép tìm trái (LHS) và tìm phải (RHS) đều xuất phát từ Scope hiện tại, và nếu cần (khi *Engine* không thấy cái nó cần) thì các Scope ở phạm vi rộng hơn sẽ được xem xét tới (các Scope lồng nhau) cho đến Scope ngoài cùng (global) thì sẽ dừng lại.
 
 Nếu phép "tìm bên phải" không dẫn đến kết quả thì *Engine* sẽ trả về lỗi `ReferenceError`. Nếu phép "tìm bên trái" cũng không dẫn đến kết quả nào thì tuỳ thuộc vào "mode" hiện tại:
 - trường hợp "None-Strict Mode", *Engine* sẽ nhận được 1 variable mới (trùng tên với variable mà nó đang tìm kiếm) ở scope global.
