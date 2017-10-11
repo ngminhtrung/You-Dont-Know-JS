@@ -7,13 +7,13 @@ Không có những khái niệm trên, dẫu cho chương trình có thể thự
 
 Tuy thế, khi đã thêm variables vào việc viết chương trình, một loạt vấn đề mới lại nảy sinh. Tưởng tượng thêm variables giống như tạo những sinh vật mới, vậy ta sẽ lưu những sinh vật này ở đâu? khi cần thì tìm chúng như thế nào? 
 
-Những câu hỏi này liên quan đến nhu cầu tạo ra 1 tập hợp các quy định được định nghĩa rõ ràng về cách lưu các variables ở một nơi nào đó, và cách để tìm các variables này ở một thời điểm sau đó. Tập hợp các quy định này là gì? Đó là **Scope**. 
+Những câu hỏi này liên quan đến nhu cầu tạo ra 1 tập hợp các quy định rõ ràng về cách lưu các variables ở một nơi nào đó, và cách để tìm các variables này ở một thời điểm sau đó. Tập hợp các quy định này là gì? Đó là **Scope**. 
 
 Vậy, từ đâu và làm thế nào để có thể thiết lập các quy luật cho **Scope**? 
 
 ## Lý thuyết về Compiler
 
-Tuỳ thuộc vào kinh nghiệm làm việc với ít/ nhiều ngôn ngữ lập trình mà bạn sẽ thấy khẳng định sau là đương nhiên/ hoặc ngạc nhiên (:D): "Cho dù JavaScript được sắp vào nhóm ngôn ngữ lập trình loại *động*, hoặc *thông dịch*, thì thực tế nó vẫn là 1 ngôn ngữ *biên dịch*". Không giống như các ngôn ngữ lập trình biên dịch truyền thống khác, các đoạn code JavaScript *không* được biên dịch trước, và cũng chẳng là kết quả của compilation portable among nhiều hệ thống phân tán.
+Tuỳ thuộc vào kinh nghiệm làm việc với ít/ nhiều ngôn ngữ lập trình mà bạn sẽ thấy khẳng định sau là đương nhiên/ hoặc ngạc nhiên (:D): "*Cho dù JavaScript được sắp vào nhóm ngôn ngữ lập trình loại *động*, hoặc *thông dịch*, thì thực tế nó vẫn là 1 ngôn ngữ *biên dịch**". Không giống như các ngôn ngữ lập trình biên dịch truyền thống khác, các đoạn code JavaScript *không* được biên dịch trước, và cũng chẳng là kết quả của compilation portable among nhiều hệ thống phân tán.
 
 Dẫu vậy, engine của JavaScirpt thực hiện rất nhiều bước tương tự như các ngôn ngữ biên dịch truyền thống, theo cách phức tạp hơn những gì chúng ta nghĩ. 
 
@@ -21,7 +21,7 @@ Khi nhìn vào quá trình của các ngôn ngữ biên dịch truyền thống,
 
 1. **Tokenizing/Lexing (Quá trình phân tích thành các phần tử token):** là quá trình chia 1 đoạn code ra thành những phần có nghĩa, mỗi phần được gọi là 1 "token". Ví dụ đoạn code sau: `var a = 2;`. Đoạn mã này khả năng sẽ được chia thành các token: `var`, `a`, `=`, `2`, và `;`. Khoảng trắng có thể (hoặc không) được coi là 1 token, phụ thuộc vào việc nó có mang ý nghĩa gì hay không.
 
-	**Note:** Không dễ để chỉ ra sự khác biệt giữa "tokenizing" và "lexing", hơn nữa lại vô cùng hàn lâm, nhưng nói chung là việc xác định là hay không phải là tokens sẽ thông qua 1 trong 2 cách: *stateless* hoặc *stateful*. Put simply, if the tokenizer were to invoke stateful parsing rules to figure out whether `a` should be considered a distinct token or just part of another token, *that* would be **lexing**.
+	**Note:** Không dễ để chỉ ra sự khác biệt giữa "tokenizing" và "lexing", mà có nói thì cũng là vấn đề học thuật cao cấp, nhưng nói chung là việc xác định là hay không phải là tokens sẽ thông qua 1 trong 2 cách: *stateless* hoặc *stateful*. Put simply, if the tokenizer were to invoke stateful parsing rules to figure out whether `a` should be considered a distinct token or just part of another token, *that* would be **lexing**.
 
 2. **Parsing (Quá trình phân tích cú pháp):** sử dụng 1 luồng (stream)/ chuỗi (array) các tokens, biết chúng thành 1 cây với các phần tử lồng vào nhau (tree of nested elements), cùng nhau biểu diễn cấu trúc ngữ pháp của chương trình (collectively represent the grammatical structure of the program). Cây này được gọi là "AST" (<b>A</b>bstract <b>S</b>yntax <b>T</b>ree) (Dịch thô: "Cây Cú pháp Trừu tượng") .
 
@@ -34,7 +34,7 @@ Khi nhìn vào quá trình của các ngôn ngữ biên dịch truyền thống,
 
     **Lưu ý:** Cách engine sử lý tài nguyên hệ thống (system resources) phức tạp hơn rất nhiều những gì chúng ta nói ở trên, vì thế ta cứ coi chuyện engine có khả năng tạo và lưu variables khi cần là điều hiển nhiên.
 
-Engine của JavaScript cũng như các ngôn ngữ biên dịch khác phức tạp hơn nhiều so với ba bước kể trên. Ví dụ, đối với bước "parsing" và "code-generation", chắc chắn sẽ có bước để tối ưu hoá hiệu suất thực thi (to optimize the performance of the execution), trong bước tối ưu hoá này lại có việc xoá bỏ các phần tử dư thừa (collapsing redundant elements, v.v.
+Engine của JavaScript cũng như các ngôn ngữ biên dịch khác phức tạp hơn nhiều so với ba bước kể trên. Ví dụ, đối với bước "parsing" và "code-generation", chắc chắn sẽ có bước để tối ưu hoá hiệu suất thực thi (to optimize the performance of the execution), trong bước tối ưu hoá này lại có việc xoá bỏ các phần tử dư thừa (collapsing redundant elements), v.v.
 
 Cho nên, ở đây tôi chỉ vẽ lên nguyên lý của compiler bằng những nét đậm phác thảo. Nhưng tôi nghĩ bạn sẽ sớm hiểu tại sao những thông tin mà chúng ta đã lướt quá, kể cả ở mức độ khó, vẫn hữu dụng. 
 
@@ -54,17 +54,17 @@ Xin mời gặp dàn diễn viên sẽ nhập vai và thể hiện quá trình x
 
 2. Diễn viên vào vai *Compiler*: là một người bạn của *Engine*; xử lý mọi công việc chẳng lấy làm dễ chịu gì liên quan đến "parsing" và "code-generation" (xem lại mục trước).
 
-3. Diễn viên vào vai *Scope*: một người bạn khác *Engine*; tập hợp và bảo quản một danh sách tra cứu tất cả các identifiers đã được khai báo( tức là variables), đảm bảo các quy định được thực hiện nghiêm ngặt, cũng như cho phép các đoạn code đang thực thi truy cập vào variables. 
+3. Diễn viên vào vai *Scope*: một người bạn khác *Engine*; tập hợp và bảo quản một danh sách tra cứu tất cả các identifiers đã được khai báo (tức là variables), đảm bảo các quy định được thực hiện nghiêm ngặt, cũng như cho phép các đoạn code đang thực thi truy cập vào variables. 
 
 Để có thể *nắm được hoàn toàn* cách JavaScript làm việc, bạn cần bắt đầu *nghĩ* như *Engine* (và 2 người bạn) nghĩ, hỏi tương tự thứ họ hỏi, trả lời theo cách họ trả lời. 
 
 ### Back & Forth
 
-Khi nhìn đoạn code `var a = 2;` thường là bạn sẽ nghĩ rằng đây là là 1 câu lệnh (statement). Nhưng đó không giống cách mà bạn *Engine* nhìn thấy. Thực tế là *Engine* sẽ thấy 2 câu lệnh khác nhau (two distinct statements), một dành cho *Compiler* - người sẽ xử lý trong quá trình biên dịch, và một dành cho *Engine* xử lý trong quá trình thực thi.
+Khi nhìn đoạn code `var a = 2;` thường là bạn sẽ nghĩ rằng đây là là 1 câu lệnh (statement). Nhưng đó không giống cách mà *Engine* nhìn thấy. Thực tế là *Engine* sẽ thấy 2 câu lệnh khác nhau (two distinct statements), một dành cho *Compiler* - người sẽ xử lý trong quá trình biên dịch, và một dành cho *Engine* xử lý trong quá trình thực thi.
 
 Vậy hãy thử cùng tìm hiểu từng bước cách mà *Engine* và đồng bọn sẽ làm khi gặp đoạn code `var a = 2;`.
 
-Điều đầu tiên mà đồng chí *Compiler* sẽ làm với đoạn mã trên là thực hiện nhiệm vụ mang tên "lexing" để chia nhỏ mã thành các "token", sau đó "parse" vào cây Cú pháp Trừu tượng AST. Nhưng khi *Compiler* đến bước code-generation, nó sẽ xử lý khác so với những gì chúng ta đoán. 
+Điều đầu tiên mà đồng chí *Compiler* sẽ làm với đoạn mã trên là thực hiện nhiệm vụ "lexing" để chia nhỏ mã thành các "token", sau đó "parse" vào cây Cú pháp Trừu tượng AST. Nhưng khi *Compiler* đến bước code-generation, nó sẽ xử lý khác so với những gì chúng ta đoán. 
 
 Chúng ta đoán như thế nào? Rằng *Compiler* sẽ chỉ định bộ nhớ cho variable, dán nhãn nó là `a`, rồi gắn giá trị `2` vào variable `a` kia. Tuy nhiên, cách hiểu này lại không thực sự chính xác. 
 
@@ -74,7 +74,7 @@ Sự thực thì *Compiler* sẽ làm như sau:
 
 2. Bạn *Compiler* tiếp theo sẽ viết ra một đoạn mã máy tính (machine code) để *Engine* thực hiện một lúc sau đó, nhằm xử lý việc gán `a = 2`. Mã máy mà *Engine* chạy sẽ hỏi *Scope* xem nếu bạn ý có thể tiếp cận variable nhãn `a` trong bộ sưu tập của bạn *Scope* hay không. Nếu có thể tiếp cận, *Engine* sẽ sử dụng variable này. Còn không, *Engine* sẽ đi tìm *chỗ khác* (xem mục "nested *Scope*" bên dưới).
 
-Nếu *Engine* cuối cùng tìm thấy 1 variable mang nhãn `a` mà nó đang đi tìm (trong *Scope* hoặc *chỗ khác* như nói ở trên, thì Enginer sẽ gán giá trị `2` cho nó. Còn không tìm thấy, thì *Engine* sẽ "giơ tay" báo lỗi. 
+Nếu *Engine* thực sự tìm thấy 1 variable mang nhãn `a` mà nó đang đi tìm (trong *Scope* hoặc *chỗ khác* như nói ở trên, thì Enginer sẽ gán giá trị `2` cho nó. Còn không tìm thấy, thì *Engine* sẽ "giơ tay" báo lỗi. 
 
 **Túm lại**: để gán giá trị cho biến (variable assignment) thì phải thực hiện 2 hành động riêng rẽ: Đầu tiên, *Compiler* khai báo variable đấy (nếu nó chưa tồn tại ở không gian hiện tại), và thứ hai, đó là việc *Engine* tìm variable nhãn `a` và gán giá trị mới cho nó (nếu variable nhãn `a` được tìm thấy). 
 
@@ -82,48 +82,45 @@ Nếu *Engine* cuối cùng tìm thấy 1 variable mang nhãn `a` mà nó đang 
 
 Để hiểu đoạn này, ta cần đề cập đến 1 vài thuật ngữ liên quan đến complier. 
 
-Khi *Engine* thực thi đoạn máy tính mà *Compiler* tạo ra ở bước (2), nó (tức *Engine*) phải "hỏi" *Scope* để kiểm tra variable mang nhãn `a` đã có hay chưa bằng cách. Động tác "hỏi" này của *Engine* cũng chia ra làm hai loại, tạm gọi là "hỏi bên trái" và "hỏi bên phải", mỗi loại có công dụng và hiệu năng khác nhau [*Người dịch: trong cuộc sống khi cần hỏi người khác điều gì, thì cách hỏi rất quan trọng. Hỏi khéo thì nhận được câu trả lời, hỏi không khéo thì có thể vẫn nhận được câu trả lời nhưng kèm theo 1 câu chửi, và trong thế giới 0101 của máy tính cũng tương tự như vậy*].
+Khi *Engine* thực thi đoạn máy tính mà *Compiler* tạo ra ở bước (2), nó (tức *Engine*) phải "hỏi" *Scope* để kiểm tra variable mang nhãn `a` đã có hay chưa. Động tác "hỏi" này của *Engine* cũng chia ra làm hai loại, tạm gọi là "hỏi bên trái" và "hỏi bên phải", mỗi loại có công dụng và hiệu năng khác nhau [*Người dịch: trong cuộc sống khi cần hỏi người khác điều gì, thì cách hỏi rất quan trọng. Hỏi khéo thì nhận được câu trả lời, hỏi không khéo thì có thể vẫn nhận được câu trả lời nhưng kèm theo 1 câu chửi, và trong thế giới 0101 của máy tính cũng tương tự như vậy*]. 
 
-Với trường hợp cụ thể trên, *Engine* sẽ thực hiện "hỏi bên trái" (viết tắt tiếng Anh là "LHS") với *Scope* để kiểm tra sự tồn tại của variable nhãn `a`. Sẽ có trường hợp mà *Engine* cần phải "hỏi bên phải" (viết tắt tiếng Anh là "RHS").
+Từ "hỏi" nguyên gốc có thể dịch sang tiếng Việt là "tìm kiếm". Với trường hợp cụ thể trên, *Engine* sẽ thực hiện "tìm bên trái" (viết tắt tiếng Anh là "LHS - **L**eft **H**and **S**ide") với *Scope* để kiểm tra sự tồn tại của variable nhãn `a`. Sẽ có trường hợp mà *Engine* cần phải "tìm bên phải" (viết tắt tiếng Anh là "RHS - **R**ight **H**and **S**ide").
 
 Câu hỏi đặt ra là "bên phải/ bên trái" so với cái gì? Trả lời: **so với phép gán "="**
 
-Điều này có nghĩa là thủ tục "hỏi bên trái" được coi là hoàn thành khi mà variable được đặt phía bên trái của phép gán "=", và thủ tục "hỏi bên phải" hoàn thành khi variable ở bên phải của "=". 
+Điều này có nghĩa là thủ tục "tìm bên trái" được coi là hoàn thành khi mà variable được đặt phía bên trái của phép gán "=", và thủ tục "tìm bên phải" hoàn thành khi variable ở bên phải của "=". 
 
-Actually, let's be a little more precise. An RHS look-up is indistinguishable, for our purposes, from simply a look-up of the value of some variable, whereas the LHS look-up is trying to find the variable container itself, so that it can assign. In this way, RHS doesn't *really* mean "right-hand side of an assignment" per se, it just, more accurately, means "not left-hand side".
-
-Để cho dễ hiểu, bạn tưởng tưởng tượng RHS nghĩa là "nhận lấy giá trị của nguồn". 
+Để cho dễ hiểu, và để chính xác hơn, hãy nghĩ như sau:
+- Phép "tìm bên phải" (RHS) sẽ đi tìm giá trị của 1 variable nào đó.
+- Phép "tìm bên trái" (LHS) sẽ đi tìm nơi chứa variable để sau đó Engine sẽ lưu giá trị vào đấy. 
+- Cái tên "tìm bên phải" (RHS) thực ra là không đúng về mặt nghĩa đen, đơn giản nó là phép "tìm bên không phải bên trái". "Tìm bên phải" RHS thực chất là đi tìm và lấy "giá trị của variable". 
 
 Hãy đối chiếu những lý thuyết trên vào đoạn code bên dưới:
 
 ```js
-console.log( a );
+console.log(a);
 ```
 
-Tham chiếu đến `a` là 1 tham chiếu dạng "nhìn phải" bởi không có gì được gán vào giá trị của `a` ở đây. Chúng ta đang cần "nhận lấy giá trị của `a`", rồi truyền giá trị đó cho `console.log(...)`.
+Tham chiếu đến `a` là 1 tham chiếu dạng "tìm bên phải" bởi không có gì được gán vào giá trị của `a` ở đây. Chúng ta đang cần "đim tìm và lấy giá trị của `a`", rồi truyền giá trị đó cho `console.log(...)`.
 
 Ví dụ sau thì là ngược lại: 
 ```js
 a = 2;
 ```
-Tham chiếu đến `a` ở trên lại là 1 tham chiếu dạng "nhìn trái", bởi chúng ta không quan tâm đến giá trị hiện tại của `a` bằng bao nhiêu, ta đơn giản chỉ muốn tìm variable `a` rồi gán cho nó giá trị bằng 2 (ứng với `=2`).
-
-**Lưu ý:** LHS và RHS không hoàn toàn mang nghĩa đen vật lý là "ở bên trái/ bên phải phép "_". Còn vài cách khác nữa để thực hiện phép gán. Do đó, tốt nhất là hãy nghĩ một cách hình tượng hơn là: LHS (nhìn bên trái) là nhìn xem đích đến của phép gán là gì (đích đến của phép gán `a=2` là `a`). RHS (nhìn bên phải) là nhìn xem đâu là nguồn (dữ liệu).
+Tham chiếu đến `a` ở trên lại là 1 tham chiếu dạng "tìm bên trái", bởi chúng ta không quan tâm đến giá trị hiện tại của `a` bằng bao nhiêu, ta đơn giản chỉ muốn tìm nơi chứa variable `a` rồi gán cho nó giá trị bằng 2 (ứng với `=2`).
 
 Đoạn code dưới đây có cả RHS và LHS:
 
 ```js
 function foo(a) {
-	console.log( a ); // 2
+	console.log(a); // 2
 }
 
-foo( 2 );
+foo(2);
 ```
 Dòng cuối cùng đã gọi `foo(..)` ở dạng 1 tham chiếu RHS đến `foo` ("hey, hãy tìm xem giá trị của `foo` bằng bao nhiêu rồi đưa cho tớ!"). Hơn nữa, `(..)` có nghĩa là giá trị của `foo` cần được thực thi, do vậy nó là một hàm số!
 
-Có một phép gán dù rất thoảng qua nhưng lại vô cùng quan trọng ở đây. *Bạn có nhận ra nó?*
-
-You may have missed the implied `a = 2` in this code snippet. It happens when the value `2` is passed as an argument to the `foo(..)` function, in which case the `2` value is **assigned** to the parameter `a`. To (implicitly) assign to parameter `a`, an LHS look-up is performed.
+Bạn có nhận ra một phép gán dù rất thoảng qua nhưng lại vô cùng quan trọng ở đây? Đó là phép gán `a = 2` khi `2` được truyền dưới dạng tham số đến đến hàm `foo(..)`, sau đó `2` được gán vào `a`. Phép gán này chính là 1 dạng của việc "tìm bên trái (LHS)" (đi tìm nơi chứa variable để lưu giá trị vào đấy).
 
 There's also an RHS reference for the value of `a`, and that resulting value is passed to `console.log(..)`. `console.log(..)` needs a reference to execute. It's an RHS look-up for the `console` object, then a property-resolution occurs to see if it has a method called `log`.
 
