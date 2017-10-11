@@ -130,47 +130,47 @@ Finally, we can conceptualize that there's an LHS/RHS exchange of passing the va
 
 However, the subtle but important difference is that *Compiler* handles both the declaration and the value definition during code-generation, such that when *Engine* is executing code, there's no processing necessary to "assign" a function value to `foo`. Thus, it's not really appropriate to think of a function declaration as an LHS look-up assignment in the way we're discussing them here.
 
-### Engine/Scope Conversation
+### Cuộc nói chuyện giữa 2 bạn Engine và Scope
 
 ```js
 function foo(a) {
-	console.log( a ); // 2
+	console.log(a); // 2
 }
 
-foo( 2 );
+foo(2);
 ```
 
-Let's imagine the above exchange (which processes this code snippet) as a conversation. The conversation would go a little something like this:
+Nếu Engine và Scope là 2 con người thực ngoài đời, thì dưới đây sẽ là đoạn chat giữa 2 bạn khi nhìn thấy đoạn code trên: 
 
-> ***Engine***: Hey *Scope*, I have an RHS reference for `foo`. Ever heard of it?
+> ***Engine***: Chào *Scope*, tớ có một tham chiếu "tìm bên phải - RHS" cho 1 hàm tên `foo`. Cậu đã nghe thấy hàm này bao giờ chưa?
 
-> ***Scope***: Why yes, I have. *Compiler* declared it just a second ago. He's a function. Here you go.
+> ***Scope***: Có, tớ biết hàm đấy. Tên *Compiler* đã khai báo mấy giây trước. Hàm cậu cần tìm đây [Scope đưa Engine thông tin về hàm mà Engine đang kiếm].
 
-> ***Engine***: Great, thanks! OK, I'm executing `foo`.
+> ***Engine***: Yup, tuyệt vời. Cảm ơn nhé. Tớ sẽ cho thực thi hàm `foo`.
 
-> ***Engine***: Hey, *Scope*, I've got an LHS reference for `a`, ever heard of it?
+> ***Engine***: À, *Scope*, tớ có một tham chiếu "tìm bên trái LHS" cho 1 variable tên `a`, cậu biết variable này không?
 
-> ***Scope***: Why yes, I have. *Compiler* declared it as a formal parameter to `foo` just recently. Here you go.
+> ***Scope***: Biết chứ. Tên *Compiler* đã khai báo `a` là một tham số cho `foo`. Thông tin cậu cần tìm đây!!!!
 
-> ***Engine***: Helpful as always, *Scope*. Thanks again. Now, time to assign `2` to `a`.
+> ***Engine***: Cậu đúng là biết tuốt, *Scope* ạ. Cảm ơn lần nữa. Giờ là lúc gán `2` cho `a`.
 
-> ***Engine***: Hey, *Scope*, sorry to bother you again. I need an RHS look-up for `console`. Ever heard of it?
+> ***Engine***: Ôi quên quên, *Scope*, xin lỗi vẫn cần phiền cậu. Tớ cần một phép "tìm bên phải - RHS" cho hàm `console`. Cậu giúp được không? 
 
-> ***Scope***: No problem, *Engine*, this is what I do all day. Yes, I've got `console`. He's built-in. Here ya go.
+> ***Scope***: Có hề gì, *Engine*, tớ nhẵn mặt cái hàm `console` này rồi. Hàm này vốn có sẵn mà. Của cậu đây.
 
-> ***Engine***: Perfect. Looking up `log(..)`. OK, great, it's a function.
+> ***Engine***: Trên cả tuyệt vời. Tớ sẽ tìm tiếp `log(..)`. Chuẩn man, đây đúng là 1 hàm. 
 
-> ***Engine***: Yo, *Scope*. Can you help me out with an RHS reference to `a`. I think I remember it, but just want to double-check.
+> ***Engine***: Ơ, *Scope*. Còn một phép tham chiếu "tìm bên phải - RHS" tới `a` nữa, tớ muốn kiểm tra lại xem mình nhớ đúng hay không. 
 
-> ***Scope***: You're right, *Engine*. Same guy, hasn't changed. Here ya go.
+> ***Scope***: Cậu nhớ đúng rồi, *Engine*. Vẫn là `a` đấy không thay đổi gì cả. 
 
-> ***Engine***: Cool. Passing the value of `a`, which is `2`, into `log(..)`.
+> ***Engine***: Tốt. Giờ tớ sẽ truyền giá trị của `a`, tức là `2`, cho `log(..)`.
 
 > ...
 
-### Quiz
+### Đố vui
 
-Check your understanding so far. Make sure to play the part of *Engine* and have a "conversation" with the *Scope*:
+Hãy kiểm tra xem bạn hiểu đến đâu thông qua các câu hỏi dưới đây! Nhớ tưởng tượng bạn đang là *Engine* nói chuyện với bạn *Scope*:
 
 ```js
 function foo(a) {
@@ -181,19 +181,17 @@ function foo(a) {
 var c = foo( 2 );
 ```
 
-1. Identify all the LHS look-ups (there are 3!).
+1. Tìm tất cả phép "tìm bên trái" (gợi ý: 3).
 
-2. Identify all the RHS look-ups (there are 4!).
+2. Tìm tất cả phép "tìm bên phải" (gợi ý: 4).
 
-**Note:** See the chapter review for the quiz answers!
+**Ghi chú:** Xem trả lời ở phần tổng kết chương!
 
 ## Nested Scope
 
-We said that *Scope* is a set of rules for looking up variables by their identifier name. There's usually more than one *Scope* to consider, however.
+Chúng ta đã nói rằng *Scope* là một tập hợp các quy định về việc tìm kiếm variables thông qua tên định danh (identifier name). Tuy thế, thông thường là ta sẽ luôn cần xem xét nhiều hơn 1  *Scope*. Chỉ cần 1 khối mã (block), hoặc 1 hàm được đặt bên trong 1 khối mã hoặc 1 hàm khác thì đã làm nảy sinh Scope bên trong những Scope khác. Nếu *Engine* không thể tìm thấy variable nào đó trong Scope hiện tại, nó sẽ kiểm tra để tiếp tục tìm trong Scope ở vòng ngoài, vòng ngoài nữa, cho đến khi Scope ngoài cùng (tức là global) được rờ đến. 
 
-Just as a block or function is nested inside another block or function, scopes are nested inside other scopes. So, if a variable cannot be found in the immediate scope, *Engine* consults the next outer containing scope, continuing until found or until the outermost (aka, global) scope has been reached.
-
-Consider:
+Xem đoạn sau:
 
 ```js
 function foo(a) {
@@ -205,29 +203,25 @@ var b = 2;
 foo( 2 ); // 4
 ```
 
-The RHS reference for `b` cannot be resolved inside the function `foo`, but it can be resolved in the *Scope* surrounding it (in this case, the global).
+Ở bên trong hàm `foo`, việc "tìm bên phải" của `b` (tức là tìm giá trị của `b`) không đem lại kết quả, và Engine cần mở rộng phạm vi tìm kiếm ra thêm 1 cấp *Scope* nữa (trong trường hợp này chính là global). Phía sau "hậu trường", 2 diễn viên *Engine* và *Scope* sẽ nói với nhau là:
 
-So, revisiting the conversations between *Engine* and *Scope*, we'd overhear:
+> ***Engine***: "Xin chào, *Scope* của `foo`, cậu nghe về `b` bao giờ chưa? Tớ cần tìm giá trị của `b`, đang có 1 tham chiếu "tìm bên phải" cho nó."
 
-> ***Engine***: "Hey, *Scope* of `foo`, ever heard of `b`? Got an RHS reference for it."
+> ***Scope***: "Chưa nghe thấy bao giờ. Cậu tìm tiếp đi!"
 
-> ***Scope***: "Nope, never heard of it. Go fish."
+> ***Engine***: "Êu, *Scope* ngoài `foo`, cậu là *Scope* "global" hả? ok tốt. Tớ đang tìm giá trị cho 1 thông số ký hiệu là `b`? Tớ đang có 1 tham chiếu "tìm bên phải" cho nó."
 
-> ***Engine***: "Hey, *Scope* outside of `foo`, oh you're the global *Scope*, ok cool. Ever heard of `b`? Got an RHS reference for it."
+> ***Scope***: "Có, tớ có thể giúp. Giá trị của `b` cậu đang tìm đây."
 
-> ***Scope***: "Yep, sure have. Here ya go."
+Có 1 nguyên tắc đơn giản về việc "du lịch" qua những vùng *Scope* được lồng vào nhau: *Engine* luôn bắt đầu từ *Scope* hiện tại (đang được thực thi), tìm kiếm variables ở đây trước khi mở rộng phạm vi thêm 1 cấp, 1 cấp tiếp theo cho đến khi dừng ở cấp global.
 
-The simple rules for traversing nested *Scope*: *Engine* starts at the currently executing *Scope*, looks for the variable there, then if not found, keeps going up one level, and so on. If the outermost global scope is reached, the search stops, whether it finds the variable or not.
+### Phép ẩn dụ về các Scope lồng nhau
 
-### Building on Metaphors
-
-To visualize the process of nested *Scope* resolution, I want you to think of this tall building.
+Tưởng tượng các Scope lồng nhau như 1 toà cao ống minh hoạ ở hình dưới đây: 
 
 <img src="fig1.png" width="250">
 
-The building represents our program's nested *Scope* rule set. The first floor of the building represents your currently executing *Scope*, wherever you are. The top level of the building is the global *Scope*.
-
-You resolve LHS and RHS references by looking on your current floor, and if you don't find it, taking the elevator to the next floor, looking there, then the next, and so on. Once you get to the top floor (the global *Scope*), you either find what you're looking for, or you don't. But you have to stop regardless.
+Tầng 1 chính là *Scope* hiện tại, tầng trên cùng là *Scope* global. Để thực hiện các nhiệm vụ "tìm trái, tìm phải" (LHS/ RHS) bạn luôn bắt đầu từ tầng 1, nếu không thấy thì đi thang máy lên đến tầng tiếp theo, tiếp theo nữa, cho đến khi chạm tầng trên cùng. Nếu không tìm thấy thứ bạn cần thì bắt buộc phải dừng lại (vì còn chỗ nào mà tìm nữa đâu)
 
 ## Errors
 
