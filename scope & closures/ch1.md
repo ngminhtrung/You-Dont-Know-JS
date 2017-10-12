@@ -152,7 +152,7 @@ Nếu Engine và Scope là 2 con người thực ngoài đời, thì dưới đ�
 
 > ***Scope***: Biết chứ. Tên *Compiler* đã khai báo `a` là một tham số cho `foo`. Thông tin cậu cần tìm đây!!!!
 
-> ***Engine***: Cậu đúng là biết tuốt, *Scope* ạ. Cảm ơn lần nữa. Giờ là lúc gán `2` cho `a`.
+> ***Engine***: Cậu đúng là biết tuốt, *Scope* ạ. Cảm ơn lần nữa. Giờ là lúc gán `2` cho `a`.
 
 > ***Engine***: Ôi quên quên, *Scope*, xin lỗi vẫn cần phiền cậu. Tớ cần một phép "tìm bên phải - RHS" cho hàm `console`. Cậu giúp được không? 
 
@@ -170,7 +170,7 @@ Nếu Engine và Scope là 2 con người thực ngoài đời, thì dưới đ�
 
 ### Đố vui
 
-Hãy kiểm tra xem bạn hiểu đến đâu thông qua các câu hỏi dưới đây! Nhớ tưởng tượng bạn đang là *Engine* nói chuyện với bạn *Scope*:
+Hãy kiểm tra xem bạn hiểu đến đâu thông qua các câu hỏi dưới đây! Nhớ tưởng tượng bạn đang là *Engine* nói chuyện với bạn *Scope*:
 
 ```js
 function foo(a) {
@@ -239,13 +239,13 @@ foo( 2 );
 ```
 Khi lần đầu tiên *Engine* thực hiện phép "tìm bên phải - RHS"  để tra cứu giá trị của `b`, nó sẽ chẳng tìm thấy gì cả vì variable này chưa được khai báo, không tồn tại trong scope hiện tại. 
 
-Nếu phép tìm bên phải RHS không tìm thấy varible trong bất kỳ tầng nào của cao ốc Scope (tức là trong hệ các Scope lồng nhau) thì *Engine* sẽ trả về lỗi `ReferenceError`.
+Nếu phép tìm bên phải RHS không tìm thấy varible trong bất kỳ tầng nào của cao ốc Scope (tức là trong hệ các Scope lồng nhau) thì *Engine* sẽ trả về lỗi `ReferenceError`.
 
 Ngược lại, nếu *Engine* "tìm bên trái - LHS" (thay vì "tìm phải" như trên) và tìm đến tận tầng trên cùng (tức là *Scope* global) mà vẫn không thấy, thì trong thiết lập "Non-Strict Mode", *Scope* global sẽ tạo 1 variable mới với cái tên trùng với tên mà *Engine* đang đi tìm, variable mới này sẽ được đặt trong **Scope global**, giá trị mới cũng được đưa cho *Engine*. Bạn *Scope* global đáng yêu này còn không quên nhắn nhủ *Engine* là: "*"Variable mà cậu tìm không có ở đây đâu, nhưng tớ vốn là đứa tốt bụng, tớ tạo luôn 1 tên cho cậu."*
 
-"Strict Mode" [^note-strictmode] - là 1 "mode" mới được thêm vào từ ES5. So với những mode cũ (ví dụ: normal, relaxed, lazy) thì nó có một vài điểm khác biệt. Một trong những điểm khác biệt đó chính là một khi đã thiết lập "mode" này, nó sẽ không cho phép tự động tạo các variable ở scope global. Trong trường hợp đó, bạn *Scope* global đáng yêu ở trên sẽ không có cơ hội để làm điều tốt (tạo variable trong phép tìm bên trái) nữa, kết quả là *Engine* sẽ trả về thông báo lỗi `ReferenceError` tương tự như phép "tìm bên phải - RHS".
+"Strict Mode" [^note-strictmode] - là 1 "mode" mới được thêm vào từ ES5. So với những mode cũ (ví dụ: normal, relaxed, lazy) thì nó có một vài điểm khác biệt. Một trong những điểm khác biệt đó chính là một khi đã thiết lập "mode" này, nó sẽ không cho phép tự động tạo các variable ở scope global. Trong trường hợp đó, bạn *Scope* global đáng yêu ở trên sẽ không có cơ hội để làm điều tốt (tạo variable trong phép tìm bên trái) nữa, kết quả là *Engine* sẽ trả về thông báo lỗi `ReferenceError` tương tự như phép "tìm bên phải - RHS".
 
-Quay sang 1 trường hợp khác, là phép "tìm bên phải" đã tìm thấy variable mà bạn cần, nhưng sau đó bạn lại định dùng giá trị của variable tìm được để làm vài thứ bất khả thi, ví dụ: variable được gán với 1 con số nhưng lại lôi variable đấy ra thực thi như thực thi 1 hàm; hoặc tìm thuộc tính của `null`/ `undefined`. Lúc này thì *Engine* sẽ trả về 1 thông báo lỗi khác, đó là `TypeError`.
+Quay sang 1 trường hợp khác, là phép "tìm bên phải" đã tìm thấy variable mà bạn cần, nhưng sau đó bạn lại định dùng giá trị của variable tìm được để làm vài thứ bất khả thi, ví dụ: variable được gán với 1 con số nhưng lại lôi variable đấy ra thực thi như thực thi 1 hàm; hoặc tìm thuộc tính của `null`/ `undefined`. Lúc này thì *Engine* sẽ trả về 1 thông báo lỗi khác, đó là `TypeError`.
 
 Vậy có thể thấy là lỗi `ReferenceError` liên quan đến thất bại trong việc định vị *Scope* (của variable), trong khi với `TypeError` thì việc định vị *Scope* (của variable) đã thành công, nhưng hành động tiếp theo đối dựa vào value của variable tìm được thì lại không được Engine cho phép (hoặc bất khả thi).
 
@@ -259,7 +259,7 @@ Kết quả của phép "tìm bên trái - LHS" có được nhờ phép gán. P
 - hoặc sử dụng toán từ `=` (như trong `a=2`)
 - hoặc truyền tham số cho hàm (như trong `foo(2)`.
 
-*Engine* của JavaScript sẽ luôn cần biên dịch đoạn code trước khi thực thi nó, và để làm vậy, nó cần phân tích một câu lệnh như `var a = 2;` trong 2 bước riêng biệt: 
+*Engine* của JavaScript sẽ luôn cần biên dịch đoạn code trước khi thực thi nó, và để làm vậy, nó cần phân tích một câu lệnh như `var a = 2;` trong 2 bước riêng biệt: 
 
 1. Thứ nhất, phân tích `var a` để khai báo variable `a` trong trong *Scope*. Việc này cần làm ngay từ đầu trước khi đoạn code được chạy.
 
