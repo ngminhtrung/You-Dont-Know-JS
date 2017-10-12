@@ -7,7 +7,10 @@ Không có những khái niệm trên, dẫu cho chương trình có thể thự
 
 Tuy thế, khi đã thêm variables vào việc viết chương trình, một loạt vấn đề mới lại nảy sinh. Tưởng tượng thêm variables giống như tạo những sinh vật mới, vậy ta sẽ lưu những sinh vật này ở đâu? khi cần thì tìm chúng như thế nào? 
 
-Những câu hỏi này liên quan đến nhu cầu tạo ra 1 tập hợp các quy định rõ ràng về cách lưu các variables ở một nơi nào đó, và cách để tìm các variables này ở một thời điểm sau đó. Tập hợp các quy định này là gì? Đó là **Scope**. 
+Những câu hỏi này dẫn đến nhu cầu tạo ra 1 tập hợp các quy định rõ ràng về:
+- cách lưu các variables ở một nơi nào đó, và 
+- cách để tìm các variables này ở một thời điểm sau đó. 
+Tập hợp các quy định này là gì? Đó là **Scope**. 
 
 Vậy, từ đâu và làm thế nào để có thể thiết lập các quy luật cho **Scope**? 
 
@@ -15,21 +18,21 @@ Vậy, từ đâu và làm thế nào để có thể thiết lập các quy lu�
 
 Tuỳ thuộc vào kinh nghiệm làm việc với ít/ nhiều ngôn ngữ lập trình mà bạn sẽ thấy khẳng định sau là đương nhiên/ hoặc ngạc nhiên (:D): "*Cho dù JavaScript được sắp vào nhóm ngôn ngữ lập trình loại *động*, hoặc *thông dịch*, thì thực tế nó vẫn là 1 ngôn ngữ *biên dịch**". Không giống như các ngôn ngữ lập trình biên dịch truyền thống khác, các đoạn code JavaScript *không* được biên dịch trước, và cũng chẳng là kết quả của compilation portable among nhiều hệ thống phân tán.
 
-Dẫu vậy, engine của JavaScirpt thực hiện rất nhiều bước tương tự như các ngôn ngữ biên dịch truyền thống, theo cách phức tạp hơn những gì chúng ta nghĩ. 
+Dẫu vậy, engine của JavaScirpt thực hiện rất nhiều bước tương tự như các ngôn ngữ biên dịch truyền thống, nhưng theo cách phức tạp hơn những gì chúng ta nghĩ. 
 
 Khi nhìn vào quá trình của các ngôn ngữ biên dịch truyền thống, mỗi đoạn mã chương trình sẽ đi qua ba bước điển hình sau *trước* khi nó được thực thi, ta gọi nôm na quá trình này là "sự compilation (biên dịch)":
 
-1. **Tokenizing/Lexing (Quá trình phân tích thành các phần tử token):** là quá trình chia 1 đoạn code ra thành những phần có nghĩa, mỗi phần được gọi là 1 "token". Ví dụ đoạn code sau: `var a = 2;`. Đoạn mã này khả năng sẽ được chia thành các token: `var`, `a`, `=`, `2`, và `;`. Khoảng trắng có thể (hoặc không) được coi là 1 token, phụ thuộc vào việc nó có mang ý nghĩa gì hay không.
+1. **Tokenizing/Lexing (Quá trình phân tích đoạn code thành các phần tử token):** là quá trình chia 1 đoạn code ra thành những phần có nghĩa, mỗi phần được gọi là 1 "token". Ví dụ đoạn code sau: `var a = 2;`. Đoạn mã này khả năng sẽ được chia thành các token: `var`, `a`, `=`, `2`, và `;`. Khoảng trắng có thể (hoặc không) được coi là 1 token, phụ thuộc vào việc nó có mang ý nghĩa gì hay không.
 
-	**Note:** Không dễ để chỉ ra sự khác biệt giữa "tokenizing" và "lexing", mà có nói thì cũng là vấn đề học thuật cao cấp, nhưng nói chung là việc xác định là hay không phải là tokens sẽ thông qua 1 trong 2 cách: *stateless* hoặc *stateful*. Put simply, if the tokenizer were to invoke stateful parsing rules to figure out whether `a` should be considered a distinct token or just part of another token, *that* would be **lexing**.
+	**Note:** Không dễ để chỉ ra sự khác biệt giữa "tokenizing" và "lexing", mà có nói thì đấy cũng là vấn đề học thuật cao cấp vượt qua khuôn khổ bài viết này. Nhưng nói chung, việc xác định mỗi phần nhỏ của đoạn code là token hay không sẽ thông qua 1 trong 2 cách: *stateless* hoặc *stateful*. Put simply, if the tokenizer were to invoke stateful parsing rules to figure out whether `a` should be considered a distinct token or just part of another token, *that* would be **lexing**.
 
-2. **Parsing (Quá trình phân tích cú pháp):** sử dụng 1 luồng (stream)/ chuỗi (array) các tokens, biết chúng thành 1 cây với các phần tử lồng vào nhau (tree of nested elements), cùng nhau biểu diễn cấu trúc ngữ pháp của chương trình (collectively represent the grammatical structure of the program). Cây này được gọi là "AST" (<b>A</b>bstract <b>S</b>yntax <b>T</b>ree) (Dịch thô: "Cây Cú pháp Trừu tượng") .
+2. **Parsing (Quá trình phân tích cú pháp):** sử dụng 1 luồng (stream)/ chuỗi (array) các tokens, biến chúng thành 1 cây với các phần tử lồng vào nhau (tree of nested elements), cùng nhau biểu diễn cấu trúc ngữ pháp của chương trình (collectively represent the grammatical structure of the program). Cây này được gọi là "AST" (<b>A</b>bstract <b>S</b>yntax <b>T</b>ree) (Dịch thô: "Cây Cú pháp Trừu tượng") .
 
-	Cây của đoạn code `var a = 2;` có thể được bắt đầu với điểm nút cấp cao nhất (top-level node) tên là `VariableDeclaration`, nút con (child node) tên là  `Identifier` (giá trị của nó bằng `a`), và 1 nút con khác tên là `AssignmentExpression` (bản thân nó có 1 nút con tên là `NumericLiteral` (giá trị của nút con `NumericLiteral` này là `2`)).
+	Cây của đoạn code `var a = 2;` có thể được bắt đầu với điểm nốt cấp cao nhất (top-level node) tên là `VariableDeclaration`, nốt con (child node) tên là  `Identifier` (giá trị của nó bằng `a`), và 1 nốt con khác tên là `AssignmentExpression` (bản thân `AssignmentExpression` có 1 nốt con tên là `NumericLiteral` (giá trị của nút con `NumericLiteral` này là `2`)).
 
 3. **Code-Generation (Quá trình tạo code):** đây là quá trình sử dụng 1 AST và biến thành 1 đoạn code thực thi được (executable code). Phần này sẽ có khác biệt lớn giữa các ngôn ngữ lập trình, cũng như nền tảng thực hiện.
 
-	Thế đó, thay vì bị tắc trong mớ lý thuyết chi tiết, chúng ta sẽ chỉ phẩy tay và nói rằng có một quá trình để phân tích đoạn code `var a=2` thành cây cú pháp trừu tượng AST; sau đó biến nó thành 1 tập hợp các đoạn mã máy tính - *tạo* một variable tên là `a` (bao gồm cả reversing memory, v.v.), rồi lưu giá trị (value) nào đó vào `a`.
+	Thế đó, thay vì bị tắc trong mớ lý thuyết chi tiết, chúng ta sẽ chỉ hiểu ngắn gọn rằng có một quá trình để phân tích đoạn code `var a=2` thành cây cú pháp trừu tượng AST; sau đó biến nó thành 1 tập hợp các đoạn mã máy tính - *tạo* một variable tên là `a` (bao gồm cả reversing memory, v.v.), rồi lưu giá trị (value) nào đó vào `a`.
 
 
     **Lưu ý:** Cách engine sử lý tài nguyên hệ thống (system resources) phức tạp hơn rất nhiều những gì chúng ta nói ở trên, vì thế ta cứ coi chuyện engine có khả năng tạo và lưu variables khi cần là điều hiển nhiên.
@@ -40,7 +43,7 @@ Cho nên, ở đây tôi chỉ vẽ lên nguyên lý của compiler bằng nhữ
 
 Hãy nhớ rằng, engine Javascript không có nhiều thời gian (bằng các ngôn ngữ biên dịch khác) để tối ưu hoá, bởi sự biên dịch ngôn ngữ JavaScript (JavaScript compilation) không diễn ra trước cả 1 khoảng thời gian như những ngôn ngữ khác. 
 
-Với Javascript thì quá trình biên dịch trong nhiều trường hợp xảy ra trước khi đoạn code được thực thi chỉ khoảng vài phần triệu của giây. Để đảm bảo hiệu suất nhanh nhất, các engines JavaScript sử dụng tất cả các loại mánh lới (tricks) như JITS (lazy compile, hot re-compile, v.v.) nhưng chúng lại nằm quá khuôn khổ của cuốn sách này. Túm lại là bất kỳ đoạn code JavaScript nào đều phải được biên dịch *ngay* (chú ý là *ngay*) trước khi nó được thực thi. 
+Với Javascript thì quá trình biên dịch trong nhiều trường hợp xảy ra trước khi đoạn code được thực thi chỉ khoảng vài phần triệu của giây. Để đảm bảo hiệu suất nhanh nhất, các engines JavaScript sử dụng tất cả các loại mánh lới (tricks) như JITS (lazy compile, hot re-compile, v.v.) nhưng đề tài này lại nằm quá khuôn khổ của cuốn sách này. Túm lại là bất kỳ đoạn code JavaScript nào đều phải được biên dịch *ngay* (chú ý là *ngay*) trước khi nó được thực thi. 
 
 ## Hiểu về Scope
 
@@ -54,13 +57,13 @@ Xin mời gặp dàn diễn viên sẽ nhập vai và thể hiện quá trình x
 
 2. Diễn viên vào vai *Compiler*: là một người bạn của *Engine*; xử lý mọi công việc chẳng lấy làm dễ chịu gì liên quan đến "parsing" và "code-generation" (xem lại mục trước).
 
-3. Diễn viên vào vai *Scope*: một người bạn khác *Engine*; tập hợp và bảo quản một danh sách tra cứu tất cả các identifiers đã được khai báo (tức là variables), đảm bảo các quy định được thực hiện nghiêm ngặt, cũng như cho phép các đoạn code đang thực thi truy cập vào variables. 
+3. Diễn viên vào vai *Scope*: một người bạn khác *Engine*; tập hợp và bảo quản một danh sách tra cứu tất cả các identifiers (định danh) đã được khai báo (tức là variables), đảm bảo các quy định được thực hiện nghiêm ngặt, cũng như cho phép các đoạn code đang thực thi truy cập vào variables. 
 
 Để có thể *nắm được hoàn toàn* cách JavaScript làm việc, bạn cần bắt đầu *nghĩ* như *Engine* (và 2 người bạn) nghĩ, hỏi tương tự thứ họ hỏi, trả lời theo cách họ trả lời. 
 
 ### Back & Forth
 
-Khi nhìn đoạn code `var a = 2;` thường là bạn sẽ nghĩ rằng đây là là 1 câu lệnh (statement). Nhưng đó không giống cách mà *Engine* nhìn thấy. Thực tế là *Engine* sẽ thấy 2 câu lệnh khác nhau (two distinct statements), một dành cho *Compiler* - người sẽ xử lý trong quá trình biên dịch, và một dành cho *Engine* xử lý trong quá trình thực thi.
+Khi nhìn đoạn code `var a = 2;` thường là bạn sẽ cho rằng đây là là 1 câu lệnh (statement). Thực tế là *Engine* sẽ thấy 2 câu lệnh khác nhau (two distinct statements), một dành cho *Compiler* - người sẽ xử lý trong quá trình biên dịch, và một dành cho *Engine* xử lý trong quá trình thực thi.
 
 Vậy hãy thử cùng tìm hiểu từng bước cách mà *Engine* và đồng bọn sẽ làm khi gặp đoạn code `var a = 2;`.
 
