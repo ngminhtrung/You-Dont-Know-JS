@@ -205,22 +205,24 @@ It is a strange sort of mind-bending thought to see `with` turning, at runtime, 
 
 ### Hiệu năng thực thi
 
-Both `eval(..)` and `with` cheat the otherwise author-time defined lexical scope by modifying or creating new lexical scope at runtime.
+Cả `eval(..)` và `with` đều ăn gian với lexical scope định ra bởi người viết code thông qua việc thay đổi lexical scope đấy, hoặc thậm chí tạo 1 lexical scope mới tại thời điểm thực thi.
 
-So, what's the big deal, you ask? If they offer more sophisticated functionality and coding flexibility, aren't these *good* features? **No.**
+Nhưng thế thì đã sao nào? Nếu việc này cho chúng ta thêm những tính năng tinh tế và tăng tính linh động trong lập trình thì tại sao không coi đây là "điểm *tốt*"? Câu trả lời ở đây là nó **không** tốt chút nào.
 
-The JavaScript *Engine* has a number of performance optimizations that it performs during the compilation phase. Some of these boil down to being able to essentially statically analyze the code as it lexes, and pre-determine where all the variable and function declarations are, so that it takes less effort to resolve identifiers during execution.
+*Engine* của JavaScript có một vài thao tác để tối ưu hiệu năng trong quá trình biên dịch. Các thao tác này có đạt được kết quả tốt nhất hay không cơ bản phụ thuộc vào việc đoạn code lôi ra phân tích (trong quá trình lexing) có "tĩnh" hay không. Các khai báo variables cùng functions sẽ được duyệt trước, đảm bảo công sức tìm kiếm các tên variables/ functiosn được giảm thiểu trong khi thực thi. Với `eval(...)` và `with`, *Engine* khi thấy 2 hàm này trong đoạn code, nó phải *tạm cho là* những variables/ functiosn vừa tìm được đều không còn đúng nữa. Tại sao? Bởi vì nó không thể biết tại thời điểm "lexing":
+- cái gì sẽ được truyền cho `eval(..)` có thể dẫn đến thay đổi của của lexical scope? 
+- hoặc liệu nội dung của object bạn truyền cho `with` sẽ tạo 1 lexical scope mới ảnh hưởng đến lexical scope hiện tại?  
 
-But if the *Engine* finds an `eval(..)` or `with` in the code, it essentially has to *assume* that all its awareness of identifier location may be invalid, because it cannot know at lexing time exactly what code you may pass to `eval(..)` to modify the lexical scope, or the contents of the object you may pass to `with` to create a new lexical scope to be consulted.
+Nói một cách tiêu cực thì mọi nỗ lực tối ưu *gần như* sẽ trở thành công cốc nếu có `eval(..)` hoặc `with` trong chương trình, và "điểm *tốt*" mà ta tưởng tượng ở trên lại không đep lại lợi ích gì.
 
-In other words, in the pessimistic sense, most of those optimizations it *would* make are pointless if `eval(..)` or `with` are present, so it simply doesn't perform the optimizations *at all*.
+Khả năng là 99% chương trình sẽ chạy chậm đi bởi `eval(..)` hoặc `with` được đặt vào những vị trí không đoán trước được trong code. Bất kể *Engine* có thông minh thế nào trong việc hạn chế các tác dụng phụ của 2 hàm này, **một sự thật không thể chối bỏ đó là không có tối ưu, chương trình sẽ chạy chậm đi.**
 
-Your code will almost certainly tend to run slower simply by the fact that you include an `eval(..)` or `with` anywhere in the code. No matter how smart the *Engine* may be about trying to limit the side-effects of these pessimistic assumptions, **there's no getting around the fact that without the optimizations, code runs slower.**
+## Tổng kết (TL;DR - Quá dài, ứ đọc)
 
-## Review (TL;DR)
+Lexical scope là scope được xác định lúc lập trình viên viết code và khai báo hàm (chưa cho chương trình thực thi). Giai đoạn "lexing" (phân tích đoạn code thành nhiều phần nhỏ có nghĩa - tokens) trong quá trình biên dịch sẽ cho *Engine* biết các variables và functions được khai báo ở đâu và chỗ nào, và dự đoán sẽ cần tìm những đối tượng này ở đâu khi thực thi chương trình.
 
-Lexical scope means that scope is defined by author-time decisions of where functions are declared. The lexing phase of compilation is essentially able to know where and how all identifiers are declared, and thus predict how they will be looked-up during execution.
+Có 2 cách để "ăn gian" lexical scope trong Javascript: sử dụng `eval(...)` và `with`. 
+- `eva(...)` lúc thực thi chương trình sẽ khiến lexical scope hiện tại thay đổi. Việc thay đổi này là do nội dung của chuỗi "code" truyền cho `eval(...)` có hay không có khai báo hàm/ khai báo variables trong đó. 
+- `with` lúc thực thi sẽ tạo 1 lexical scope hoàn toàn mới bởi nó coi mỗi tham chiếu đến object là 1 scope, thuộc tính của object được coi là một variable/ function trong scope. 
 
-Two mechanisms in JavaScript can "cheat" lexical scope: `eval(..)` and `with`. The former can modify existing lexical scope (at runtime) by evaluating a string of "code" which has one or more declarations in it. The latter essentially creates a whole new lexical scope (again, at runtime) by treating an object reference *as* a "scope" and that object's properties as scoped identifiers.
-
-The downside to these mechanisms is that it defeats the *Engine*'s ability to perform compile-time optimizations regarding scope look-up, because the *Engine* has to assume pessimistically that such optimizations will be invalid. Code *will* run slower as a result of using either feature. **Don't use them.**
+Điểm trừ của hai cơ chế này là nó làm *Engine* mất khả năng tối ưu hoá việc tìm kiếm scope trong thời điểm biên dịch, bởi *Engine* phải giả sử rằng việc tối ưu của nó là vô ích. Hậu quả là chương trình *sẽ* chạy chậm đi. **Tốt nhất là đừng dùng `eval(...)` hoặc `with`.**
