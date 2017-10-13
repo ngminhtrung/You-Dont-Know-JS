@@ -1,11 +1,11 @@
 # You Don't Know JS: Scope & Closures
 # Chapter 3: Function vs. Block Scope
 
-As we explored in Chapter 2, scope consists of a series of "bubbles" that each act as a container or bucket, in which identifiers (variables, functions) are declared. These bubbles nest neatly inside each other, and this nesting is defined at author-time.
+Như đã nói trong Chương 2, scope là 1 series các "quả bóng" mà "bên trong quả bóng" các variables và functions được khai báo. Các quả bóng này được lồng bên trong nhau một cách ngăn nắp, và việc sắp xếp này được cố định từ lúc đoạn code được viết xong.
 
-But what exactly makes a new bubble? Is it only the function? Can other structures in JavaScript create bubbles of scope?
+Nhưng liệu các quả bóng scope chỉ được tạo ra bởi các functions? còn 1 cấu trúc nào tạo ra bóng nữa hay không?
 
-## Scope From Functions
+## Scope tạo bởi Functions
 
 The most common answer to those questions is that JavaScript has function-based scope. That is, each function you declare creates a bubble for itself, but no other structures create their own scope bubbles. As we'll see in just a little bit, this is not quite true.
 
