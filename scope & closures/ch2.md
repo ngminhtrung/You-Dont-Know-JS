@@ -1,23 +1,25 @@
 # You Don't Know JS: Scope & Closures
 # Chapter 2: Lexical Scope
 
-In Chapter 1, we defined "scope" as the set of rules that govern how the *Engine* can look up a variable by its identifier name and find it, either in the current *Scope*, or in any of the *Nested Scopes* it's contained within.
+Trong Chương 1, chúng ta đã định nghĩa "scope" là tập hợp các quy định hướng dẫn *Engine* trong viêcj tìm kiếm một variable thông qua định danh của nó (identifier), hoặc tìm trong *Scope* hiện thời, hoặc trong những "Scope" ngay kế trên nó.
 
-There are two predominant models for how scope works. The first of these is by far the most common, used by the vast majority of programming languages. It's called **Lexical Scope**, and we will examine it in-depth. The other model, which is still used by some languages (such as Bash scripting, some modes in Perl, etc.) is called **Dynamic Scope**.
+Trong thế giới lập trình, để mô tả hoạt động của Scope thì có 2 mô hình (model) chính:
+1. Mô hình 1: **Lexical Scope**, thông dụng nhất, được sử dụng bởi hầu hết các ngôn ngữ lập trình. 
+2. Mô hình 2: **Dynamic Scope**, sử dụng bởi 1 vài ngôn ngữ khác như Bash scripting, Perl, v.v.
 
-Dynamic Scope is covered in Appendix A. I mention it here only to provide a contrast with Lexical Scope, which is the scope model that JavaScript employs.
+"Dynamic Scope" sẽ được trình bày trong Appendix A. Tôi chỉ nhắc đến nó ở đây để độc giả biết thêm về 1 khái niệm bên cạnh "Lexical Scope", mô hình mà JavaScript sử dụng.
 
 ## Lex-time
 
-As we discussed in Chapter 1, the first traditional phase of a standard language compiler is called lexing (aka, tokenizing). If you recall, the lexing process examines a string of source code characters and assigns semantic meaning to the tokens as a result of some stateful parsing.
+Như đã nói trong Chương 1, bước đầu tiên của 1 trình biên dịch (với ngôn ngữ biên dịch truyền thống) là phân tích đoạn code thành những phần nhỏ (mỗi phần gọi là token), thuật ngữ chuyên môn gọi bước này là "lexing" (hay là "tokenizing"). Quá trình "lexing" sẽ khảo sát đoạn code, thêm ý nghĩa (về mặt lập trình) cho từng token (đây là kết quả của "stateful parsing"). Khái niệm này là nền tảng để hiểu "lexical scope" là gì, và thuật ngữ này đến từ đâu. 
 
-It is this concept which provides the foundation to understand what lexical scope is and where the name comes from.
+Việc định nghĩa "lexical scope" khá là ngoằn ngoèo, nó là ... "scope" nhưng tồn tại trong *thời gian "lexing"*. Nói cách khác, "lexical scope" dựa trên 
 
-To define it somewhat circularly, lexical scope is scope that is defined at lexing time. In other words, lexical scope is based on where variables and blocks of scope are authored, by you, at write time, and thus is (mostly) set in stone by the time the lexer processes your code.
+. In other words, lexical scope is based on where variables and blocks of scope are authored, by you, at write time, and thus is (mostly) set in stone by the time the lexer processes your code.
 
 **Note:** We will see in a little bit there are some ways to cheat lexical scope, thereby modifying it after the lexer has passed by, but these are frowned upon. It is considered best practice to treat lexical scope as, in fact, lexical-only, and thus entirely author-time in nature.
 
-Let's consider this block of code:
+Quan sát đoạn code sau:
 
 ```js
 function foo(a) {
@@ -34,65 +36,67 @@ function foo(a) {
 foo( 2 ); // 2 4 12
 ```
 
-There are three nested scopes inherent in this code example. It may be helpful to think about these scopes as bubbles inside of each other.
+Có 3 scopes lồng nhau trong đoạn code trên, giống như 3 quả bong bóng kích thước từ nhỏ - nhỡ - to lồng trong nhau. 
 
 <img src="fig2.png" width="500">
 
-**Bubble 1** encompasses the global scope, and has just one identifier in it: `foo`.
+**Bóng 1** tương ứng với global scope, bên trong global scope này chỉ 1 "đối tượng" có định danh là `foo`.
 
-**Bubble 2** encompasses the scope of `foo`, which includes the three identifiers: `a`, `bar` and `b`.
+**Bóng 2** tương ứng với scope `foo`, bên trong có 3 "đối tượng" với định danh lần lượt là: `a`, `bar` and `b`.
 
-**Bubble 3** encompasses the scope of `bar`, and it includes just one identifier: `c`.
+**Bóng 3** tương ứng với scope `bar`, bên trong có 1 "đối tượng" với định danh là: `c`.
 
-Scope bubbles are defined by where the blocks of scope are written, which one is nested inside the other, etc. In the next chapter, we'll discuss different units of scope, but for now, let's just assume that each function creates a new bubble of scope.
+Scope của từng quả bóng được xác định thông qua vị trí của nó (tức là bóng ở bên trong cùng/ ở giữa/ hay ngoài cùng). Trong chương tiếp theo, chúng ta sẽ thảo luận về các đơn vị khác nhau của scope, còn ở chương này, cứ giả sử rằng mỗi function sẽ tạo 1 quả bóng scope mới. 
 
-The bubble for `bar` is entirely contained within the bubble for `foo`, because (and only because) that's where we chose to define the function `bar`.
+Quả bóng cho `bar` nằm gọn bên trong quả bóng cho `foo` vì và chỉ vì ta đặt hàm `bar` bên trong `foo`. 
 
-Notice that these nested bubbles are strictly nested. We're not talking about Venn diagrams where the bubbles can cross boundaries. In other words, no bubble for some function can simultaneously exist (partially) inside two other outer scope bubbles, just as no function can partially be inside each of two parent functions.
+Lưu ý là ở đây, quả bóng scope của 1 function sẽ nằm hoàn toàn trong quả bóng scope to hơn nó. Sẽ không có chuyện nó nằm "một phần" dạng chân trong chân ngoài, cũng không có chuyện nó "trùng" vào một phần của 1 quả bóng scope của 1 function khác. Nnhững đặc tính của [giản đồ Venn](https://en.wikipedia.org/wiki/Venn_diagram) không áp dụng ở đây. 
 
-### Look-ups
+### Tìm kiếm trong Scope
 
-The structure and relative placement of these scope bubbles fully explains to the *Engine* all the places it needs to look to find an identifier.
 
-In the above code snippet, the *Engine* executes the `console.log(..)` statement and goes looking for the three referenced variables `a`, `b`, and `c`. It first starts with the innermost scope bubble, the scope of the `bar(..)` function. It won't find `a` there, so it goes up one level, out to the next nearest scope bubble, the scope of `foo(..)`. It finds `a` there, and so it uses that `a`. Same thing for `b`. But `c`, it does find inside of `bar(..)`.
+Việc các quả bóng được sắp xếp, nằm bên trong nhau như thế nào sẽ giúp cho *Engine* hiểu được nếu cần tìm 1 đối tượng có định danh nào đó thì tìm ở đâu. 
 
-Had there been a `c` both inside of `bar(..)` and inside of `foo(..)`, the `console.log(..)` statement would have found and used the one in `bar(..)`, never getting to the one in `foo(..)`.
+Với đoạn code ở bên trên, *Engine* thực thi câu lệnh `console.log(..)`, đi tìm các variables có nhãn định danh là `a`, `b`, and `c`. *Engine*  sẽ:
+- bắt đầu với quả bóng scope trong cùng ứng với function `bar(..)`
+- do không tìm thấy `a` ở bước đầu, nó nhảy lên 1 quả bóng ở cấp cao hơn, đấy là quả bóng scope của hàm `foo(..)`. *Engine* tìm thấy `a` ở đây, sử dụng `a` cho công việc nó cần. 
+- với `b` thì các bước trên được lặp lại tương tự.
+- với `c`, *Engine* tìm thấy nó ngay trong quả bóng scope của hàm `bar(..)`.
 
-**Scope look-up stops once it finds the first match**. The same identifier name can be specified at multiple layers of nested scope, which is called "shadowing" (the inner identifier "shadows" the outer identifier). Regardless of shadowing, scope look-up always starts at the innermost scope being executed at the time, and works its way outward/upward until the first match, and stops.
+Giả sử mà có 2 bạn cùng định danh `c` tồn tại cả ở trong `bar(..)` lẫn bên trong `foo(..)`, thì `c` trong `bar(..)` sẽ được sử dụng (bỏ qua `c` trong `foo(...)`).
 
-**Note:** Global variables are also automatically properties of the global object (`window` in browsers, etc.), so it *is* possible to reference a global variable not directly by its lexical name, but instead indirectly as a property reference of the global object.
+Vậy là **việc tìm kiếm trong Scope sẽ dừng ngay lập tức khi Engine tìm được thứ nó cầnh**. Nếu có nhiều variables cùng định danh, tồn tại cùng lúc ở nhiều quả bóng scope, thì những định danh ở vòng ngoài sẽ được gọi là "cái bóng ("bóng" trong bóng râm/ bóng tối). Không cần biết có bao nhiêu cái bóng ở các scope lồng nhau, việc tìm kiếm trong sẽ luôn bắt đầu với quả bóng trong cùng tại thời điểm code được thực thi, và đi từ trong ra ngoài đến khi *Engine* lần đầu tiên gặp cái nó đi tìm. 
+
+**Lưu ý:** "Global variables" mặc nhiên là thuộc tính (properties) của "global object" (trong trình duyệt web thì global object chính là `window`), cho nên ta có thể gọi 1 "global variable" từ 1 hàm (có scope ở dưới/trong cùng trong nhóm các scope lồng nhau) một cách gián tiếp thông qua tham chiếu đến đến "global object".
 
 ```js
 window.a
 ```
+Kỹ thuật này giúp ta điều gì? Giả sử ta cần gọi 1 global variable `a` từ 1 hàm có scope nằm tít dưới cùng của 1 nhóm các scope lồng nhau, và variable này lại có rất nhiều "cái bóng" (tức là các variables cũng đặt trùng tên `a`) ở các quả bóng khác. Nếu gọi theo cách thông thường thì *Engine* sẽ chỉ tìm `a` trong quả bóng nào gần nhất mà không với đến tận quả bóng global scope. Với cách viết `windows.a`, chắc chắn giá trị của `a` ở global scope sẽ được trả về. Kỹ thuật này không áp dụng với các variable không được khai báo trong global scope.
 
-This technique gives access to a global variable which would otherwise be inaccessible due to it being shadowed. However, non-global shadowed variables cannot be accessed.
-
-No matter *where* a function is invoked from, or even *how* it is invoked, its lexical scope is **only** defined by where the function was declared.
+Không cần biết là 1 function bị gọi (invoked) *từ đâu*, hoặc thậm chí là cũng không cần biết là *bằng cách nào* function đó được gọi, lexical scope của hàm đó **chỉ** gắn với nơi mà hàm đó được khai báo (declared). 
 
 The lexical scope look-up process *only* applies to first-class identifiers, such as the `a`, `b`, and `c`. If you had a reference to `foo.bar.baz` in a piece of code, the lexical scope look-up would apply to finding the `foo` identifier, but once it locates that variable, object property-access rules take over to resolve the `bar` and `baz` properties, respectively.
 
-## Cheating Lexical
+## Chơi "ăn gian" Lexical Scope
 
-If lexical scope is defined only by where a function is declared, which is entirely an author-time decision, how could there possibly be a way to "modify" (aka, cheat) lexical scope at run-time?
+Nếu lexical scope chỉ gắn với nơi mà hàm được khai báo, và vị trí khai báo hàm thì hoàn toàn phụ thuộc vào người viết đoạn code đó, vậy thì có cách nào để "thay đổi" (hay "chơi ăn gian") lexical scope vào thời điểm đoạn code được thực thi? 
 
-JavaScript has two such mechanisms. Both of them are equally frowned-upon in the wider community as bad practices to use in your code. But the typical arguments against them are often missing the most important point: **cheating lexical scope leads to poorer performance.**
-
-Before I explain the performance issue, though, let's look at how these two mechanisms work.
+Để trả lời câu hỏi nãy, hãy cùng bàn về 2 cơ chế (mechanisms) của JavaScript mà cả 2 đều bị phần đông lập trình viên chê tả tơi. Tuy vậy, hầu hết các ý kiến đó đều bị thiếu 1 điểm quan trọng nhất: **thay đổi lexical scope sẽ làm hiệu suất thực thi giảm đi.** Trước khi đi vào vấn đề hiệu suất này, tôi sẽ giải thích cách hoạt động của 2 cơ chế vừa nói: 
 
 ### `eval`
 
-The `eval(..)` function in JavaScript takes a string as an argument, and treats the contents of the string as if it had actually been authored code at that point in the program. In other words, you can programmatically generate code inside of your authored code, and run the generated code as if it had been there at author time.
+Hàm `eval(..)` của JavaScript sẽ nhận vào 1 chuỗi, cho rằng nội dung của chuỗi là 1 đoạn code đã được cho phép thực thi vào thời điểm chạy hàm `eval(...)`. In other words, you can programmatically generate code inside of your authored code, and run the generated code as if it had been there at author time.
 
 Evaluating `eval(..)` (pun intended) in that light, it should be clear how `eval(..)` allows you to modify the lexical scope environment by cheating and pretending that author-time (aka, lexical) code was there all along.
 
 On subsequent lines of code after an `eval(..)` has executed, the *Engine* will not "know" or "care" that the previous code in question was dynamically interpreted and thus modified the lexical scope environment. The *Engine* will simply perform its lexical scope look-ups as it always does.
 
-Consider the following code:
+Quan sát đoạn code sau:
 
 ```js
 function foo(str, a) {
-	eval( str ); // cheating!
+	eval( str ); // đang "chơi ăn gian"!
 	console.log( a, b );
 }
 
@@ -101,15 +105,15 @@ var b = 2;
 foo( "var b = 3;", 1 ); // 1 3
 ```
 
-The string `"var b = 3;"` is treated, at the point of the `eval(..)` call, as code that was there all along. Because that code happens to declare a new variable `b`, it modifies the existing lexical scope of `foo(..)`. In fact, as mentioned above, this code actually creates variable `b` inside of `foo(..)` that shadows the `b` that was declared in the outer (global) scope.
+Tại thời điểm gọi hàm `eval(..)` thì chuỗi `"var b = 3;"` được coi như là 1 đoạn code vốn đã ở đó từ trước. Bởi trong đoạn code này có phần khai báo variable `b` nên lexical scope của `foo(..)` bị thay đổi, variable `b` được tạo bên trong `foo(..)`, che đi variable `b` vốn được khai báo ở scope vòng tiếp theo (trường hợp này là global scope).
 
-When the `console.log(..)` call occurs, it finds both `a` and `b` in the scope of `foo(..)`, and never finds the outer `b`. Thus, we print out "1 3" instead of "1 2" as would have normally been the case.
+Khi hàm `console.log(..)` được gọi, hàm này tìm thấy cả `a` lẫn `b` bên trong scope của `foo(..)`, nó dừng ở đó mà không hề mở rộng tìm kiếm `b` ở scope vòng tiếp theo. Do đó, kết quả thu được là "1 3" thay vì "1 2".
 
-**Note:** In this example, for simplicity's sake, the string of "code" we pass in was a fixed literal. But it could easily have been programmatically created by adding characters together based on your program's logic. `eval(..)` is usually used to execute dynamically created code, as dynamically evaluating essentially static code from a string literal would provide no real benefit to just authoring the code directly.
+**Lưu ý:** Trong ví dụ trên, để dễ giải thích nên chúng ta đã sử dụng một chuỗi có nội dung "tĩnh" (a fixed literal). Thường thì không ai sử dụng nội dung "tĩnh" như thế với mà sẽ để nó dạng nội dung "động".
 
-By default, if a string of code that `eval(..)` executes contains one or more declarations (either variables or functions), this action modifies the existing lexical scope in which the `eval(..)` resides. Technically, `eval(..)` can be invoked "indirectly", through various tricks (beyond our discussion here), which causes it to instead execute in the context of the global scope, thus modifying it. But in either case, `eval(..)` can at runtime modify an author-time lexical scope.
+Mặc định nếu chuỗi nhận vào của `eval(..)` chứa từ 1 khai báo variables (hoặc khai báo hàm) trở lên thì lexical scope của hàm chứa `eval(..)` sẽ thay đổi. Người ta có thể gọi (invoke) `eval(..)` theo nhiều cách, cả trực tiếp (giống như trên) lẫn gián tiếp bằng rất nhiều mẹo (mẹo gì thì không bàn ở đây). Cách gọi gián tiếp causes it to instead execute in the context of the global scope, thus modifying it. But in either case, `eval(..)` can at runtime modify an author-time lexical scope.
 
-**Note:** `eval(..)` when used in a strict-mode program operates in its own lexical scope, which means declarations made inside of the `eval()` do not actually modify the enclosing scope.
+**Lưu ý:** Trong strict-mode, `eval(..)` không làm thay đổi lexical scope của hàm chứa nó.
 
 ```js
 function foo(str) {
@@ -120,8 +124,7 @@ function foo(str) {
 
 foo( "var a = 2" );
 ```
-
-There are other facilities in JavaScript which amount to a very similar effect to `eval(..)`. `setTimeout(..)` and `setInterval(..)` *can* take a string for their respective first argument, the contents of which are `eval`uated as the code of a dynamically-generated function. This is old, legacy behavior and long-since deprecated. Don't do it!
+Có một vài hàm khác trong JavaScript có tính năng tương tự `eval(..)`, ví dụ như `setTimeout(..)` và `setInterval(..)`. Hai hàm này *có thể* nhận 1 chuỗi làm tham số đầu vào, nội dung của chuỗi này cũng được coi như 1 đoạn code độc lập để chạy. Cách làm này đã cũ và bị tẩy chay. Đừng làm như vậy!
 
 The `new Function(..)` function constructor similarly takes a string of code in its **last** argument to turn into a dynamically-generated function (the first argument(s), if any, are the named parameters for the new function). This function-constructor syntax is slightly safer than `eval(..)`, but it should still be avoided in your code.
 
@@ -200,7 +203,7 @@ It is a strange sort of mind-bending thought to see `with` turning, at runtime, 
 
 **Note:** In addition to being a bad idea to use, both `eval(..)` and `with` are affected (restricted) by Strict Mode. `with` is outright disallowed, whereas various forms of indirect or unsafe `eval(..)` are disallowed while retaining the core functionality.
 
-### Performance
+### Hiệu năng thực thi
 
 Both `eval(..)` and `with` cheat the otherwise author-time defined lexical scope by modifying or creating new lexical scope at runtime.
 
