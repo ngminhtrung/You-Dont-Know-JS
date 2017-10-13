@@ -1,14 +1,14 @@
 # You Don't Know JS: Scope & Closures
 
-## Table of Contents
+## Mục lục
 
 * Foreword
 * Preface
-* Chapter 1: What is Scope?
-	* Compiler Theory
-	* Understanding Scope
-	* Nested Scope
-	* Errors
+* Chương 1: Scope là gì?
+	* Lý thuyết về trình Biên dịch (Compiler) 
+	* Hiểu về Scope
+	* Scope được lồng nhau
+	* Bản chất các thông báo lỗi liên quan
 * Chapter 2: Lexical Scope
 	* Lex-time
 	* Cheating Lexical

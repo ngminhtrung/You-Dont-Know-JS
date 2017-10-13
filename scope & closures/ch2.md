@@ -13,11 +13,9 @@ Trong thế giới lập trình, để mô tả hoạt động của Scope thì 
 
 Như đã nói trong Chương 1, bước đầu tiên của 1 trình biên dịch (với ngôn ngữ biên dịch truyền thống) là phân tích đoạn code thành những phần nhỏ (mỗi phần gọi là token), thuật ngữ chuyên môn gọi bước này là "lexing" (hay là "tokenizing"). Quá trình "lexing" sẽ khảo sát đoạn code, thêm ý nghĩa (về mặt lập trình) cho từng token (đây là kết quả của "stateful parsing"). Khái niệm này là nền tảng để hiểu "lexical scope" là gì, và thuật ngữ này đến từ đâu. 
 
-Việc định nghĩa "lexical scope" khá là ngoằn ngoèo, nó là ... "scope" nhưng tồn tại trong *thời gian "lexing"*. Nói cách khác, "lexical scope" dựa trên 
+Việc định nghĩa "lexical scope" khá là ngoằn ngoèo, nó là ... "scope" nhưng tồn tại trong *thời gian "lexing"*. Để đơn giản thì lexical scope được xác định vào lúc tác giả viết code, sắp xếp các variables hoặc khối code ở các vị trí nhất định. Lexical scope sẽ được giữ nguyên cho đến thời điểm "lexing" (tức là giai đoạn mà code được chia thành các phần nhỏ có ý nghĩa).
 
-. In other words, lexical scope is based on where variables and blocks of scope are authored, by you, at write time, and thus is (mostly) set in stone by the time the lexer processes your code.
-
-**Note:** We will see in a little bit there are some ways to cheat lexical scope, thereby modifying it after the lexer has passed by, but these are frowned upon. It is considered best practice to treat lexical scope as, in fact, lexical-only, and thus entirely author-time in nature.
+**Lưu ý:** Bạn sẽ thấy có những cách để ăn gian "lexical scope", tức là thay đổi "lexical scooe" sau thời điểm "lexing". Tuy vậy những cách này không nên chút nào, tốt nhất hãy giữa "lexical scope" là chính nó. 
 
 Quan sát đoạn code sau:
 
@@ -84,7 +82,7 @@ Nếu lexical scope chỉ gắn với nơi mà hàm được khai báo, và vị
 
 Để trả lời câu hỏi nãy, hãy cùng bàn về 2 cơ chế (mechanisms) của JavaScript mà cả 2 đều bị phần đông lập trình viên chê tả tơi. Tuy vậy, hầu hết các ý kiến đó đều bị thiếu 1 điểm quan trọng nhất: **thay đổi lexical scope sẽ làm hiệu suất thực thi giảm đi.** Trước khi đi vào vấn đề hiệu suất này, tôi sẽ giải thích cách hoạt động của 2 cơ chế vừa nói: 
 
-### `eval`
+### Ăn gian với `eval`
 
 Hàm `eval(..)` của JavaScript sẽ nhận vào 1 chuỗi, cho rằng nội dung của chuỗi là 1 đoạn code đã được cho phép thực thi vào thời điểm chạy hàm `eval(...)`. In other words, you can programmatically generate code inside of your authored code, and run the generated code as if it had been there at author time.
 
@@ -130,7 +128,7 @@ The `new Function(..)` function constructor similarly takes a string of code in 
 
 The use-cases for dynamically generating code inside your program are incredibly rare, as the performance degradations are almost never worth the capability.
 
-### `with`
+### Ăn gian với `with`
 
 The other frowned-upon (and now deprecated!) feature in JavaScript which cheats lexical scope is the `with` keyword. There are multiple valid ways that `with` can be explained, but I will choose here to explain it from the perspective of how it interacts with and affects lexical scope.
 
