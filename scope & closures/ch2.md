@@ -50,7 +50,7 @@ Scope của từng quả bóng được xác định thông qua vị trí của
 
 Quả bóng cho `bar` nằm gọn bên trong quả bóng cho `foo` vì và chỉ vì ta đặt hàm `bar` bên trong `foo`. 
 
-Lưu ý là ở đây, quả bóng scope của 1 function sẽ nằm hoàn toàn trong quả bóng scope to hơn nó. Sẽ không có chuyện nó nằm "một phần" dạng chân trong chân ngoài, cũng không có chuyện nó "trùng" vào một phần của 1 quả bóng scope của 1 function khác. Nnhững đặc tính của [giản đồ Venn](https://en.wikipedia.org/wiki/Venn_diagram) không áp dụng ở đây. 
+Lưu ý là ở đây, quả bóng scope của 1 function sẽ nằm hoàn toàn trong quả bóng scope to hơn nó. Sẽ không có chuyện nó nằm "một phần" dạng chân trong chân ngoài, cũng không có chuyện nó "trùng" vào một phần của 1 quả bóng scope của 1 function khác. Nnhững đặc tính của [giản đồ Venn](https://en.wikipedia.org/wiki/Venn_diagram) không áp dụng ở đây. 
 
 ### Tìm kiếm trong Scope
 
@@ -58,21 +58,21 @@ Lưu ý là ở đây, quả bóng scope của 1 function sẽ nằm hoàn toàn
 Việc các quả bóng được sắp xếp, nằm bên trong nhau như thế nào sẽ giúp cho *Engine* hiểu được nếu cần tìm 1 đối tượng có định danh nào đó thì tìm ở đâu. 
 
 Với đoạn code ở bên trên, *Engine* thực thi câu lệnh `console.log(..)`, đi tìm các variables có nhãn định danh là `a`, `b`, and `c`. *Engine*  sẽ:
-- bắt đầu với quả bóng scope trong cùng ứng với function `bar(..)`
+- bắt đầu với quả bóng scope trong cùng ứng với function `bar(..)`
 - do không tìm thấy `a` ở bước đầu, nó nhảy lên 1 quả bóng ở cấp cao hơn, đấy là quả bóng scope của hàm `foo(..)`. *Engine* tìm thấy `a` ở đây, sử dụng `a` cho công việc nó cần. 
-- với `b` thì các bước trên được lặp lại tương tự.
+- với `b` thì các bước trên được lặp lại tương tự.
 - với `c`, *Engine* tìm thấy nó ngay trong quả bóng scope của hàm `bar(..)`.
 
 Giả sử mà có 2 bạn cùng định danh `c` tồn tại cả ở trong `bar(..)` lẫn bên trong `foo(..)`, thì `c` trong `bar(..)` sẽ được sử dụng (bỏ qua `c` trong `foo(...)`).
 
-Vậy là **việc tìm kiếm trong Scope sẽ dừng ngay lập tức khi Engine tìm được thứ nó cầnh**. Nếu có nhiều variables cùng định danh, tồn tại cùng lúc ở nhiều quả bóng scope, thì những định danh ở vòng ngoài sẽ được gọi là "cái bóng ("bóng" trong bóng râm/ bóng tối). Không cần biết có bao nhiêu cái bóng ở các scope lồng nhau, việc tìm kiếm trong sẽ luôn bắt đầu với quả bóng trong cùng tại thời điểm code được thực thi, và đi từ trong ra ngoài đến khi *Engine* lần đầu tiên gặp cái nó đi tìm. 
+Vậy là **việc tìm kiếm trong Scope sẽ dừng ngay lập tức khi Engine tìm được thứ nó cầnh**. Nếu có nhiều variables cùng định danh, tồn tại cùng lúc ở nhiều quả bóng scope, thì những định danh ở vòng ngoài sẽ được gọi là "cái bóng ("bóng" trong bóng râm/ bóng tối). Không cần biết có bao nhiêu cái bóng ở các scope lồng nhau, việc tìm kiếm trong sẽ luôn bắt đầu với quả bóng trong cùng tại thời điểm code được thực thi, và đi từ trong ra ngoài đến khi *Engine* lần đầu tiên gặp cái nó đi tìm. 
 
-**Lưu ý:** "Global variables" mặc nhiên là thuộc tính (properties) của "global object" (trong trình duyệt web thì global object chính là `window`), cho nên ta có thể gọi 1 "global variable" từ 1 hàm (có scope ở dưới/trong cùng trong nhóm các scope lồng nhau) một cách gián tiếp thông qua tham chiếu đến đến "global object".
+**Lưu ý:** "Global variables" mặc nhiên là thuộc tính (properties) của "global object" (trong trình duyệt web thì global object chính là `window`), cho nên ta có thể gọi 1 "global variable" từ 1 hàm (có scope ở dưới/trong cùng trong nhóm các scope lồng nhau) một cách gián tiếp thông qua tham chiếu đến đến "global object".
 
 ```js
 window.a
 ```
-Kỹ thuật này giúp ta điều gì? Giả sử ta cần gọi 1 global variable `a` từ 1 hàm có scope nằm tít dưới cùng của 1 nhóm các scope lồng nhau, và variable này lại có rất nhiều "cái bóng" (tức là các variables cũng đặt trùng tên `a`) ở các quả bóng khác. Nếu gọi theo cách thông thường thì *Engine* sẽ chỉ tìm `a` trong quả bóng nào gần nhất mà không với đến tận quả bóng global scope. Với cách viết `windows.a`, chắc chắn giá trị của `a` ở global scope sẽ được trả về. Kỹ thuật này không áp dụng với các variable không được khai báo trong global scope.
+Kỹ thuật này giúp ta điều gì? Giả sử ta cần gọi 1 global variable `a` từ 1 hàm có scope nằm tít dưới cùng của 1 nhóm các scope lồng nhau, và variable này lại có rất nhiều "cái bóng" (tức là các variables cũng đặt trùng tên `a`) ở các quả bóng khác. Nếu gọi theo cách thông thường thì *Engine* sẽ chỉ tìm `a` trong quả bóng nào gần nhất mà không với đến tận quả bóng global scope. Với cách viết `windows.a`, chắc chắn giá trị của `a` ở global scope sẽ được trả về. Kỹ thuật này không áp dụng với các variable không được khai báo trong global scope.
 
 Không cần biết là 1 function bị gọi (invoked) *từ đâu*, hoặc thậm chí là cũng không cần biết là *bằng cách nào* function đó được gọi, lexical scope của hàm đó **chỉ** gắn với nơi mà hàm đó được khai báo (declared). 
 
@@ -82,7 +82,7 @@ The lexical scope look-up process *only* applies to first-class identifiers, suc
 
 Nếu lexical scope chỉ gắn với nơi mà hàm được khai báo, và vị trí khai báo hàm thì hoàn toàn phụ thuộc vào người viết đoạn code đó, vậy thì có cách nào để "thay đổi" (hay "chơi ăn gian") lexical scope vào thời điểm đoạn code được thực thi? 
 
-Để trả lời câu hỏi nãy, hãy cùng bàn về 2 cơ chế (mechanisms) của JavaScript mà cả 2 đều bị phần đông lập trình viên chê tả tơi. Tuy vậy, hầu hết các ý kiến đó đều bị thiếu 1 điểm quan trọng nhất: **thay đổi lexical scope sẽ làm hiệu suất thực thi giảm đi.** Trước khi đi vào vấn đề hiệu suất này, tôi sẽ giải thích cách hoạt động của 2 cơ chế vừa nói: 
+Để trả lời câu hỏi nãy, hãy cùng bàn về 2 cơ chế (mechanisms) của JavaScript mà cả 2 đều bị phần đông lập trình viên chê tả tơi. Tuy vậy, hầu hết các ý kiến đó đều bị thiếu 1 điểm quan trọng nhất: **thay đổi lexical scope sẽ làm hiệu suất thực thi giảm đi.** Trước khi đi vào vấn đề hiệu suất này, tôi sẽ giải thích cách hoạt động của 2 cơ chế vừa nói: 
 
 ### `eval`
 
@@ -107,11 +107,11 @@ foo( "var b = 3;", 1 ); // 1 3
 
 Tại thời điểm gọi hàm `eval(..)` thì chuỗi `"var b = 3;"` được coi như là 1 đoạn code vốn đã ở đó từ trước. Bởi trong đoạn code này có phần khai báo variable `b` nên lexical scope của `foo(..)` bị thay đổi, variable `b` được tạo bên trong `foo(..)`, che đi variable `b` vốn được khai báo ở scope vòng tiếp theo (trường hợp này là global scope).
 
-Khi hàm `console.log(..)` được gọi, hàm này tìm thấy cả `a` lẫn `b` bên trong scope của `foo(..)`, nó dừng ở đó mà không hề mở rộng tìm kiếm `b` ở scope vòng tiếp theo. Do đó, kết quả thu được là "1 3" thay vì "1 2".
+Khi hàm `console.log(..)` được gọi, hàm này tìm thấy cả `a` lẫn `b` bên trong scope của `foo(..)`, nó dừng ở đó mà không hề mở rộng tìm kiếm `b` ở scope vòng tiếp theo. Do đó, kết quả thu được là "1 3" thay vì "1 2".
 
-**Lưu ý:** Trong ví dụ trên, để dễ giải thích nên chúng ta đã sử dụng một chuỗi có nội dung "tĩnh" (a fixed literal). Thường thì không ai sử dụng nội dung "tĩnh" như thế với mà sẽ để nó dạng nội dung "động".
+**Lưu ý:** Trong ví dụ trên, để dễ giải thích nên chúng ta đã sử dụng một chuỗi có nội dung "tĩnh" (a fixed literal). Thường thì không ai sử dụng nội dung "tĩnh" như thế với mà sẽ để nó dạng nội dung "động".
 
-Mặc định nếu chuỗi nhận vào của `eval(..)` chứa từ 1 khai báo variables (hoặc khai báo hàm) trở lên thì lexical scope của hàm chứa `eval(..)` sẽ thay đổi. Người ta có thể gọi (invoke) `eval(..)` theo nhiều cách, cả trực tiếp (giống như trên) lẫn gián tiếp bằng rất nhiều mẹo (mẹo gì thì không bàn ở đây). Cách gọi gián tiếp causes it to instead execute in the context of the global scope, thus modifying it. But in either case, `eval(..)` can at runtime modify an author-time lexical scope.
+Mặc định nếu chuỗi nhận vào của `eval(..)` chứa từ 1 khai báo variables (hoặc khai báo hàm) trở lên thì lexical scope của hàm chứa `eval(..)` sẽ thay đổi. Người ta có thể gọi (invoke) `eval(..)` theo nhiều cách, cả trực tiếp (giống như trên) lẫn gián tiếp bằng rất nhiều mẹo (mẹo gì thì không bàn ở đây). Cách gọi gián tiếp causes it to instead execute in the context of the global scope, thus modifying it. But in either case, `eval(..)` can at runtime modify an author-time lexical scope.
 
 **Lưu ý:** Trong strict-mode, `eval(..)` không làm thay đổi lexical scope của hàm chứa nó.
 
@@ -209,20 +209,20 @@ Cả `eval(..)` và `with` đều ăn gian với lexical scope định ra bởi
 
 Nhưng thế thì đã sao nào? Nếu việc này cho chúng ta thêm những tính năng tinh tế và tăng tính linh động trong lập trình thì tại sao không coi đây là "điểm *tốt*"? Câu trả lời ở đây là nó **không** tốt chút nào.
 
-*Engine* của JavaScript có một vài thao tác để tối ưu hiệu năng trong quá trình biên dịch. Các thao tác này có đạt được kết quả tốt nhất hay không cơ bản phụ thuộc vào việc đoạn code lôi ra phân tích (trong quá trình lexing) có "tĩnh" hay không. Các khai báo variables cùng functions sẽ được duyệt trước, đảm bảo công sức tìm kiếm các tên variables/ functiosn được giảm thiểu trong khi thực thi. Với `eval(...)` và `with`, *Engine* khi thấy 2 hàm này trong đoạn code, nó phải *tạm cho là* những variables/ functiosn vừa tìm được đều không còn đúng nữa. Tại sao? Bởi vì nó không thể biết tại thời điểm "lexing":
+*Engine* của JavaScript có một vài thao tác để tối ưu hiệu năng trong quá trình biên dịch. Các thao tác này có đạt được kết quả tốt nhất hay không cơ bản phụ thuộc vào việc đoạn code lôi ra phân tích (trong quá trình lexing) có "tĩnh" hay không. Các khai báo variables cùng functions sẽ được duyệt trước, đảm bảo công sức tìm kiếm các tên variables/ functiosn được giảm thiểu trong khi thực thi. Với `eval(...)` và `with`, *Engine* khi thấy 2 hàm này trong đoạn code, nó phải *tạm cho là* những variables/ functiosn vừa tìm được đều không còn đúng nữa. Tại sao? Bởi vì nó không thể biết tại thời điểm "lexing":
 - cái gì sẽ được truyền cho `eval(..)` có thể dẫn đến thay đổi của của lexical scope? 
 - hoặc liệu nội dung của object bạn truyền cho `with` sẽ tạo 1 lexical scope mới ảnh hưởng đến lexical scope hiện tại?  
 
 Nói một cách tiêu cực thì mọi nỗ lực tối ưu *gần như* sẽ trở thành công cốc nếu có `eval(..)` hoặc `with` trong chương trình, và "điểm *tốt*" mà ta tưởng tượng ở trên lại không đep lại lợi ích gì.
 
-Khả năng là 99% chương trình sẽ chạy chậm đi bởi `eval(..)` hoặc `with` được đặt vào những vị trí không đoán trước được trong code. Bất kể *Engine* có thông minh thế nào trong việc hạn chế các tác dụng phụ của 2 hàm này, **một sự thật không thể chối bỏ đó là không có tối ưu, chương trình sẽ chạy chậm đi.**
+Khả năng là 99% chương trình sẽ chạy chậm đi bởi `eval(..)` hoặc `with` được đặt vào những vị trí không đoán trước được trong code. Bất kể *Engine* có thông minh thế nào trong việc hạn chế các tác dụng phụ của 2 hàm này, **một sự thật không thể chối bỏ đó là không có tối ưu, chương trình sẽ chạy chậm đi.**
 
 ## Tổng kết (TL;DR - Quá dài, ứ đọc)
 
 Lexical scope là scope được xác định lúc lập trình viên viết code và khai báo hàm (chưa cho chương trình thực thi). Giai đoạn "lexing" (phân tích đoạn code thành nhiều phần nhỏ có nghĩa - tokens) trong quá trình biên dịch sẽ cho *Engine* biết các variables và functions được khai báo ở đâu và chỗ nào, và dự đoán sẽ cần tìm những đối tượng này ở đâu khi thực thi chương trình.
 
-Có 2 cách để "ăn gian" lexical scope trong Javascript: sử dụng `eval(...)` và `with`. 
+Có 2 cách để "ăn gian" lexical scope trong Javascript: sử dụng `eval(...)` và `with`. 
 - `eva(...)` lúc thực thi chương trình sẽ khiến lexical scope hiện tại thay đổi. Việc thay đổi này là do nội dung của chuỗi "code" truyền cho `eval(...)` có hay không có khai báo hàm/ khai báo variables trong đó. 
-- `with` lúc thực thi sẽ tạo 1 lexical scope hoàn toàn mới bởi nó coi mỗi tham chiếu đến object là 1 scope, thuộc tính của object được coi là một variable/ function trong scope. 
+- `with` lúc thực thi sẽ tạo 1 lexical scope hoàn toàn mới bởi nó coi mỗi tham chiếu đến object là 1 scope, thuộc tính của object được coi là một variable/ function trong scope. 
 
-Điểm trừ của hai cơ chế này là nó làm *Engine* mất khả năng tối ưu hoá việc tìm kiếm scope trong thời điểm biên dịch, bởi *Engine* phải giả sử rằng việc tối ưu của nó là vô ích. Hậu quả là chương trình *sẽ* chạy chậm đi. **Tốt nhất là đừng dùng `eval(...)` hoặc `with`.**
+Điểm trừ của hai cơ chế này là nó làm *Engine* mất khả năng tối ưu hoá việc tìm kiếm scope trong thời điểm biên dịch, bởi *Engine* phải giả sử rằng việc tối ưu của nó là vô ích. Hậu quả là chương trình *sẽ* chạy chậm đi. **Tốt nhất là đừng dùng `eval(...)` hoặc `with`.**
