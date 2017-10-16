@@ -1,7 +1,7 @@
 # You Don't Know JS: Scope & Closures
 # Chapter 3: Function vs. Block Scope
 
-Như đã nói trong Chương 2, scope là 1 series các "quả bóng" mà "bên trong quả bóng" các variables và functions được khai báo. Các quả bóng này được lồng bên trong nhau một cách ngăn nắp, và việc sắp xếp này được cố định từ lúc đoạn code được viết xong.
+Như đã nói trong Chương 2, scope là 1 series các "quả bóng" mà "bên trong quả bóng này", các variables và functions được khai báo. Các quả bóng này được lồng bên trong nhau một cách ngăn nắp, và việc sắp xếp này được xác định ngay từ lúc đoạn code được viết xong.
 
 Nhưng liệu các quả bóng scope chỉ được tạo ra bởi các functions? còn 1 cấu trúc nào tạo ra bóng nữa hay không?
 
@@ -25,7 +25,7 @@ function foo(a) {
 	var c = 3;
 }
 ```
-Trong mẩu code trên, quả bóng scope của `foo(...)` sẽ chứa các định danh `a`, `b`, `c` và `bar`. Việc khai báo này ở đâu trong scope **không quan trọng**, variable và function vẫn thuộc về quả bóng scope chứa nó. 
+Trong mẩu code trên, quả bóng scope của `foo(...)` sẽ chứa các định danh `a`, `b`, `c` và `bar`. Việc khai báo này nằm chính xác ở đâu bên trong scope **không quan trọng**, dù sao thì variable và function kia vẫn thuộc về quả bóng scope `foo(...)` chứa nó. 
 
 `bar(..)` có quả bóng scope của riêng nó. Global scope cũng vậy, nó chứa 1 định danh là `foo`.
 
@@ -38,7 +38,7 @@ console.log( a, b, c ); // all 3 fail
 ```
 Tuy vậy, mọi định danh trên (`a`, `b`, `c`, `foo`, and `bar`) đều có thể được gọi từ *bên trong* của `foo(..)`, thậm chí còn được gọi từ bên trong của `bar(..)` (với giả định rằng không tồn tại các định danh cùng tên ở trong `bar(..)`).
 
-Function scope cổ vũ ý tưởng là mọi variables thuộc về 1 function thì có thể được sử dụng và tái sử dụng ở khắp nơi bên trong function (bao gồm cả ở những nested scopes). Cách tiếp cận này rất hữu dụng, và nó tận dụng được bản chất "động" của các variables trong JavaScript nhằm nhận về values thuộc các thể loại khi cần.
+Function scope cổ vũ ý tưởng là mọi variables thuộc về 1 function thì có thể được sử dụng và tái sử dụng ở khắp nơi bên trong function (bao gồm cả ở trong những scopes bên trong nó). Cách tiếp cận này rất hữu dụng, và nó tận dụng được bản chất "động" của các variables trong JavaScript nhằm nhận về values khi cần.
 
 Mặt khác, nếu không cẩn trọng khi viết code, việc variables có thể được truy cập xuyên suốt bên trong function scope có thể dẫn đến những vấn đề không mong muốn.
 
@@ -74,9 +74,9 @@ var b;
 doSomething( 2 ); // 15
 ```
 
-In this snippet, the `b` variable and the `doSomethingElse(..)` function are likely "private" details of how `doSomething(..)` does its job. Giving the enclosing scope "access" to `b` and `doSomethingElse(..)` is not only unnecessary but also possibly "dangerous", in that they may be used in unexpected ways, intentionally or not, and this may violate pre-condition assumptions of `doSomething(..)`.
+Trong mẩu code trên, varialbe `b` và hàm `doSomethingElse(..)` gần như là "tài sản cá nhân" để giúp riêng cho hoạt động của `doSomething(..)`. Việc để cho các các "tài sản" trên phơi bày ra với các scope khác không chỉ là không cần thiết, mà thậm chỉ là còn tiềm ẩn nguy cơ khiến "tài sản riêng" bị sử dụng theo cách ta không mong muốn (cả tốt lẫn xấu). And this may violate pre-condition assumptions of `doSomething(..)`.
 
-A more "proper" design would hide these private details inside the scope of `doSomething(..)`, such as:
+Một cách viết đúng đắn hơn đó là giấu các tài sản riêng vào bên trong scope của `doSomething(..)`:
 
 ```js
 function doSomething(a) {
@@ -94,13 +94,13 @@ function doSomething(a) {
 doSomething( 2 ); // 15
 ```
 
-Now, `b` and `doSomethingElse(..)` are not accessible to any outside influence, instead controlled only by `doSomething(..)`. The functionality and end-result has not been affected, but the design keeps private details private, which is usually considered better software.
+Bây giờ ta không thể gọi thẳng `b` và `doSomethingElse(..)` từ các scope bên ngoài mà không thông qua `doSomething(..)`. Chức năng và kết quả cuối cùng của `doSomething(...)` không đổi, trong khi code được coi là chuẩn chỉ hơn. 
 
-### Collision Avoidance
+### Tránh nguy cơ xung đột 
 
-Another benefit of "hiding" variables and functions inside a scope is to avoid unintended collision between two different identifiers with the same name but different intended usages. Collision results often in unexpected overwriting of values.
+Một lợi ích khác của việc "giấu" variables và functions bên trong scope là để tránh các nguy cơ xung đột giữa các variables hoặc functions trùng tên nhưng có mục đích sử dụng khác nhau. Một khi variables/ functiosn đã bị xung đột, nó sẽ dẫn đến việc kết quả trả về bị ghi đè theo cách không mong muốn. 
 
-For example:
+Xem ví dụ sau:
 
 ```js
 function foo() {
