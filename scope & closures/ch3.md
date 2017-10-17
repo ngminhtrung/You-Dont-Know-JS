@@ -119,7 +119,7 @@ foo();
 
 Việc gán `i = 3` bên trong `bar(..)` đã chép đè lên `i` được khai báo trong vòng lặp for của `foo(..)`. Nó dẫn đến kết cục là vòng lặp chạy mãi không dừng bởi trong mỗi vòng lặp, `i` lại bị gán bằng `3` và sẽ luôn `< 10`.
 
-`i` bên trong `bar(..)` cần được khai báo như một local variable, không cần biết là định danh của nó là gì. Để làm vậy, hãy thay đổi `i = 3;` thành `var i = 3;` thì vấn đề sẽ biến mất (and would create the previously mentioned "shadowed variable" declaration for `i`). Một cách *khác*, nhưng không nên dùng, đó là sử dụng một định danh hoàn toàn khác cho `i` bên trong vòng lặp for của `foo(...)`, ví dụ dùng `var j = 3;`. Nhưng trong thực tế việc sử dụng trùng tên variables là vô cùng thường gặp và tự nhiên, cho nên sử dụng scope để "che đi" các khai báo variables/ functions bên trong vẫn là cách làm tốt nhất.
+`i` bên trong `bar(..)` cần được khai báo như một local variable, không cần biết là định danh của nó là gì. Để làm vậy, hãy thay đổi `i = 3;` thành `var i = 3;` thì vấn đề sẽ biến mất (and would create the previously mentioned "shadowed variable" declaration for `i`). Một cách *khác*, nhưng không nên dùng, đó là sử dụng một định danh hoàn toàn khác cho `i` bên trong vòng lặp for của `foo(...)`, ví dụ dùng `var j = 3;`. Nhưng trong thực tế việc sử dụng trùng tên variables là vô cùng thường gặp và tự nhiên, cho nên sử dụng scope để "che đi" các khai báo variables/ functions bên trong vẫn là cách làm tốt nhất.
 
 #### Global "Namespaces"
 
