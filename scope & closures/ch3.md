@@ -25,7 +25,7 @@ function foo(a) {
 	var c = 3;
 }
 ```
-Trong mẩu code trên, quả bóng scope của `foo(...)` sẽ chứa các định danh `a`, `b`, `c` và `bar`. Việc khai báo này nằm chính xác ở đâu bên trong scope **không quan trọng**, dù sao thì variable và function kia vẫn thuộc về quả bóng scope `foo(...)` chứa nó. 
+Trong mẩu code trên, quả bóng scope của `foo(...)` sẽ chứa các định danh `a`, `b`, `c` và `bar`. Việc khai báo này nằm chính xác ở đâu bên trong scope **không quan trọng**, dù sao thì variable và function kia vẫn thuộc về quả bóng scope `foo(...)` chứa nó. 
 
 `bar(..)` có quả bóng scope của riêng nó. Global scope cũng vậy, nó chứa 1 định danh là `foo`.
 
@@ -36,7 +36,7 @@ bar(); // fails
 
 console.log( a, b, c ); // all 3 fail
 ```
-Tuy vậy, mọi định danh trên (`a`, `b`, `c`, `foo`, and `bar`) đều có thể được gọi từ *bên trong* của `foo(..)`, thậm chí còn được gọi từ bên trong của `bar(..)` (với giả định rằng không tồn tại các định danh cùng tên ở trong `bar(..)`).
+Tuy vậy, mọi định danh trên (`a`, `b`, `c`, `foo`, and `bar`) đều có thể được gọi từ *bên trong* của `foo(..)`, thậm chí còn được gọi từ bên trong của `bar(..)` (với giả định rằng không tồn tại các định danh cùng tên ở trong `bar(..)`).
 
 Function scope cổ vũ ý tưởng là mọi variables thuộc về 1 function thì có thể được sử dụng và tái sử dụng ở khắp nơi bên trong function (bao gồm cả ở trong những scopes bên trong nó). Cách tiếp cận này rất hữu dụng, và nó tận dụng được bản chất "động" của các variables trong JavaScript nhằm nhận về values khi cần.
 
@@ -44,7 +44,7 @@ Mặt khác, nếu không cẩn trọng khi viết code, việc variables có th
 
 ## Hiding In Plain Scope
 
-Khi nghĩ đến function, thường thì lập trình viên sẽ liên tưởng ngay đến việc khai báo, rồi thêm các dòng code bên trong function. Tuy nhiên, hãy thử hình dung nếu ta làm ngược lại:
+Khi nghĩ đến function, thường thì lập trình viên sẽ liên tưởng ngay đến việc khai báo, rồi thêm các dòng code bên trong function. Tuy nhiên, hãy thử hình dung nếu ta làm ngược lại:
 - viết trước những dòng code sẽ dùng bên trong function "tương lai".
 - bọc những dòng code trên bằng 1 khai báo hàm.  
 
@@ -54,7 +54,7 @@ Bạn nhìn ra vấn đề ở đây không? Chúng ta vừa tạo ra 1 quả b�
 
 Tại sao việc "che dấu" variables và functions lại là một kỹ thuật hữu ích? Thực ra là có rất nhiều lý do, nhưng chung quy đều xuất phát từ nguyên tắc thiết kế phần mềm tên là "Principle of Least Privilege" [^note-leastprivilege], một vài chỗ gọi nó là "Least Authority" hoặc "Least Exposure". Nguyên lý này nói rằng trong việc thiết kế phần mềm, ví dụ thiết kế API cho 1 module/object, bạn chỉ nên phơi bày tối thiểu những gì cần thiết, và "che" đi những thứ còn lại.
 
-Nguyên lý này được áp dụng ngay vào việc chọn scope sẽ chứa variables và functions. Nếu như toàn bộ variables và functions đều thuộc về global scope thì mọi scope nhỏ bên trong đều sẽ truy cập được đến các variables và functions đấy. Việc này vi phạm nguyên tắc thiết kế nói trên. 
+Nguyên lý này được áp dụng ngay vào việc chọn scope sẽ chứa variables và functions. Nếu như toàn bộ variables và functions đều thuộc về global scope thì mọi scope nhỏ bên trong đều sẽ truy cập được đến các variables và functions đấy. Việc này vi phạm nguyên tắc thiết kế nói trên. 
 
 Ví dụ:
 
@@ -119,7 +119,7 @@ foo();
 
 Việc gán `i = 3` bên trong `bar(..)` đã chép đè lên `i` được khai báo trong vòng lặp for của `foo(..)`. Nó dẫn đến kết cục là vòng lặp chạy mãi không dừng bởi trong mỗi vòng lặp, `i` lại bị gán bằng `3` và sẽ luôn `< 10`.
 
-`i` bên trong `bar(..)` cần được khai báo như một local variable, không cần biết là định danh của nó là gì. Để làm vậy, hãy thay đổi `i = 3;` thành `var i = 3;` thì vấn đề sẽ biến mất (and would create the previously mentioned "shadowed variable" declaration for `i`). Một cách *khác*, nhưng không nên dùng, đó là sử dụng một định danh hoàn toàn khác cho `i` bên trong vòng lặp for của `foo(...)`, ví dụ dùng `var j = 3;`. Nhưng trong thực tế việc sử dụng trùng tên variables là vô cùng thường gặp và tự nhiên, cho nên sử dụng scope để "che đi" các khai báo variables/ functions bên trong vẫn là cách làm tốt nhất.
+`i` bên trong `bar(..)` cần được khai báo như một local variable, không cần biết là định danh của nó là gì. Để làm vậy, hãy thay đổi `i = 3;` thành `var i = 3;` thì vấn đề sẽ biến mất (and would create the previously mentioned "shadowed variable" declaration for `i`). Một cách *khác*, nhưng không nên dùng, đó là sử dụng một định danh hoàn toàn khác cho `i` bên trong vòng lặp for của `foo(...)`, ví dụ dùng `var j = 3;`. Nhưng trong thực tế việc sử dụng trùng tên variables là vô cùng thường gặp và tự nhiên, cho nên sử dụng scope để "che đi" các khai báo variables/ functions bên trong vẫn là cách làm tốt nhất.
 
 #### Global "Namespaces"
 
