@@ -79,7 +79,7 @@ The lexical scope look-up process *only* applies to first-class identifiers, suc
 
 Nếu lexical scope chỉ gắn với nơi mà hàm được khai báo, và vị trí khai báo hàm thì hoàn toàn phụ thuộc vào người viết đoạn code đó, vậy thì có cách nào để "thay đổi" (hay "chơi ăn gian") lexical scope vào thời điểm đoạn code được thực thi? 
 
-Để trả lời câu hỏi nãy, hãy cùng bàn về 2 cơ chế (mechanisms) của JavaScript giúp ta "ăn gian" vụ trên, tiếc là cả 2 đều bị phần đông lập trình viên chê tả tơi. Tuy vậy, hầu hết các ý kiến chê bai đó đều bị thiếu 1 điểm quan trọng nhất: **thay đổi lexical scope sẽ làm hiệu suất thực thi giảm đi.** Trước khi đi vào vấn đề hiệu suất này, tôi sẽ giải thích cách hoạt động của 2 cơ chế vừa nói: 
+Để trả lời câu hỏi nãy, hãy cùng bàn về 2 cơ chế (mechanisms) của JavaScript giúp ta "ăn gian" vụ trên, tiếc là cả 2 đều bị phần đông lập trình viên chê tả tơi. Tuy vậy, hầu hết các ý kiến chê bai đó đều bị thiếu 1 điểm quan trọng nhất: **thay đổi lexical scope sẽ làm hiệu suất thực thi giảm đi.** Trước khi đi vào vấn đề hiệu suất này, tôi sẽ giải thích cách hoạt động của 2 cơ chế vừa nói: 
 
 ### Ăn gian với `eval`
 
