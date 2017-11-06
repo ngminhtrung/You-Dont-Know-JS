@@ -5,22 +5,22 @@ Như đã nói trong Chương 2, scope là 1 series các "quả bóng" mà "bên
 
 Nhưng liệu các quả bóng scope chỉ được tạo ra bởi các functions? còn 1 cấu trúc nào tạo ra bóng nữa hay không?
 
-## Scope tạo bởi Functions
+## Scope chỉ tạo ra bởi Functions?
 
-Câu trả lời thường gặp nhất cho câu hỏi "*liệu scope chỉ được tạo ra bởi funciton?*" là: Javascript là ngôn ngữ lập trình có scope xuất phát từ function. Điều đó có nghĩa là mỗi function được khai báo sẽ tạo ra 1 "quả bóng scope" cho chính nó, không còn cấu trúc nào khác tạo ra được bóng scope. Chúng ta sẽ cùng xem xét câu trả lời này qua các phân tích dưới đây, và sẽ thấy là nó không hoàn toàn đúng. 
+Nếu hỏi câu trên, câu trả lời bạn thường gặp nhất là: "*Javascript là ngôn ngữ lập trình có scope tạo bởi function*". Điều đó có nghĩa là mỗi function được khai báo sẽ tạo ra 1 "quả bóng scope" cho chính nó, không còn cấu trúc nào khác tạo ra được bóng scope. Chúng ta sẽ cùng xem xét câu trả lời này qua các phân tích dưới đây, và sẽ thấy là nó không hoàn toàn đúng. 
 
 Xem đoạn code dưới đây: 
 ```js
 function foo(a) {
 	var b = 2;
 
-	// some code
+	// một đoạn code nào đó
 
 	function bar() {
 		// ...
 	}
 
-	// more code
+	// thêm vài đoạn code khác
 
 	var c = 3;
 }
@@ -32,20 +32,20 @@ Trong mẩu code trên, quả bóng scope của `foo(...)` sẽ chứa các đ�
 Bởi vì `a`, `b`, `c`, và `bar` đều nằm bên trong scope của quả bóng `foo(..)`, ta không thể truy cập những variables và function đó từ bên ngoài của `foo(..)`. Dẫn đến đoạn code sau sẽ trả về thông báo lỗi `ReferenceError` do ở global scope không chứa các định danh `bar` hoặc `a`, `b`, `c`.
 
 ```js
-bar(); // fails
+bar(); // báo lỗi
 
-console.log( a, b, c ); // all 3 fail
+console.log( a, b, c ); // báo lỗi
 ```
-Tuy vậy, mọi định danh trên (`a`, `b`, `c`, `foo`, and `bar`) đều có thể được gọi từ *bên trong* của `foo(..)`, thậm chí còn được gọi từ bên trong của `bar(..)` (với giả định rằng không tồn tại các định danh cùng tên ở trong `bar(..)`).
+Tuy vậy, `a`, `b`, `c`, `foo`, và `bar` có thể được gọi từ *bên trong* của `foo(..)`, thậm chí còn được gọi từ bên trong của `bar(..)` (với giả định rằng không tồn tại các định danh trùng tên ở trong `bar(..)`).
 
-Function scope cổ vũ ý tưởng là mọi variables thuộc về 1 function thì có thể được sử dụng và tái sử dụng ở khắp nơi bên trong function (bao gồm cả ở trong những scopes bên trong nó). Cách tiếp cận này rất hữu dụng, và nó tận dụng được bản chất "động" của các variables trong JavaScript nhằm nhận về values khi cần.
+Function scope cổ vũ ý tưởng là mọi variables thuộc về 1 function thì có thể được sử dụng và tái sử dụng ở khắp nơi bên trong function (bao gồm cả ở trong những scopes bên trong nó). Cách tiếp cận này rất hữu dụng, nó tận dụng được bản chất "động" của các variables trong JavaScript nhằm lấy values về khi cần.
 
 Mặt khác, nếu không cẩn trọng khi viết code, việc variables có thể được truy cập xuyên suốt bên trong function scope có thể dẫn đến những vấn đề không mong muốn.
 
 ## Hiding In Plain Scope
 
-Khi nghĩ đến function, thường thì lập trình viên sẽ liên tưởng ngay đến việc khai báo, rồi thêm các dòng code bên trong function. Tuy nhiên, hãy thử hình dung nếu ta làm ngược lại:
-- viết trước những dòng code sẽ dùng bên trong function "tương lai".
+Khi nghĩ đến function, thường thì lập trình viên sẽ liên tưởng ngay đến việc khai báo function, rồi thêm các dòng code bên trong function. Tuy nhiên, hãy thử hình dung nếu ta làm ngược lại:
+- viết trước những dòng code sẽ dùng bên trong hàm "tương lai".
 - bọc những dòng code trên bằng 1 khai báo hàm.  
 
 Bạn nhìn ra vấn đề ở đây không? Chúng ta vừa tạo ra 1 quả bóng scope để:
@@ -74,9 +74,9 @@ var b;
 doSomething( 2 ); // 15
 ```
 
-Trong mẩu code trên, varialbe `b` và hàm `doSomethingElse(..)` gần như là "tài sản cá nhân" để giúp riêng cho hoạt động của `doSomething(..)`. Việc để cho các các "tài sản" trên phơi bày ra với các scope khác không chỉ là không cần thiết, mà thậm chỉ là còn tiềm ẩn nguy cơ khiến "tài sản riêng" bị sử dụng theo cách ta không mong muốn (cả tốt lẫn xấu). And this may violate pre-condition assumptions of `doSomething(..)`.
+Trong mẩu code trên, varialbe `b` và hàm `doSomethingElse(..)` gần như là "tài sản cá nhân" để giúp riêng cho hoạt động của `doSomething(..)`. Việc để cho các các "tài sản" trên phơi bày ra với các scope khác không chỉ là không cần thiết, mà thậm chỉ là còn tiềm ẩn nguy cơ khiến "tài sản riêng" bị sử dụng theo cách ta không mong muốn (cả tốt lẫn xấu).
 
-Một cách viết đúng đắn hơn đó là giấu các tài sản riêng vào bên trong scope của `doSomething(..)`:
+Để code hợp lý hơn, hãy giấu các tài sản riêng vào bên trong scope của `doSomething(..)`:
 
 ```js
 function doSomething(a) {
@@ -105,7 +105,7 @@ Xem ví dụ sau:
 ```js
 function foo() {
 	function bar(a) {
-		i = 3; // changing the `i` in the enclosing scope's for-loop
+		i = 3; // thay đổi `i` in the enclosing scope's for-loop
 		console.log( a + i );
 	}
 
@@ -123,7 +123,7 @@ Việc gán `i = 3` bên trong `bar(..)` đã chép đè lên `i` được khai 
 
 #### Global "Namespaces"
 
-A particularly strong example of (likely) variable collision occurs in the global scope. Multiple libraries loaded into your program can quite easily collide with each other if they don't properly hide their internal/private functions and variables.
+Phần này, chúng ta sẽ đề cập đến một ví dụ điển hình của việc các variables bị xung đột trong global scope. Điều này xảy ra khi rất nhiều thư viện được gọi khi chạy chương trình, trong khi lập trình viên quên không ẩn đi các variables và functions vốn là tài sản riêng của từng thư viện. 
 
 Such libraries typically will create a single variable declaration, often an object, with a sufficiently unique name, in the global scope. This object is then used as a "namespace" for that library, where all specific exposures of functionality are made as properties off that object (namespace), rather than as top-level lexically scoped identifiers themselves.
 
