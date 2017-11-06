@@ -205,7 +205,7 @@ In other words, `(function foo(){ .. })` as an expression means the identifier `
 You are probably most familiar with function expressions as callback parameters, such as:
 
 ```js
-setTimeout( function(){
+setTimeout(function(){
 	console.log("I waited 1 second!");
 }, 1000 );
 ```
@@ -595,13 +595,13 @@ console.log( b ); // ReferenceError!
 
 ## Review (TL;DR)
 
-Functions are the most common unit of scope in JavaScript. Variables and functions that are declared inside another function are essentially "hidden" from any of the enclosing "scopes", which is an intentional design principle of good software.
+Hàm là nơi tạo ra scope thông dụng nhất trong JavaScript. Những variables và functions dược khai báo bên trong 1 function A sẽ bị ẩn đi, chỉ có thể được truy xuất nội bộ bên trong scope đóng gói bởi fuction A, và đây là nguyên tắc thiết kế chuẩn trong ngành phần mềm. 
 
-But functions are by no means the only unit of scope. Block-scope refers to the idea that variables and functions can belong to an arbitrary block (generally, any `{ .. }` pair) of code, rather than only to the enclosing function.
+Tuy vậy, scope không chỉ được tạo ra bởi các functions mà còn bởi các block-scope, nghĩa là bởi bất kỳ khối code nào được đóng gói bởi cặp `{ .. }`.
 
-Starting with ES3, the `try/catch` structure has block-scope in the `catch` clause.
+Kể từ ES3, cấu trúc `try/catch` tạo ra một block-scope bên trong mệnh đề `catch`.
 
-In ES6, the `let` keyword (a cousin to the `var` keyword) is introduced to allow declarations of variables in any arbitrary block of code. `if (..) { let a = 2; }` will declare a variable `a` that essentially hijacks the scope of the `if`'s `{ .. }` block and attaches itself there.
+Trong ES6, từ khoá `let` (chị em họ với từ khoá `var`) được đưa vào cho phép khai báo variables trong bất kỳ khối code nào. `if (..) { let a = 2; }` sẽ khai báo một variable tên `a` và các lập trình viên có thể gọi nó bên trong cặp `{ .. }` của  `if`.
 
 Though some seem to believe so, block scope should not be taken as an outright replacement of `var` function scope. Both functionalities co-exist, and developers can and should use both function-scope and block-scope techniques where respectively appropriate to produce better, more readable/maintainable code.
 

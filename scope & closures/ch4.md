@@ -1,51 +1,48 @@
 # You Don't Know JS: Scope & Closures
 # Chapter 4: Hoisting
 
-By now, you should be fairly comfortable with the idea of scope, and how variables are attached to different levels of scope depending on where and how they are declared. Both function scope and block scope behave by the same rules in this regard: any variable declared within a scope is attached to that scope.
+Cho đến chương này, bạn đã bắt đầu cảm thấy tự tin với các khái niệm về scope, về cách mà các variables được gắn với các cấp độ khác nhau của scope (phụ thuộc vào nơi và cách các variables đó được khai báo). Nhìn từ góc độ này, cả function scope và block scope đều giống nhau, nghĩa là variable được khai báo ở scope nào thì sẽ có giá trị sử dụng ở trong scope đấy. 
 
-But there's a subtle detail of how scope attachment works with declarations that appear in various locations within a scope, and that detail is what we will examine here.
+Ở chương này, chúng ta sẽ cùng xem một chi tiết quan trọng khác về cách scope vận hành, liên quan đến vị trí khai báo của functions và variables trong cùng 1 scope. 
 
-## Chicken Or The Egg?
+## Câu hỏi: Quả trứng có trước hay con gà có trước? 
 
-There's a temptation to think that all of the code you see in a JavaScript program is interpreted line-by-line, top-down in order, as the program executes. While that is substantially true, there's one part of that assumption which can lead to incorrect thinking about your program.
-
-Consider this code:
+Thương thì nhiều người sẽ nghĩa rằng các đoạn code JavaScript mình viết sẽ được biên dịch theo từng dòng, thứ tự từ trên xuống dưới một cách trật tự, giống như cách mà chương trình thực thi. Dẫu suy nghĩ này về cơ bản là đúng, thì nó vẫn có một điều cần phải "chỉnh" lại. Hãy xem ví dụ 1 dưới đây. 
 
 ```js
 a = 2;
 
 var a;
 
-console.log( a );
+console.log(a);
 ```
 
-What do you expect to be printed in the `console.log(..)` statement?
+Bạn nghĩ là `console.log(..)` sẽ in ra kết quả nào? 
 
-Many developers would expect `undefined`, since the `var a` statement comes after the `a = 2`, and it would seem natural to assume that the variable is re-defined, and thus assigned the default `undefined`. However, the output will be `2`.
+Nhiều người sẽ cho rằng kết quả là `undefined`, bởi `var a` được viết phía sau của `a = 2`, cho nên variable `a` sẽ được khai báo lại, và mang giá trị `undefined` mặc định. Mặc dù vậy, kết quả in ra lại là `2`.
 
-Consider another piece of code:
+Xem tiếp ví dụ 2 dưới đây: 
 
 ```js
-console.log( a );
+console.log(a);
 
 var a = 2;
 ```
+Chắc bạn sẽ rút kinh nghiệm từ ví dụ 1, cho rằng trình biên dịch sẽ không chỉ đọc từ trên xuống dưới nữa, và sẽ cho ra kết quả là `2`. Nhiều người khác có thể cho rằng vì variable `a` được sử dụng trước khi nó được khai báo nên chương trình sẽ trả về lỗi `ReferenceError`.
 
-You might be tempted to assume that, since the previous snippet exhibited some less-than-top-down looking behavior, perhaps in this snippet, `2` will also be printed. Others may think that since the `a` variable is used before it is declared, this must result in a `ReferenceError` being thrown.
+Rất tiếc là cả 2 câu trả lời trên đều không đúng. Chương trình sẽ trả về kết quả là `undefined`. 
 
-Unfortunately, both guesses are incorrect. `undefined` is the output.
+**Vậy tại sao lại có điều này?** Dường như chúng ta đang đâm vào câu hỏi con gà - quả trứng cái nào có trước. "Quả trứng" đây chính là việc khai báo (declaration), còn "con gà" chính là phép gán (assignment)?
 
-**So, what's going on here?** It would appear we have a chicken-and-the-egg question. Which comes first, the declaration ("egg"), or the assignment ("chicken")?
+## Lại là chuyện của trình biên dịch
 
-## The Compiler Strikes Again
+Để trả lời câu hỏi trên, chúng ta cần quay lại với Chương 1, nơi thảo luận về các trình biên dịch. Hãy nhớ lại là *Engine* sẽ compile đoạn code JavaScript của bạn trước khi interprets đoạn code đấy. Một phần của quá trình biên dịch là tìm và liên kết tất cả các khai báo đến các scope tương ứng. Ở Chương 2, chúng ta đã hiểu rằng viện tìm và liên kết các khai báo này là điểm mấu chốt của khái niệm Lexical Scope.
 
-To answer this question, we need to refer back to Chapter 1, and our discussion of compilers. Recall that the *Engine* actually will compile your JavaScript code before it interprets it. Part of the compilation phase was to find and associate all declarations with their appropriate scopes. Chapter 2 showed us that this is the heart of Lexical Scope.
+Vì vậy, tốt nhất là hãy luôn tâm niệm trong đâu rằng, tất cả các khai báo variables và functions đều được tiến hành trước tiên, trước cả khi bất kỳ đoạn code nào trong chương trình của bạn được thực thi. 
 
-So, the best way to think about things is that all declarations, both variables and functions, are processed first, before any part of your code is executed.
+Khi bạn thấy đoạn code `var a = 2;`, bạn cho rằng đây là 1 câu lệnh đơn. Nhưng JavaScript lại chia nó thành 2 câu lệnh: (1) là `var a;` và (2) là `a = 2;`. Câu lệnh thứ nhất chính là phép khai báo sẽ được tiến hành trong phần biên dịch. Còn câu lệnh thứ hai, phép gán, sẽ được để lại **nguyên vị trí** chờ đến phần thực thi.
 
-When you see `var a = 2;`, you probably think of that as one statement. But JavaScript actually thinks of it as two statements: `var a;` and `a = 2;`. The first statement, the declaration, is processed during the compilation phase. The second statement, the assignment, is left **in place** for the execution phase.
-
-Our first snippet then should be thought of as being handled like this:
+Ví dụ 1 bên trên thực sự sẽ trông giống như sau:
 
 ```js
 var a;
@@ -53,12 +50,12 @@ var a;
 ```js
 a = 2;
 
-console.log( a );
+console.log(a);
 ```
 
-...where the first part is the compilation and the second part is the execution.
+...với đoạn 1 là phần khai báo, đoạn 2 là phần thực thi. 
 
-Similarly, our second snippet is actually processed as:
+Tương tự như vậy với ví dụ thứ 2: 
 
 ```js
 var a;
@@ -69,17 +66,15 @@ console.log( a );
 a = 2;
 ```
 
-So, one way of thinking, sort of metaphorically, about this process, is that variable and function declarations are "moved" from where they appear in the flow of the code to the top of the code. This gives rise to the name "Hoisting".
+Như vậy bạn có thể nghĩa về cơ chế này là các khai báo variables và functiosn bị "nhấc đi" khỏi vị trí mà nó xuất hiện trong đoạn code để bị đẩy lên trên cùng. Đây chính là khái niệm "Hoisting" (nghĩa tiếng Anh: "kéo lên"). Hoặc nôm na là **quả trứng (việc khai báo) có trước con gà (phép gán)**.
 
-In other words, **the egg (declaration) comes before the chicken (assignment)**.
-
-**Note:** Only the declarations themselves are hoisted, while any assignments or other executable logic are left *in place*. If hoisting were to re-arrange the executable logic of our code, that could wreak havoc.
+**Lưu ý:** Chỉ có phần khai báo là được "đưa lên trên đầu", trong khi phần phép gán hoặc các phép toán logic khác sẽ bị để lại *nguyên vị trí*. Nếu khái niệm hoisting mà lại đụng chạm đến cả logic của đoạn code thì hẳn là chúng ta sẽ không thể viết nổi chương trình .
 
 ```js
 foo();
 
 function foo() {
-	console.log( a ); // undefined
+	console.log(a); // undefined
 
 	var a = 2;
 }
