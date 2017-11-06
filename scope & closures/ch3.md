@@ -125,9 +125,9 @@ Việc gán `i = 3` bên trong `bar(..)` đã chép đè lên `i` được khai 
 
 Phần này, chúng ta sẽ đề cập đến một ví dụ điển hình của việc các variables bị xung đột trong global scope. Điều này xảy ra khi rất nhiều thư viện được gọi khi chạy chương trình, trong khi lập trình viên quên không ẩn đi các variables và functions vốn là tài sản riêng của từng thư viện. 
 
-Such libraries typically will create a single variable declaration, often an object, with a sufficiently unique name, in the global scope. This object is then used as a "namespace" for that library, where all specific exposures of functionality are made as properties off that object (namespace), rather than as top-level lexically scoped identifiers themselves.
+Mỗi thư viện sẽ tạo ra một khai báo variable đơn, thường là 1 object, tên gọi của object đó tương đối độc nhất trong global scope. Object này được sử dụng như một "namespace" cho thư viện đó, nơi mà all specific exposures of functionality are made as properties off that object (namespace), rather than as top-level lexically scoped identifiers themselves.
 
-For example:
+Ví dụ:
 
 ```js
 var MyReallyCoolLibrary = {
@@ -141,11 +141,11 @@ var MyReallyCoolLibrary = {
 };
 ```
 
-#### Module Management
+#### Quản lý Module
 
-Another option for collision avoidance is the more modern "module" approach, using any of various dependency managers. Using these tools, no libraries ever add any identifiers to the global scope, but are instead required to have their identifier(s) be explicitly imported into another specific scope through usage of the dependency manager's various mechanisms.
+Một cách làm khác để tránh việc bị xung đột chính là cách xây dựng "module" theo phương cách hiện đại, trong đó sử dụng rất nhiều các công cụ quản lý dependencies. Sử dụng các công cụ này sẽ giúp không thêm bất kỳ tên định danh (identifiers) nào của thư viện vào global scope, mà vẫn giúp những định danh đó được xuất hiện trong 1 scope đặc biệt khác quản lý của dependency managers. 
 
-It should be observed that these tools do not possess "magic" functionality that is exempt from lexical scoping rules. They simply use the rules of scoping as explained here to enforce that no identifiers are injected into any shared scope, and are instead kept in private, non-collision-susceptible scopes, which prevents any accidental scope collisions.
+Lưu ý rằng những công cụ trên không hề có tính năng "thần kỳ" nào giúp tránh khỏi những quy định của lexical scope. Các công cụ đón đơn giản chỉ giúp thực hiện các quy định đã giải thích bên trên về scoping, đó là "cưỡng chế" không cho các định danh được chèn thẳng vào các không gian chung (shared scope), giữ chúng trong những không gian riêng tư hơn, không tiềm ẩn nguy cơ xung đột, từ đó phòng ngừa bất kỳ sự cố nào liên quan đến scope.
 
 As such, you can code defensively and achieve the same results as the dependency managers do without actually needing to use them, if you so choose. See the Chapter 5 for more information about the module pattern.
 
