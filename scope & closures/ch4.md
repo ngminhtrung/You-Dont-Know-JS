@@ -70,6 +70,7 @@ Như vậy bạn có thể nghĩa về cơ chế này là các khai báo variab
 
 **Lưu ý:** Chỉ có phần khai báo là được "đưa lên trên đầu", trong khi phần phép gán hoặc các phép toán logic khác sẽ bị để lại *nguyên vị trí*. Nếu khái niệm hoisting mà lại đụng chạm đến cả logic của đoạn code thì hẳn là chúng ta sẽ không thể viết nổi chương trình .
 
+Ví dụ 3: 
 ```js
 foo();
 
@@ -80,9 +81,9 @@ function foo() {
 }
 ```
 
-The function `foo`'s declaration (which in this case *includes* the implied value of it as an actual function) is hoisted, such that the call on the first line is able to execute.
+Việc khai báo function `foo` (trong ví dụ 3 này đã ngầm *bao gồm* cả giá trị của hàm) đã được "đưa lên trên đầu", dẫn đến dòng đầu tiên (tức là `foo()`) có thể được thực thi. 
 
-It's also important to note that hoisting is **per-scope**. So while our previous snippets were simplified in that they only included global scope, the `foo(..)` function we are now examining itself exhibits that `var a` is hoisted to the top of `foo(..)` (not, obviously, to the top of the program). So the program can perhaps be more accurately interpreted like this:
+Cần lưu ý một điều quan trọng là việc "hoisting" diễn ra trong **từng scope**. Vì vậy function `foo(..)` khi xem xét chính nó đã đưa khai báo `var a` lên trên đầu của nó (tức là `foo(..)`, chứ không phải lên đầu của toàn bộ chương trình). Điều này dẫn đến ví dụ 3 sẽ thực sự trông giống như sau:
 
 ```js
 function foo() {
@@ -96,7 +97,7 @@ function foo() {
 foo();
 ```
 
-Function declarations are hoisted, as we just saw. But function expressions are not.
+Một điều nữa là chỉ có khai báo hàm được "đưa lên đầu", còn function expressions thì không.
 
 ```js
 foo(); // not ReferenceError, but TypeError!
@@ -106,7 +107,7 @@ var foo = function bar() {
 };
 ```
 
-The variable identifier `foo` is hoisted and attached to the enclosing scope (global) of this program, so `foo()` doesn't fail as a `ReferenceError`. But `foo` has no value yet (as it would if it had been a true function declaration instead of expression). So, `foo()` is attempting to invoke the `undefined` value, which is a `TypeError` illegal operation.
+Việc khai báo `foo` (chính là `var foo`) đã được đưa lên trên cùng và thuộc về global scope của chương trình này, do vậy mà việc chạy `foo()` không trả lại kết quả `ReferenceError`. Nhưng `foo` chưa có giá trị gì (đáng lẽ nó phải là một khai báo hàm - function declaration, thay vì là một function expression). Vì vậy, `foo()` cố gắng để gọi giá trị `undefined`, điều này dẫn đến một hành vị không được phép, kết qủa trả về là `TypeError`.
 
 Also recall that even though it's a named function expression, the name identifier is not available in the enclosing scope:
 
