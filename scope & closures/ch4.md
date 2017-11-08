@@ -85,6 +85,7 @@ Việc khai báo function `foo` (trong ví dụ 3 này đã ngầm *bao gồm* c
 
 Cần lưu ý một điều quan trọng là việc "hoisting" diễn ra trong **từng scope**. Vì vậy function `foo(..)` khi xem xét chính nó đã đưa khai báo `var a` lên trên đầu của nó (tức là `foo(..)`, chứ không phải lên đầu của toàn bộ chương trình). Điều này dẫn đến ví dụ 3 sẽ thực sự trông giống như sau:
 
+Ví dụ 4: 
 ```js
 function foo() {
 	var a;
@@ -99,6 +100,8 @@ foo();
 
 Một điều nữa là chỉ có khai báo hàm được "đưa lên đầu", còn function expressions thì không.
 
+Ví dụ 5: 
+
 ```js
 foo(); // not ReferenceError, but TypeError!
 
@@ -109,7 +112,7 @@ var foo = function bar() {
 
 Việc khai báo `foo` (chính là `var foo`) đã được đưa lên trên cùng và thuộc về global scope của chương trình này, do vậy mà việc chạy `foo()` không trả lại kết quả `ReferenceError`. Nhưng `foo` chưa có giá trị gì (đáng lẽ nó phải là một khai báo hàm - function declaration, thay vì là một function expression). Vì vậy, `foo()` cố gắng để gọi giá trị `undefined`, điều này dẫn đến một hành vị không được phép, kết qủa trả về là `TypeError`.
 
-Also recall that even though it's a named function expression, the name identifier is not available in the enclosing scope:
+Hãy lưu ý thêm là mặc dù đây là một function expression được đặt tên, thì định danh đó không tồn tại trong scope chứa function đấy. 
 
 ```js
 foo(); // TypeError
@@ -120,7 +123,7 @@ var foo = function bar() {
 };
 ```
 
-This snippet is more accurately interpreted (with hoisting) as:
+Đoạn code trên thực chất được trình biên dịch hiểu như sau:
 
 ```js
 var foo;
@@ -134,11 +137,11 @@ foo = function() {
 }
 ```
 
-## Functions First
+## Functions luôn được ưu tiên
 
-Both function declarations and variable declarations are hoisted. But a subtle detail (that *can* show up in code with multiple "duplicate" declarations) is that functions are hoisted first, and then variables.
+Cả khai báo hàm và khai báo variables đều được "đưa lên trên cùng". Tuy vậy, cần lưu ý là khai báo hàm luôn được ưu tiên đặt trước so với khai báo variables. 
 
-Consider:
+Ví dụ 6:
 
 ```js
 foo(); // 1
@@ -154,7 +157,7 @@ foo = function() {
 };
 ```
 
-`1` is printed instead of `2`! This snippet is interpreted by the *Engine* as:
+Kết quả được in ra là `1` thay vì `2`! Bởi đoạn code trong ví dụ 6 được *Engine* diễn giải là:
 
 ```js
 function foo() {
@@ -168,9 +171,9 @@ foo = function() {
 };
 ```
 
-Notice that `var foo` was the duplicate (and thus ignored) declaration, even though it came before the `function foo()...` declaration, because function declarations are hoisted before normal variables.
+Lưu ý: `var foo` là phép khai báo không cần thiết, vì vậy bị bỏ qua, cho dù nó có được đặt trước `function foo()...` trong phép khai báo hàm, bởi khai báo function declarations được đưa lên trên cả các variables thông  thường.
 
-While multiple/duplicate `var` declarations are effectively ignored, subsequent function declarations *do* override previous ones.
+Nếu việc dùng khai báo qua `var` bị bỏ qua trong ví dụ trên, thì lại có những trường hợp việc khai báo lần nữa của cùng một hàm sẽ *thực sự* ghi đè lên khai báo phía trước.
 
 ```js
 foo(); // 3
@@ -188,10 +191,11 @@ function foo() {
 }
 ```
 
-While this all may sound like nothing more than interesting academic trivia, it highlights the fact that duplicate definitions in the same scope are a really bad idea and will often lead to confusing results.
+Mặc dù lời khuyên sau có vẻ nhàm chán, nhưng lập trình viên nên tránh việc khai báo trùng lặp trong cùng 1 scope vì điều đó dễ dẫn đến những kết quả gây khó hiểu. 
 
-Function declarations that appear inside of normal blocks typically hoist to the enclosing scope, rather than being conditional as this code implies:
+Trong ví dụ sau, mặc dù các khai báo hàm được đặt trong mệnh đề điều kiện, tuy vậy tất cả đều được hoisted (đưa lên trên cùng) trong scope bên ngoài chứa nó. 
 
+Ví dụ 7: 
 ```js
 foo(); // "b"
 
@@ -204,14 +208,14 @@ else {
 }
 ```
 
-However, it's important to note that this behavior is not reliable and is subject to change in future versions of JavaScript, so it's probably best to avoid declaring functions in blocks.
+Việc khai báo như trên không đáng tin cậy, và kết quả xuất ra như thế nào phụ thuộc vào sự thay đổi trong các phiên bản tương lai của JavaScript. Do đó, tốt nhất là tránh các khai báo hàm bên trong block kiểu trên. 
 
-## Review (TL;DR)
+## Tóm tắt (Phần trên quá dài, ứ đọc!)
 
-We can be tempted to look at `var a = 2;` as one statement, but the JavaScript *Engine* does not see it that way. It sees `var a` and `a = 2` as two separate statements, the first one a compiler-phase task, and the second one an execution-phase task.
+Thường mọi người đều nhìn vào đoạn mã `var a = 2;` và cho rằng đây là 1 câu lệnh, tuy nhiên *Engine* của JavaScript sẽ coi đó là 2 câu lệnh riêng rẽ, (1) ứng với `var a`, (2) ứng với `a = 2`. Câu (1) là ứng với giai đoạn biên dịch, câu (2) ứng với giai đoạn thực thi.
 
-What this leads to is that all declarations in a scope, regardless of where they appear, are processed *first* before the code itself is executed. You can visualize this as declarations (variables and functions) being "moved" to the top of their respective scopes, which we call "hoisting".
+Quy định trên dẫn đến một điều rằng mọi khai báo trong scope, không quan tâm vị trí của khai báo, đều được xử lý "trước tiên", sau mới đến phần thực thi. Một cách hình tượng, các khai báo (variables và functions) dược "đẩy" lên trên cùng của scope chứa chúng. Vấn đề này được gọi là "hoisting". 
 
-Declarations themselves are hoisted, but assignments, even assignments of function expressions, are *not* hoisted.
+Việc khai báo bản thân đã được "đẩy" lên trên, nhưng phép gán, nhất là phép gán trong function expression lại *không* như vậy. 
 
-Be careful about duplicate declarations, especially mixed between normal var declarations and function declarations -- peril awaits if you do!
+Luôn cẩn thận với việc khai báo trùng, nhất là khi có sự trùng lặp giữa khai báo var thông thường và khai báo hàm. Bạn không sớm thì muộn sẽ gặp vấn đề.
