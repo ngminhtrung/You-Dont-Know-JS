@@ -125,7 +125,7 @@ Việc gán `i = 3` bên trong `bar(..)` đã chép đè lên `i` được khai 
 
 Phần này, chúng ta sẽ đề cập đến một ví dụ điển hình của việc các variables bị xung đột trong global scope. Điều này xảy ra khi rất nhiều thư viện được gọi khi chạy chương trình, trong khi lập trình viên quên không ẩn đi các variables và functions vốn là tài sản riêng của từng thư viện. 
 
-Mỗi thư viện sẽ tạo ra một khai báo variable đơn, thường là 1 object, tên gọi của object đó tương đối độc nhất trong global scope. Object này được sử dụng như một "namespace" cho thư viện đó, nơi mà all specific exposures of functionality are made as properties off that object (namespace), rather than as top-level lexically scoped identifiers themselves.
+Mỗi thư viện sẽ tạo ra một khai báo variable đơn, thường là 1 object, tên gọi của object đó tương đối độc nhất trong global scope. Object này được sử dụng như một "namespace" cho thư viện đó, nơi mà all specific exposures of functionality are made as properties off that object (namespace), rather than as top-level lexically scoped identifiers themselves.
 
 Ví dụ:
 
@@ -143,9 +143,9 @@ var MyReallyCoolLibrary = {
 
 #### Quản lý Module
 
-Một cách làm khác để tránh việc bị xung đột chính là cách xây dựng "module" theo phương cách hiện đại, trong đó sử dụng rất nhiều các công cụ quản lý dependencies. Sử dụng các công cụ này sẽ giúp không thêm bất kỳ tên định danh (identifiers) nào của thư viện vào global scope, mà vẫn giúp những định danh đó được xuất hiện trong 1 scope đặc biệt khác quản lý của dependency managers. 
+Một cách làm khác để tránh việc bị xung đột chính là cách xây dựng "module" theo phương cách hiện đại, trong đó sử dụng rất nhiều các công cụ quản lý dependencies. Sử dụng các công cụ này sẽ giúp không thêm bất kỳ tên định danh (identifiers) nào của thư viện vào global scope, mà vẫn giúp những định danh đó được xuất hiện trong 1 scope đặc biệt khác quản lý của dependency managers. 
 
-Lưu ý rằng những công cụ trên không hề có tính năng "thần kỳ" nào giúp tránh khỏi những quy định của lexical scope. Các công cụ đón đơn giản chỉ giúp thực hiện các quy định đã giải thích bên trên về scoping, đó là "cưỡng chế" không cho các định danh được chèn thẳng vào các không gian chung (shared scope), giữ chúng trong những không gian riêng tư hơn, không tiềm ẩn nguy cơ xung đột, từ đó phòng ngừa bất kỳ sự cố nào liên quan đến scope.
+Lưu ý rằng những công cụ trên không hề có tính năng "thần kỳ" nào giúp tránh khỏi những quy định của lexical scope. Các công cụ đón đơn giản chỉ giúp thực hiện các quy định đã giải thích bên trên về scoping, đó là "cưỡng chế" không cho các định danh được chèn thẳng vào các không gian chung (shared scope), giữ chúng trong những không gian riêng tư hơn, không tiềm ẩn nguy cơ xung đột, từ đó phòng ngừa bất kỳ sự cố nào liên quan đến scope.
 
 As such, you can code defensively and achieve the same results as the dependency managers do without actually needing to use them, if you so choose. See the Chapter 5 for more information about the module pattern.
 
@@ -595,13 +595,13 @@ console.log( b ); // ReferenceError!
 
 ## Review (TL;DR)
 
-Hàm là nơi tạo ra scope thông dụng nhất trong JavaScript. Những variables và functions dược khai báo bên trong 1 function A sẽ bị ẩn đi, chỉ có thể được truy xuất nội bộ bên trong scope đóng gói bởi fuction A, và đây là nguyên tắc thiết kế chuẩn trong ngành phần mềm. 
+Hàm là nơi tạo ra scope thông dụng nhất trong JavaScript. Những variables và functions dược khai báo bên trong 1 function A sẽ bị ẩn đi, chỉ có thể được truy xuất nội bộ bên trong scope đóng gói bởi fuction A, và đây là nguyên tắc thiết kế chuẩn trong ngành phần mềm. 
 
 Tuy vậy, scope không chỉ được tạo ra bởi các functions mà còn bởi các block-scope, nghĩa là bởi bất kỳ khối code nào được đóng gói bởi cặp `{ .. }`.
 
 Kể từ ES3, cấu trúc `try/catch` tạo ra một block-scope bên trong mệnh đề `catch`.
 
-Trong ES6, từ khoá `let` (chị em họ với từ khoá `var`) được đưa vào cho phép khai báo variables trong bất kỳ khối code nào. `if (..) { let a = 2; }` sẽ khai báo một variable tên `a` và các lập trình viên có thể gọi nó bên trong cặp `{ .. }` của  `if`.
+Trong ES6, từ khoá `let` (chị em họ với từ khoá `var`) được đưa vào cho phép khai báo variables trong bất kỳ khối code nào. `if (..) { let a = 2; }` sẽ khai báo một variable tên `a` và các lập trình viên có thể gọi nó bên trong cặp `{ .. }` của  `if`.
 
 Though some seem to believe so, block scope should not be taken as an outright replacement of `var` function scope. Both functionalities co-exist, and developers can and should use both function-scope and block-scope techniques where respectively appropriate to produce better, more readable/maintainable code.
 
