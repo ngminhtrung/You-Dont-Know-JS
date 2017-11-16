@@ -1,7 +1,7 @@
 # You Don't Know JS: Scope & Closures
 # Chapter 5: Scope Closure
 
-We arrive at this point with hopefully a very healthy, solid understanding of how scope works.
+Hy vọng đến phần này, tất cả chúng ta đều hiểu thấu đáo về cách scope làm việc.
 
 We turn our attention to an incredibly important, but persistently elusive, *almost mythological*, part of the language: **closure**. If you have followed our discussion of lexical scope thus far, the payoff is that closure is going to be, largely, anticlimactic, almost self-obvious. *There's a man behind the wizard's curtain, and we're about to see him*. No, his name is not Crockford!
 
@@ -218,21 +218,17 @@ In fact, if you run this code, you get "6" printed out 5 times, at the one-secon
 
 **Huh?**
 
-Firstly, let's explain where `6` comes from. The terminating condition of the loop is when `i` is *not* `<=5`. The first time that's the case is when `i` is 6. So, the output is reflecting the final value of the `i` after the loop terminates.
+Đầu tiên, hãy cùng xem con số `6` đến từ đâu. Điều kiện để dừng vòng lặp là khi giá trị của `i` *không* `<=5`. Như vậy khi vòng lặp dừng thì `i` bằng 6. Vì thế, kết quả in ra chính là giá trị cuối cùng của `i` sau khi vòng lặp dừng.
 
-This actually seems obvious on second glance. The timeout function callbacks are all running well after the completion of the loop. In fact, as timers go, even if it was `setTimeout(.., 0)` on each iteration, all those function callbacks would still run strictly after the completion of the loop, and thus print `6` each time.
+Điều này mới đầu thì trông có vẻ hợp lý bởi các function callback trên đều được chạy chậm lại một quãng thời gian sau khi vòng lặp kết thúc. Tuy vậy, kể cả khi ta đặt `setTimeout(.., 0)` cho từng vòng lặp, thì kết quả vẫn là `6` giống như trên. Điều này chứng tỏ còn có gì nằm sâu hơn cần phải tìm hiểu. Chúng ta đã *quên* gì trong đoạn code trên để nó có thể dẫn đến kết quả như ta mong muống?
 
-But there's a deeper question at play here. What's *missing* from our code to actually have it behave as we semantically have implied?
+Vấn đề ở đây chính là vì chúng ta *tưởng* mỗi vòng lặp sẽ "lưu" lại bản sao của `i` tại thời điểm đó. Tuy nhiên, theo cái cách mà scope hoạt động, thì tất cả các functions trên, dẫu có được định nghĩa riêng biệt trong từng vòng lặp, thì đều **bị đóng gói trong global scope chung**, mà scope này vốn chỉ có một `i` trong nó.
 
-What's missing is that we are trying to *imply* that each iteration of the loop "captures" its own copy of `i`, at the time of the iteration. But, the way scope works, all 5 of those functions, though they are defined separately in each loop iteration, all **are closed over the same shared global scope**, which has, in fact, only one `i` in it.
+Khi hiểu như vậy thì *đương nhiên* là mọi functions đều chia sẻ cùng một tham chiếu đến `i`. Cấu trúc của vòng lặp thường khiến cho chúng ta bối rối, nghĩ rằng sẽ có thứ gì phức tạp hơn. Câu trả lời là không. Không có gì khác ngoài việc cứ như là không hề có vòng lặp, mà chỉ có 5 timeout callback được khai báo lần lượt từng function một. 
 
-Put that way, *of course* all functions share a reference to the same `i`. Something about the loop structure tends to confuse us into thinking there's something else more sophisticated at work. There is not. There's no difference than if each of the 5 timeout callbacks were just declared one right after the other, with no loop at all.
+Ok, quay trở lại câu hỏi nhức đầu trên, chúng ta đang thiếu thứ gì? Chúng ta cần thêm closured scope. Chính xác hơn, chúng ta cần closured scope mới cho mỗi vòng lặp.
 
-OK, so, back to our burning question. What's missing? We need more ~~cowbell~~ closured scope. Specifically, we need a new closured scope for each iteration of the loop.
-
-We learned in Chapter 3 that the IIFE creates scope by declaring a function and immediately executing it.
-
-Let's try:
+Trong chương 3, ta đã biết là IIFE tạo ra scope bằng cách khai báo hàm và thực thi hàm ngay lập tức. Vậy hãy thử với IIFE xem sao:
 
 ```js
 for (var i=1; i<=5; i++) {
@@ -244,13 +240,9 @@ for (var i=1; i<=5; i++) {
 }
 ```
 
-Does that work? Try it. Again, I'll wait.
+Nó có cho kết quả như ta cần không? **KHÔNG.** Tại sao? Rõ ràng chúng ta đã có thêm lexical scope. Mỗi timeout function callback thực tế đã được đóng gói trong scope tạo ra bởi từng IIFE trong từng vòng lặp. 
 
-I'll end the suspense for you. **Nope.** But why? We now obviously have more lexical scope. Each timeout function callback is indeed closing over its own per-iteration scope created respectively by each IIFE.
-
-It's not enough to have a scope to close over **if that scope is empty**. Look closely. Our IIFE is just an empty do-nothing scope. It needs *something* in it to be useful to us.
-
-It needs its own variable, with a copy of the `i` value at each iteration.
+Câu trả lời là vì scope mà IIFE tạo ra ở trên là **scope rỗng**. Scope này cần thêm *dữ liệu* để có thể sử dụng. Nó cần variable của chính nó, chính là bản sao giá trị của `i` trong từng vòng lặp.
 
 ```js
 for (var i=1; i<=5; i++) {
@@ -263,9 +255,9 @@ for (var i=1; i<=5; i++) {
 }
 ```
 
-**Eureka! It works!**
+**Eureka! Nó đã chạy!**
 
-A slight variation some prefer is:
+Một phiên bản khác được ưu thích hơn là:
 
 ```js
 for (var i=1; i<=5; i++) {
@@ -277,11 +269,9 @@ for (var i=1; i<=5; i++) {
 }
 ```
 
-Of course, since these IIFEs are just functions, we can pass in `i`, and we can call it `j` if we prefer, or we can even call it `i` again. Either way, the code works now.
+Rõ ràng, bởi IIFEs thực ra chỉ là các functions, chúng ta có thể truyền tham số `i` cho nó, và gọi tham số truyền vào là `j` nếu muốn, hoặc thậm chí vẫn để là `i` cũng được. Cả hai cách này đều cho kết quả giống nhau. Việc dùng IIFE bên trong mỗi vòng lặp đã tạo ra một scope mới ở từng vòng lặp, tạo điều kiện cho các timeout function callbacks cơ hội to close over a new scope for each iteration, one which had a variable with the right per-iteration value in it for us to access.
 
-The use of an IIFE inside each iteration created a new scope for each iteration, which gave our timeout function callbacks the opportunity to close over a new scope for each iteration, one which had a variable with the right per-iteration value in it for us to access.
-
-Problem solved!
+Vấn đề đã được giải quyết!
 
 ### Block Scoping Revisited
 
