@@ -417,7 +417,7 @@ foo1.identify(); // "foo 1"
 foo2.identify(); // "foo 2"
 ```
 
-Another slight but powerful variation on the module pattern is to name the object you are returning as your public API:
+Một phiên bản khác (nhưng mạnh mẽ hơn) của modele pattern đó là việc đặt tên object trả về dưới dạng public API:
 
 ```js
 var foo = (function CoolModule(id) {
@@ -447,7 +447,7 @@ foo.change();
 foo.identify(); // FOO MODULE
 ```
 
-By retaining an inner reference to the public API object inside your module instance, you can modify that module instance **from the inside**, including adding and removing methods, properties, *and* changing their values.
+Bằng cách giữ một tham chiếu bên trong tới object "publicAPI", mà object này lại đặt bên trong của module, ta có thể thay đổi các thuộc tính của module instance **từ bên trong**, kể cả việc thêm, bớt methods, thuộc tính, *và* thay đổi các giá trị của chúng.
 
 ### Modern Modules
 
