@@ -348,13 +348,13 @@ foo.doSomething(); // cool
 foo.doAnother(); // 1 ! 2 ! 3
 ```
 
-This is the pattern in JavaScript we call *module*. The most common way of implementing the module pattern is often called "Revealing Module", and it's the variation we present here.
+This is the pattern in JavaScript we call *module*. Một trong những cách thông dụng nhất để áp dụng module pattern là mô hình "Revealing Module", và chúng ta sẽ xem xét biến thể của pattern này bên dưới đây.
 
 Let's examine some things about this code.
 
-Firstly, `CoolModule()` is just a function, but it *has to be invoked* for there to be a module instance created. Without the execution of the outer function, the creation of the inner scope and the closures would not occur.
+Đầu tiên, `CoolModule()` chỉ đơn giản là một function, nhưng nó *cần phải được invoked* để tạo tạo ra instance của module. Không thực thi function bên ngoài (`CoolModule()`) thì sẽ không có inner scope và closures.
 
-Secondly, the `CoolModule()` function returns an object, denoted by the object-literal syntax `{ key: value, ... }`. The object we return has references on it to our inner functions, but *not* to our inner data variables. We keep those hidden and private. It's appropriate to think of this object return value as essentially a **public API for our module**.
+Thứ haim, function `CoolModule()` trả về một object, denoted by the object-literal syntax `{ key: value, ... }`. The object we return has references on it to our inner functions, but *not* to our inner data variables. We keep those hidden and private. It's appropriate to think of this object return value as essentially a **public API for our module**.
 
 This object return value is ultimately assigned to the outer variable `foo`, and then we can access those property methods on the API, like `foo.doSomething()`.
 
@@ -395,9 +395,9 @@ foo.doSomething(); // cool
 foo.doAnother(); // 1 ! 2 ! 3
 ```
 
-Here, we turned our module function into an IIFE (see Chapter 3), and we *immediately* invoked it and assigned its return value directly to our single module instance identifier `foo`.
+Ở đây, chúng ta chuyển module function thành một IIFE (xem Chương 3), rồi gọi nó *ngay lập tức*, gán giá trị trả về trực tiếp cho 1 instance của module này (instance có định danh là `foo`).
 
-Modules are just functions, so they can receive parameters:
+Do modules chỉ đơn giản là functions, vì vậy mà chúng ta có thể truyền tham số cho modules:
 
 ```js
 function CoolModule(id) {
