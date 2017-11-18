@@ -1,11 +1,11 @@
 # You Don't Know JS: Scope & Closures
 # Appendix A: Dynamic Scope
 
-Trong Chương 2, chúng ta đã nhắc về "Dynamic Scope" như một khái niệm tương phản với "Lexical Scope", vốn là mô hình hoạt động của scope trong JavaScript (thực tế là nó cũng là mô hình của hầu hết các ngôn ngữ lập trình khác).
+Trong Chương 2, chúng ta đã nhắc về "Dynamic Scope" (Scope động) như một khái niệm tương phản với "Lexical Scope", vốn là mô hình hoạt động của scope trong JavaScript (thực tế là nó cũng là mô hình của hầu hết các ngôn ngữ lập trình khác).
 
 Ở phần này chúng ta sẽ nói ngắn gọn về dynamic scope, việc này sẽ giúp hiểu lexical scope kỹ hơn. Tuy nhiên, một điều quan trọng hơn là dynamic scope thực ra có quan hệ "anh em con cô con cậu" với 1 cơ chế khác trong JavaScript (`this`), ta sẽ nói về chủ đề này ở trong quyển "*this & Object Prototypes*".
 
-Quay lại chương 2, lexical scope hay thực chất scope là một tập các quy định để *Engine* biết cách tìm kiếm 1 variable, và nơi tìm thấy variable đó. Một tính chất quan trọng của lexical scope là nó được xác định lúc lập trình viên viết code (chưa đến giai đoạn code được thực thi) (không tính cách ăn gian bằng `eval(...)` và `with`). 
+Quay lại chương 2, lexical scope là một tập các quy định để *Engine* biết cách và nơi để tìm 1 variable nào đó. Một tính chất quan trọng của lexical scope là nó được xác định lúc lập trình viên viết code (chưa đến giai đoạn code được thực thi) (không tính cách ăn gian bằng `eval(...)` và `with`). 
 
 Với dynamic scope, bản thân thuật ngữ này đã làm ta nghĩ đến 1 mô hình mà scope có thể thay đổi tại thời điểm code được thực thi, chứ không bị giữ cố định so với thời điểm viết code. Hãy xem ví dụ sau:
 
@@ -47,7 +47,7 @@ bar();
 
 Tại sao lại có chuyện này? Bởi khi `foo()` không tìm thấy `a` trong scope của nó, thay vì tiếp tục tìm kiếm ở cấp scope cao hơn, nó nhìn vào call-stack (nhóm các lệnh gọi hàm), để xem `foo()` được *gọi từ đâu*. Vì `foo()` được gọi từ `bar()`, nó sẽ tìm `a` trong scope của `bar()`. Do có 1 variable `a` được khai báo trong scope của `bar()` với giá trị bằng `3`, kết quả trả về (theo "lý thuyết") sẽ bằng `3`.
 
-Lạ quá phải không? Lúc này đây bạn có thể nghĩ điều này kì cục. Có thể bởi bạn mới chỉ làm việc với những dòng code chỉ dùng lexical scope, nên bạn thấy dynamic scope như bọn ngoại lại. Nhưng nếu ngay từ đầu học lập trình bạn đã được giới thiệu, rồi thực hành với chỉ dynamic scope, bạn cũng sẽ có cảm giác tương tự với lexical scope. 
+Lạ quá phải không? Lúc này đây bạn có thể nghĩ điều này kì cục. Có thể bởi bạn mới chỉ làm việc với những dòng code chỉ dùng lexical scope, nên bạn thấy dynamic scope như bọn ngoại lai. Nhưng nếu ngay từ đầu học lập trình bạn đã được giới thiệu, rồi thực hành với chỉ dynamic scope, bạn cũng sẽ có cảm giác tương tự với lexical scope. 
 
 Xin nhắc lại lần nữa, ngắn gọn và rõ ràng, là JavaScript **không hề có dynamic scope**. JavaScript chỉ có lexical scope. Nhưng cơ chế của `this` thì lại có điểm chung với dynamic scope.
 
