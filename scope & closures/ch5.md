@@ -575,12 +575,12 @@ The contents inside the *module file* are treated as if enclosed in a scope clos
 
 ## Review (TL;DR)
 
-Closure seems to the un-enlightened like a mystical world set apart inside of JavaScript which only the few bravest souls can reach. But it's actually just a standard and almost obvious fact of how we write code in a lexically scoped environment, where functions are values and can be passed around at will.
+Closure dường như là một thế giới JavaScript riêng bí ẩn trong bóng tối mà chỉ có vài chiến binh lập trình viên dũng cảm nhất mới dám bước tới. Tuy vậy, nó thực ra không gì hơn một tiêu chuẩn về cách chúng ta viết code trong môi trường lexical scope, nơi mà functions là những giá trị được truyền qua lại theo ý muốn.
 
-**Closure is when a function can remember and access its lexical scope even when it's invoked outside its lexical scope.**
+**Closure là đặc tính của một function có thể ghi nhớ và truy cập lexical scope của nó kể cả khi function đó được gọi bên ngoài lexical scope đấy.**
 
-Closures can trip us up, for instance with loops, if we're not careful to recognize them and how they work. But they are also an immensely powerful tool, enabling patterns like *modules* in their various forms.
+Closures khi sử dụng trong vòng lặp có thể khiến kết quả của đoạn code không đúng như ta mong đợi, đơn gian vì ta bất cẩn không chú ý đến cách closurs hoạt động. Tuy vậy, closures cũng đồng thời là một công cụ mạnh mẽ, cho phép triển khai các patterns như *modules pattern* dưới nhiều hình thức khác nhau.
 
-Modules require two key characteristics: 1) an outer wrapping function being invoked, to create the enclosing scope 2) the return value of the wrapping function must include reference to at least one inner function that then has closure over the private inner scope of the wrapper.
+Để được gọi là module, đoạn code đó phải đảm bảo có hai yếu tố sau: (1) function bọc bên ngoài phải được gọi để giúp tạo ra một scope bao bên ngoài, (2) giá trị trả về của function bọc bên ngoài phải chứa tham chiếu đến ít nhất một hàm bên trong, hàm bên trong này có scope là private inner scope của function bọc bên ngoài.
 
 Now we can see closures all around our existing code, and we have the ability to recognize and leverage them to our own benefit!

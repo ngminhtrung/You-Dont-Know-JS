@@ -1,23 +1,21 @@
 # You Don't Know JS: Scope & Closures
 # Appendix C: Lexical-this
 
-Though this title does not address the `this` mechanism in any detail, there's one ES6 topic which relates `this` to lexical scope in an important way, which we will quickly examine.
+Mặc dù chương này không đề cập đến cơ chế làm việc của `this` một cách chi tiết, nhưng do có 1 topic quan trọng trong ES6 liên quan đến `this` và lexical scope, nên chúng ta sẽ tóm tắt nhanh về nó ở đây. 
 
-ES6 adds a special syntactic form of function declaration called the "arrow function". It looks like this:
+Trong ES6, có một cú pháp khai báo function đặc biệt tên là "arrow function" (hàm mũi tên), trông giống như sau:
 
 ```js
 var foo = a => {
-	console.log( a );
+	console.log(a);
 };
 
 foo( 2 ); // 2
 ```
 
-The so-called "fat arrow" is often mentioned as a short-hand for the *tediously verbose* (sarcasm) `function` keyword.
+Ký hiệu mũi tên `=>` được thay thế cho từ khóa `function`. Nhưng hàm mũi tên không chỉ đơn thuần là cách viết ngắn gọn cho cách khai báo hàm thông thường, nó còn có những đặc điểm mà chúng ta sẽ xem xét bên dưới đây.
 
-But there's something much more important going on with arrow-functions that has nothing to do with saving keystrokes in your declaration.
-
-Briefly, this code suffers a problem:
+Hãy cùng nghiên cứu vấn đề đối với đoạn code bên dưới:
 
 ```js
 
