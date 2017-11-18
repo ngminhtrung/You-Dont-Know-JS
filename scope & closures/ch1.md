@@ -250,7 +250,7 @@ Ngược lại, nếu *Engine* "tìm bên trái - LHS" (thay vì "tìm phải" n
 
 Quay sang 1 trường hợp khác, là phép "tìm bên phải" đã tìm thấy variable mà bạn cần, nhưng sau đó bạn lại định dùng giá trị của variable tìm được để làm vài thứ bất khả thi, ví dụ: variable được gán với 1 con số nhưng lại lôi variable đấy ra thực thi như thực thi 1 hàm; hoặc tìm thuộc tính của `null`/ `undefined`. Lúc này thì *Engine* sẽ trả về 1 thông báo lỗi khác, đó là `TypeError`.
 
-Vậy có thể thấy là lỗi `ReferenceError` liên quan đến thất bại trong việc định vị *Scope* (của variable), trong khi với `TypeError` thì việc định vị *Scope* (của variable) đã thành công, nhưng hành động tiếp theo đối dựa vào value của variable tìm được thì lại không được Engine cho phép (hoặc bất khả thi).
+Vậy có thể thấy là lỗi `ReferenceError` liên quan đến thất bại trong việc định vị *Scope* (của variable), trong khi với `TypeError` thì việc định vị *Scope* (của variable) đã thành công, nhưng hành động tiếp theo dựa vào value của variable tìm được thì lại không được Engine cho phép (hoặc bất khả thi).
 
 ## Tổng kết (TL;DR - Dài quá, Ứ đọc)
 

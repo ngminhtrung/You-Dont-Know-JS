@@ -25,11 +25,11 @@ function foo(a) {
 	var c = 3;
 }
 ```
-Trong mẩu code trên, quả bóng scope của `foo(...)` sẽ chứa các định danh `a`, `b`, `c` và `bar`. Việc khai báo này nằm chính xác ở đâu bên trong scope **không quan trọng**, dù sao thì variable và function kia vẫn thuộc về quả bóng scope `foo(...)` chứa nó. 
+Trong mẩu code trên, quả bóng scope của `foo(...)` sẽ chứa các variables `a`, `b`, `c` và function `bar`. Việc khai báo này nằm chính xác ở đâu bên trong scope **không quan trọng**, dù sao thì các variables và function kia vẫn thuộc về quả bóng scope `foo(...)` chứa nó. 
 
 `bar(..)` có quả bóng scope của riêng nó. Global scope cũng vậy, nó chứa 1 định danh là `foo`.
 
-Bởi vì `a`, `b`, `c`, và `bar` đều nằm bên trong scope của quả bóng `foo(..)`, ta không thể truy cập những variables và function đó từ bên ngoài của `foo(..)`. Dẫn đến đoạn code sau sẽ trả về thông báo lỗi `ReferenceError` do ở global scope không chứa các định danh `bar` hoặc `a`, `b`, `c`.
+Bởi vì `a`, `b`, `c`, và `bar` đều nằm bên trong scope của quả bóng `foo(..)`, ta không thể truy cập những variables và function đó từ bên ngoài của `foo(..)`. Dẫn đến đoạn code sau sẽ trả về thông báo lỗi `ReferenceError` do ở global scope không chứa các định danh `bar` hoặc `a`, `b`, `c`. (Lưu ý của người dịch: Xem lại chương 1, mục *Erros - Các lỗi thường gặp*, ở đây *Engine* thực hiện phép tìm bên phải - RHS - nhưng không thấy các variables và function này ở global scope, dẫn đến việc trả về thông báo lỗi `ReferenceError`).
 
 ```js
 bar(); // báo lỗi

@@ -222,13 +222,13 @@ In fact, if you run this code, you get "6" printed out 5 times, at the one-secon
 
 Điều này mới đầu thì trông có vẻ hợp lý bởi các function callback trên đều được chạy chậm lại một quãng thời gian sau khi vòng lặp kết thúc. Tuy vậy, kể cả khi ta đặt `setTimeout(.., 0)` cho từng vòng lặp, thì kết quả vẫn là `6` giống như trên. Điều này chứng tỏ còn có gì nằm sâu hơn cần phải tìm hiểu. Chúng ta đã *quên* gì trong đoạn code trên để nó có thể dẫn đến kết quả như ta mong muống?
 
-Vấn đề ở đây chính là vì chúng ta *tưởng* mỗi vòng lặp sẽ "lưu" lại bản sao của `i` tại thời điểm đó. Tuy nhiên, theo cái cách mà scope hoạt động, thì tất cả các functions trên, dẫu có được định nghĩa riêng biệt trong từng vòng lặp, thì đều **bị đóng gói trong global scope chung**, mà scope này vốn chỉ có một `i` trong nó.
+Vấn đề ở đây chính là vì chúng ta *tưởng* mỗi vòng lặp sẽ "lưu" lại bản sao của `i` tại thời điểm đó. Tuy nhiên, theo cái cách mà scope hoạt động, thì tất cả các functions trên, dẫu có được khai báo riêng biệt trong từng vòng lặp, thì đều **ở trong 1 scope chung là global scope**, mà scope này vốn chỉ có một `i` trong nó.
 
 Khi hiểu như vậy thì *đương nhiên* là mọi functions đều chia sẻ cùng một tham chiếu đến `i`. Cấu trúc của vòng lặp thường khiến cho chúng ta bối rối, nghĩ rằng sẽ có thứ gì phức tạp hơn. Câu trả lời là không. Không có gì khác ngoài việc cứ như là không hề có vòng lặp, mà chỉ có 5 timeout callback được khai báo lần lượt từng function một. 
 
-Ok, quay trở lại câu hỏi nhức đầu trên, chúng ta đang thiếu thứ gì? Chúng ta cần thêm closured scope. Chính xác hơn, chúng ta cần closured scope mới cho mỗi vòng lặp.
+Ok, quay trở lại câu hỏi nhức đầu trên, chúng ta đang thiếu thứ gì? Chúng ta cần thêm closured scope. Chính xác hơn, chúng ta cần closured scope (hay là scope của riêng từng function) cho mỗi vòng lặp.
 
-Trong chương 3, ta đã biết là IIFE tạo ra scope bằng cách khai báo hàm và thực thi hàm ngay lập tức. Vậy hãy thử với IIFE xem sao:
+Trong chương 3, ta đã biết là IIFE tạo ra scope bằng cách khai báo và thực thi hàm ngay lập tức. Vậy hãy thử với IIFE xem sao:
 
 ```js
 for (var i=1; i<=5; i++) {
@@ -263,21 +263,21 @@ Một phiên bản khác được ưu thích hơn là:
 for (var i=1; i<=5; i++) {
 	(function(j){
 		setTimeout( function timer(){
-			console.log( j );
+			console.log(j);
 		}, j*1000 );
-	})( i );
+	})(i);
 }
 ```
 
-Rõ ràng, bởi IIFEs thực ra chỉ là các functions, chúng ta có thể truyền tham số `i` cho nó, và gọi tham số truyền vào là `j` nếu muốn, hoặc thậm chí vẫn để là `i` cũng được. Cả hai cách này đều cho kết quả giống nhau. Việc dùng IIFE bên trong mỗi vòng lặp đã tạo ra một scope mới ở từng vòng lặp, tạo điều kiện cho các timeout function callbacks cơ hội to close over a new scope for each iteration, one which had a variable with the right per-iteration value in it for us to access.
+Rõ ràng, bởi IIFEs thực ra chỉ là các functions, chúng ta có thể truyền tham số `i` cho nó, và gọi tham số truyền vào là `j` nếu muốn, hoặc thậm chí vẫn để là `i` cũng được. Cả hai cách này đều cho kết quả giống nhau. Việc dùng IIFE bên trong mỗi vòng lặp đã tạo ra một scope mới ở từng vòng lặp, trong mỗi scope này có chứa variable mà ta có quyền truy cập giá trị của variable đấy.
 
-Vấn đề đã được giải quyết!
+Vậy là vấn đề trên đã được giải quyết!
 
-### Block Scoping Revisited
+### Cùng xem lại "Block Scoping"
 
-Look carefully at our analysis of the previous solution. We used an IIFE to create new scope per-iteration. In other words, we actually *needed* a per-iteration **block scope**. Chapter 3 showed us the `let` declaration, which hijacks a block and declares a variable right there in the block.
+Khi đọc kỹ lại phần trên, chúng ta thấy rằng ta đã sử dụng IIFE để tạo ra scope mới trong mỗi vòng lặp. Vậy thực ra để giải quyết vấn đề, chúng ta *đã cần* những **block scope** (scope có phạm vi trong từng khối code) trong các vòng lặp. Việc này gợi lại chương 3, chương đã đề cập đến khai báo dùng `let`, một từ khóa đã thay đổi đặc tính của 1 khối code, giúp khai báo variable ngay trong khối code đấy. 
 
-**It essentially turns a block into a scope that we can close over.** So, the following awesome code "just works":
+**Từ đó,  essentially turns a block into a scope that we can close over.** So, the following awesome code "just works":
 
 ```js
 for (var i=1; i<=5; i++) {
@@ -362,13 +362,13 @@ This object return value is ultimately assigned to the outer variable `foo`, and
 
 The `doSomething()` and `doAnother()` functions have closure over the inner scope of the module "instance" (arrived at by actually invoking `CoolModule()`). When we transport those functions outside of the lexical scope, by way of property references on the object we return, we have now set up a condition by which closure can be observed and exercised.
 
-To state it more simply, there are two "requirements" for the module pattern to be exercised:
+Để cho đơn giản, hãy nhớ rằng có hai "điều kiện" để một đoạn code được gọi là module pattern:
 
-1. There must be an outer enclosing function, and it must be invoked at least once (each time creates a new module instance).
+1. Nó phải có một function bao bên ngoài, và function này phải được gọi ít nhất một lần (mỗi lần gọi function này sẽ tạo ra 1 instance của module đó).
 
-2. The enclosing function must return back at least one inner function, so that this inner function has closure over the private scope, and can access and/or modify that private state.
+2. Function bao bên ngoài (tạm gọi là function `A`) phải trả về ít nhất 1 function khác (tạm gọi là function `a`) vốn khai báo bên trong nó (tức là function `a` được khai báo bên trong `A`). Nhờ vậy mà function `a` có thể truy cập & thay đổi các variables bên trong `A` như chương 3 đã đề cập.
 
-An object with a function property on it alone is not *really* a module. An object which is returned from a function invocation which only has data properties on it and no closured functions is not *really* a module, in the observable sense.
+Một object có chứa property là function thì không *thực sự* là module. An object which is returned from a function invocation which only has data properties on it and no closured functions is not *really* a module, in the observable sense.
 
 The code snippet above shows a standalone module creator called `CoolModule()` which can be invoked any number of times, each time creating a new module instance. A slight variation on this pattern is when you only care to have one instance, a "singleton" of sorts:
 
@@ -417,7 +417,7 @@ foo1.identify(); // "foo 1"
 foo2.identify(); // "foo 2"
 ```
 
-Một phiên bản khác (nhưng mạnh mẽ hơn) của modele pattern đó là việc đặt tên object trả về dưới dạng public API:
+Một phiên bản khác (nhưng mạnh mẽ hơn) của modele pattern đó là việc đặt tên object trả về là publicAPI (Ghi chú của người dịch: Việc đặt tên này giúp người đọc - một lập trình viên khác, hiểu ngay đây đâu là giá trị trả về được công khai cho người dùng):
 
 ```js
 var foo = (function CoolModule(id) {
@@ -427,11 +427,11 @@ var foo = (function CoolModule(id) {
 	}
 
 	function identify1() {
-		console.log( id );
+		console.log(id);
 	}
 
 	function identify2() {
-		console.log( id.toUpperCase() );
+		console.log(id.toUpperCase());
 	}
 
 	var publicAPI = {
@@ -440,7 +440,7 @@ var foo = (function CoolModule(id) {
 	};
 
 	return publicAPI;
-})( "foo module" );
+})("foo module");
 
 foo.identify(); // foo module
 foo.change();
