@@ -16,18 +16,28 @@ Module pattern:
 1. Module Pattern trông như thế nào?
 ```js
 var foo = (function CoolModule(id) {
+
+  var count = 0; 
+
 	function change() {
 		// modifying the public API
 		publicAPI.identify = identify_02;
+    count++; 
 	}
 
 	function identify_01() {
 		console.log("Hello " + id);
+    if count > 0 ? countChange() : "";
 	}
 
 	function identify_02() {
 		console.log("Hello " + id.toUpperCase());
+    if count > 0 ? countChange() : "";
 	}
+
+  function countChange() {
+    console.log("Số lần thay đổi: " + count);
+  }
 
 	var publicAPI = {
 		change: change,
@@ -35,6 +45,6 @@ var foo = (function CoolModule(id) {
 	};
 
 	return publicAPI;
-})("FCC Hanoi");
+})("Trang");
 
 
