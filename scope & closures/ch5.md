@@ -25,9 +25,9 @@ OK, enough hyperbole and shameless movie references.
 
 Here's a down-n-dirty definition of what you need to know to understand and recognize closures:
 
-> Closure is when a function is able to remember and access its lexical scope even when that function is executing outside its lexical scope.
+> Closure là khi một function có thể ghi nhớ và truy cập lexical scope của nó ngay cả khi nó đó thực thi bên ngoài lexical scope đấy.
 
-Let's jump into some code to illustrate that definition.
+Hãy xem ví dụ sau:
 
 ```js
 function foo() {
@@ -43,13 +43,11 @@ function foo() {
 foo();
 ```
 
-This code should look familiar from our discussions of Nested Scope. Function `bar()` has *access* to the variable `a` in the outer enclosing scope because of lexical scope look-up rules (in this case, it's an RHS reference look-up).
+Đoạn code trên trông tương tự với những gì đã thảo luận ở phần Nested Scope (Scope lồng nhau). Function `bar()` có *quyền truy cập* đến variable `a` ở scope bao bên ngoài theo quy định về phép tìm kiếm của lexical scope (trong trường hợp này, đây là phép tìm bên phải).
 
-Is this "closure"?
+Đoạn code trên có minh họa cho "closure" hay không? Có lẽ, về mặt kỹ thuật thì ... *có vẻ đúng*. But by our what-you-need-to-know definition above... *not exactly*. I think the most accurate way to explain `bar()` referencing `a` is via lexical scope look-up rules, and those rules are *only* (an important!) **part** of what closure is.
 
-Well, technically... *perhaps*. But by our what-you-need-to-know definition above... *not exactly*. I think the most accurate way to explain `bar()` referencing `a` is via lexical scope look-up rules, and those rules are *only* (an important!) **part** of what closure is.
-
-From a purely academic perspective, what is said of the above snippet is that the function `bar()` has a *closure* over the scope of `foo()` (and indeed, even over the rest of the scopes it has access to, such as the global scope in our case). Put slightly differently, it's said that `bar()` closes over the scope of `foo()`. Why? Because `bar()` appears nested inside of `foo()`. Plain and simple.
+Về mặt lý thuyết thuần túy, những gì đoạn code trên thể hiện cho thấy function `bar()` có một *closure* over the scope of `foo()` (and indeed, even over the rest of the scopes it has access to, such as the global scope in our case). Put slightly differently, it's said that `bar()` closes over the scope of `foo()`. Why? Because `bar()` appears nested inside of `foo()`. Plain and simple.
 
 But, closure defined in this way is not directly *observable*, nor do we see closure *exercised* in that snippet. We clearly see lexical scope, but closure remains sort of a mysterious shifting shadow behind the code.
 
@@ -71,13 +69,13 @@ var baz = foo();
 baz(); // 2 -- Whoa, closure was just observed, man.
 ```
 
-The function `bar()` has lexical scope access to the inner scope of `foo()`. But then, we take `bar()`, the function itself, and pass it *as* a value. In this case, we `return` the function object itself that `bar` references.
+Function `bar()` có lexical scope truy cập đến scope bên trong `foo()`. But then, we take `bar()`, the function itself, and pass it *as* a value. Trong trường hợp này, we `return` the function object itself that `bar` references.
 
 After we execute `foo()`, we assign the value it returned (our inner `bar()` function) to a variable called `baz`, and then we actually invoke `baz()`, which of course is invoking our inner function `bar()`, just by a different identifier reference.
 
-`bar()` is executed, for sure. But in this case, it's executed *outside* of its declared lexical scope.
+Function `bar()` đã được thực thi, nhưng mà thực thi *bên ngoài* lexical scope mà nó được khai báo.
 
-After `foo()` executed, normally we would expect that the entirety of the inner scope of `foo()` would go away, because we know that the *Engine* employs a *Garbage Collector* that comes along and frees up memory once it's no longer in use. Since it would appear that the contents of `foo()` are no longer in use, it would seem natural that they should be considered *gone*.
+Sau khi `foo()` được thực thi, về mặt cảm tính chúng ta sẽ cho rằng toàn bộ scope bên trong của `foo()` sẽ biến mất, bởi ta biết *Engine* sẽ cho *Garbage Collector* hoạt động để giải phóng bộ nhớ một khi `foo()` không còn cần đến nữa. Since it would appear that the contents of `foo()` are no longer in use, it would seem natural that they should be considered *gone*.
 
 But the "magic" of closures does not let this happen. That inner scope is in fact *still* "in use", and thus does not go away. Who's using it? **The function `bar()` itself**.
 
@@ -354,13 +352,13 @@ Let's examine some things about this code.
 
 Đầu tiên, `CoolModule()` chỉ đơn giản là một function, nhưng nó *cần phải được invoked* để tạo tạo ra instance của module. Không thực thi function bên ngoài (`CoolModule()`) thì sẽ không có inner scope và closures.
 
-Thứ haim, function `CoolModule()` trả về một object, denoted by the object-literal syntax `{ key: value, ... }`. The object we return has references on it to our inner functions, but *not* to our inner data variables. We keep those hidden and private. It's appropriate to think of this object return value as essentially a **public API for our module**.
+Thứ hai, function `CoolModule()` trả về một object dưới dạng `{ key: value, ... }`. Object được trả về có tham chiếu đến functions bên trong của `CoolModule()`, nhưng *không* tham chiếu đến các variables của `CoolModule()` như `something` hoặc `another`. Chúng ta giữ những variable này, không để lộ ra ngoài. Hãy coi object trả về kia như một **public API cho module của chúng ta**.
 
-This object return value is ultimately assigned to the outer variable `foo`, and then we can access those property methods on the API, like `foo.doSomething()`.
+Khi variable `foo` được gán với `CoolModule()`, đồng nghĩa với việc nó cũng được gán với object trả về của `CoolModule()`, sau đó ta có thể truy cập vào các thuộc tính của API, như là `foo.doSomething()`.
 
 **Note:** It is not required that we return an actual object (literal) from our module. We could just return back an inner function directly. jQuery is actually a good example of this. The `jQuery` and `$` identifiers are the public API for the jQuery "module", but they are, themselves, just a function (which can itself have properties, since all functions are objects).
 
-The `doSomething()` and `doAnother()` functions have closure over the inner scope of the module "instance" (arrived at by actually invoking `CoolModule()`). When we transport those functions outside of the lexical scope, by way of property references on the object we return, we have now set up a condition by which closure can be observed and exercised.
+Hai functions `doSomething()` và `doAnother()` có closure ứng với scope bên trong của module "instance" (có được nhờ vào việc invoke `CoolModule()`). Khi chúng ta gọi các hàm đó bên ngoài lexical scope của nó (thông qua các tham chiếu đến object được trả về kia), ta đã thiết lập một môi trường để quan sát và triển khai closure.
 
 Để cho đơn giản, hãy nhớ rằng có hai "điều kiện" để một đoạn code được gọi là module pattern:
 
