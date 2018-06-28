@@ -33,9 +33,7 @@ obj.cool(); // awesome
 setTimeout( obj.cool, 100 ); // not awesome
 ```
 
-The problem is the loss of `this` binding on the `cool()` function. There are various ways to address that problem, but one often-repeated solution is `var self = this;`.
-
-That might look like:
+Vấn đề xảy ra với đoạn code trên, đó là `this` đã mất đi mối liên hệ với function `cool()`. Có một vài cách để xử lý chuyện này, nhưng một cách hay được nhắc đến đó là `var self = this;`, viết lại đoạn code thành:
 
 ```js
 var obj = {

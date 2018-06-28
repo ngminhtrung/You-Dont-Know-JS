@@ -15,7 +15,7 @@ Như đã nói trong Chương 1, bước đầu tiên của 1 trình biên dịc
 
 Việc định nghĩa "lexical scope" khá là ngoằn ngoèo, nó là ... "scope" nhưng tồn tại trong *thời gian "lexing"*. Để đơn giản thì lexical scope được xác định vào lúc tác giả viết code, sắp xếp các variables hoặc khối code ở các vị trí nhất định. Lexical scope sẽ được giữ nguyên cho đến thời điểm "lexing" (tức là giai đoạn mà code được chia thành các phần nhỏ có ý nghĩa).
 
-**Lưu ý:** Bạn sẽ thấy có những cách để ăn gian "lexical scope", tức là thay đổi "lexical scooe" sau thời điểm "lexing". Tuy vậy những cách này không nên chút nào, tốt nhất hãy giữa "lexical scope" là chính nó. 
+**Lưu ý:** Bạn sẽ thấy có những cách để ăn gian "lexical scope", tức là thay đổi "lexical scope" sau thời điểm "lexing". Tuy vậy những cách này không nên chút nào, tốt nhất hãy giữa "lexical scope" là chính nó. 
 
 Quan sát đoạn code sau:
 
@@ -62,7 +62,7 @@ Với đoạn code ở bên trên, *Engine* thực thi câu lệnh `console.log(
 
 Giả sử mà có 2 bạn cùng định danh `c` tồn tại cả ở trong `bar(..)` lẫn bên trong `foo(..)`, thì `c` trong `bar(..)` sẽ được sử dụng (bỏ qua `c` trong `foo(...)`).
 
-Vậy là **việc tìm kiếm trong Scope sẽ dừng ngay lập tức khi Engine tìm được thứ nó cầnh**. Nếu có nhiều variables cùng định danh, tồn tại cùng lúc ở nhiều quả bóng scope, thì những định danh ở vòng ngoài sẽ được gọi là "cái bóng" (từ "bóng" trong bóng râm/ bóng tối). Không cần biết có bao nhiêu "cái bóng" ở các scope lồng nhau, việc tìm kiếm trong sẽ luôn bắt đầu với "quả bóng" trong cùng tại thời điểm code được thực thi, và đi từ trong ra ngoài đến khi *Engine* lần đầu tiên gặp cái nó đi tìm. 
+Vậy là **việc tìm kiếm trong Scope sẽ dừng ngay lập tức khi Engine tìm được thứ nó cần**. Nếu có nhiều variables cùng định danh, tồn tại cùng lúc ở nhiều quả bóng scope, thì những định danh ở vòng ngoài sẽ được gọi là "cái bóng" (từ "bóng" trong bóng râm/ bóng tối). Không cần biết có bao nhiêu "cái bóng" ở các scope lồng nhau, việc tìm kiếm trong sẽ luôn bắt đầu với "quả bóng" trong cùng tại thời điểm code được thực thi, và đi từ trong ra ngoài đến khi *Engine* lần đầu tiên gặp cái nó đi tìm. 
 
 **Lưu ý:** "Global variables" mặc nhiên là thuộc tính (properties) của "global object" (trong trình duyệt web thì global object chính là `window`), cho nên ta có thể gọi 1 "global variable" từ 1 hàm (có scope ở dưới/trong cùng trong nhóm các scope lồng nhau) một cách gián tiếp thông qua tham chiếu đến đến "global object".
 

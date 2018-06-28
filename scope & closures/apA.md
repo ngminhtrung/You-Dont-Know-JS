@@ -5,7 +5,7 @@ Trong Chương 2, chúng ta đã nhắc về "Dynamic Scope" (Scope động) nh�
 
 Ở phần này chúng ta sẽ nói ngắn gọn về dynamic scope, việc này sẽ giúp hiểu lexical scope kỹ hơn. Tuy nhiên, một điều quan trọng hơn là dynamic scope thực ra có quan hệ "anh em con cô con cậu" với 1 cơ chế khác trong JavaScript (`this`), ta sẽ nói về chủ đề này ở trong quyển "*this & Object Prototypes*".
 
-Quay lại chương 2, lexical scope là một tập các quy định để *Engine* biết cách và nơi để tìm 1 variable nào đó. Một tính chất quan trọng của lexical scope là nó được xác định lúc lập trình viên viết code (chưa đến giai đoạn code được thực thi) (không tính cách ăn gian bằng `eval(...)` và `with`). 
+Quay lại chương 2, *lexical scope* là một tập các quy định để *Engine* biết cách và nơi để tìm 1 variable nào đó. Một tính chất quan trọng của lexical scope là nó được xác định lúc lập trình viên viết code (chưa đến giai đoạn code được thực thi) (không tính cách ăn gian bằng `eval(...)` và `with`). 
 
 Với dynamic scope, bản thân thuật ngữ này đã làm ta nghĩ đến 1 mô hình mà scope có thể thay đổi tại thời điểm code được thực thi, chứ không bị giữ cố định so với thời điểm viết code. Hãy xem ví dụ sau:
 
